@@ -5,7 +5,7 @@
  
         public Additional_Info? additional_info { get; set; }
         public object? application_fee { get; set; }
-        public bool binary_mode { get; set; }
+        public bool binary_mode { get; set; } = true;
         public object? campaign_id { get; set; }
         public bool capture { get; set; }
         public object? coupon_amount { get; set; }

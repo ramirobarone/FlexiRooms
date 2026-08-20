@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
@@ -21,7 +21,9 @@ import { BookingsComponent } from './components/bookings/bookings/bookings.compo
 import { ControlRoomComponent } from './components/Account/control-room/control-room.component';
 import { BillingDataComponent } from './components/bookings/billing-data/billing-data.component';
 import { CheckoutComponent } from './components/bookings/checkout/checkout.component';
-
+import { StepsCheckoutComponent } from './components/bookings/steps-checkout/steps-checkout.component';
+import { AdminHotelsComponent } from './components/Account/admin-hotels/admin-hotels.component';
+import { AdminBookingsComponent } from './components/Account/admin-bookings/admin-bookings.component';
 
 @NgModule({
   declarations: [
@@ -41,12 +43,16 @@ import { CheckoutComponent } from './components/bookings/checkout/checkout.compo
     LogoutComponent,
     BookingsComponent,
     ControlRoomComponent,
-    BillingDataComponent
+    BillingDataComponent,
+    StepsCheckoutComponent,
+    AdminHotelsComponent,
+    AdminBookingsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'room/:id', component: CardRoomComponent, pathMatch: 'full' },
@@ -54,7 +60,8 @@ import { CheckoutComponent } from './components/bookings/checkout/checkout.compo
       { path: 'login', component: LoginComponent, pathMatch: 'full' },
       { path: 'accountCreate', component: AccountCreateComponent, pathMatch: 'full' },
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
-
+      { path: 'steps/:id', component: StepsCheckoutComponent },
+      { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' }
     ])
   ],
   providers: [],

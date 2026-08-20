@@ -8,13 +8,29 @@ import { Room } from '../../../../../models/room';
   providedIn: 'root'
 })
 export class RoomService {
+  baseurl: string;
 
-  constructor(private http: HttpClient, private serviceEnvironment: EnvironmentsService) { }
-
-  baseurl: string = this.serviceEnvironment.getUrlBase();
+  constructor(private http: HttpClient, private serviceEnvironment: EnvironmentsService) {
+    this.baseurl = `${this.serviceEnvironment.getUrlBase()}room/`;
+  }
 
   public getRooms(id: number): Observable<Room[]> {
-    return this.http.get<Room[]>(this.baseurl + 'Room/getroombyid?idHotel='+id)
+    return this.http.get<Room[]>(this.baseurl + 'getroombyid?idHotel=' + id);
   }
- 
+
+  public getRoom(id: number): Observable<Room> {
+    return this.http.get<Room>(this.baseurl + 'getroom?id=' + id);
+  }
+
+  public createRoom(room: Room): Observable<unknown> {
+    return this.http.post(this.baseurl + 'createroom', room);
+  }
+
+  public updateRoom(room: Room): Observable<unknown> {
+    return this.http.put(this.baseurl + 'updateroom', room);
+  }
+
+  public deleteRoom(id: number): Observable<unknown> {
+    return this.http.delete(this.baseurl + 'deleteroom?id=' + id);
+  }
 }

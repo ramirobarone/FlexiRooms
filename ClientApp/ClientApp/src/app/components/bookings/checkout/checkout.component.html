@@ -1,34 +1,107 @@
-<div class="card text-center col-md-12">
-  <div class="card-header">
-    Proceder a pagar
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">{{description}}</h5>
-    <div class="col-md-12 col-sm-12 spacing">
 
+<script>
+  const mp = new MercadoPago("TEST-9d2174e6-2488-4a71-8482-142f502d6a41");
+</script>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 
-      <label class="form-label">Numero de tarjeta de credito</label>
-      <input type="text" placeholder="1234-1231-2312-12131" class="form-control" />
-    </div>
-    <div class="row">
-      <div class="col-md-6 col-sm-12 spacing">
-        <label class="form-label">Fecha de vencimiento</label>
-        <input type="text" class="form-control" placeholder="mm/aa" aria-describedby="inputGroup-sizing-default" />
+<style>
+  #form-checkout {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+  }
+
+  .container {
+    height: 18px;
+    display: inline-block;
+    border: 1px solid rgb(118, 118, 118);
+    border-radius: 2px;
+    padding: 1px 2px;
+  }
+</style>
+
+<form id="form-checkout">
+  <div id="form-checkout__cardNumber" class="container"></div>
+  <div id="form-checkout__expirationDate" class="container"></div>
+  <div id="form-checkout__securityCode" class="container"></div>
+  <input type="text" id="form-checkout__cardholderName" />
+  <select id="form-checkout__issuer"></select>
+  <select id="form-checkout__installments"></select>
+  <select id="form-checkout__identificationType"></select>
+  <input type="text" id="form-checkout__identificationNumber" />
+  <input type="email" id="form-checkout__cardholderEmail" />
+
+  <button type="submit" id="form-checkout__submit">Pagar</button>
+  <progress value="0" class="progress-bar">Cargando...</progress>
+</form>
+
+<!--<form [formGroup]="_cardForm">
+
+  <div class="row">
+
+    <h3 class="text-center ">Pago</h3>
+    <div class="col-md-6 col-sm-12 mt-4">
+      <div class="card position-relative">
+        <div class="card-header">
+          Tarjeta de Credito
+        </div>
+        <div class="card-body">
+          <div>
+
+            <label class="form-label">Numero de tarjeta de credito</label>
+            <input type="text"
+                   placeholder="1234-1231-2312-12131"
+                   class="form-control errorCard"
+                   [(ngModel)]="creditCard.cardNumber"
+                   formControlName="cardNumber"
+                   [ngClass]="{ 'error': _cardForm.errors?.['cardNumber']}" value="1234456787" />
+            <div class="alert alert-danger mt-3" [hidden]="_cardForm.get('cardNumber')?.valid || _cardForm.get('cardNumber')?.pristine">
+              Debe ingresar el numero de tarjeta
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-sm-12">
+              <label class="form-label">Fecha de vencimiento</label>
+              <input type="text"
+                     class="form-control"
+                     placeholder="mm/aa"
+                     [(ngModel)]="creditCard.expirationDate"
+                     formControlName="expirationDate"
+                     aria-describedby="inputGroup-sizing-default"
+                     value="08/11" />
+            </div>
+
+            <div class="col-md-6 col-sm-3">
+              <label class="form-label">Codigo de tarjeta</label>
+              <input type="text"
+                     placeholder="789"
+                     class="form-control"
+                     [(ngModel)]="creditCard.cvv"
+                     formControlName="cvv"
+                     value="123" />
+            </div>
+          </div>
+
+          <label class="form-label">Nombre del titular</label>
+          <input type="text"
+                 class="form-control"
+                 placeholder="Nombre del titular"
+                 [(ngModel)]="creditCard.fullName"
+                 formControlName="fullName"
+                 value="ramiro barone"
+                 title="Ramiro Barone" />
+
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+
+        <button class="btn btn-success form-control mt-3" [disabled]="_cardForm.invalid"
+                (click)="Checkout()">
+          Pagar
+        </button>
       </div>
 
-      <div class="col-md-6 col-sm-3 spacing">
-        <label class="form-label">Codigo de tarjeta</label>
-        <input type="text" placeholder="789" class="form-control" />
-      </div>
-    </div>
-    <div class="col-md-12 col-sm-12 spacing">
-      <label class="form-label">Nombre del titular</label>
-      <input type="text" class="form-control" placeholder="Nombre del titular" />
-    </div>
-
-    <div class="col-md-3 col-sm-6 spacing position-relative">
-      <button class="btn btn-outline-success form-control" [disabled]="disabledButtonPay" (click)="Checkout()">Pagar</button>
     </div>
   </div>
 
-</div>
+</form>-->

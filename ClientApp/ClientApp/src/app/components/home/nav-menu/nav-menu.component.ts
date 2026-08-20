@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,46 +6,45 @@ import { Router } from '@angular/router';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent implements OnInit {
-
+export class NavMenuComponent implements OnInit, OnDestroy {
   userName: string | null = '';
   isExpanded = false;
   isLoged = false;
+  private readonly refreshUserHandler = () => this.refreshUser();
 
-  ngOnInit(): void {
-    window.addEventListener('refrescar', this.refreshUser);
-
-    this.refreshUser();
-  }
   constructor(private router: Router) {
   }
-  refreshUser() {
-    this.userName = localStorage.getItem('fullName');
 
-    console.log('refreshUser', this.userName === null || this.userName === '' || this.userName === undefined);
-    console.log('username', this.userName);
-    if (this.userName === null || this.userName === '' || this.userName === undefined) {
-      this.isLoged = false;
+  ngOnInit(): void {
+    window.addEventListener('refrescar', this.refreshUserHandler);
+    this.refreshUser();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('refrescar', this.refreshUserHandler);
+  }
+
+  refreshUser(): void {
+    this.userName = localStorage.getItem('fullName');
+    this.isLoged = !(this.userName === null || this.userName === '');
+
+    if (!this.isLoged) {
       this.userName = '';
-      console.log('entre por el false');
-    }
-    else {
-      this.isLoged = true;
-    
     }
   }
 
   logout(): void {
-    console.log('logout');
-    dispatchEvent(new Event('refrescar'));
     localStorage.removeItem('token');
     localStorage.removeItem('fullName');
+    dispatchEvent(new Event('refrescar'));
     this.router.navigate(['/']);
   }
-  collapse() {
+
+  collapse(): void {
     this.isExpanded = false;
   }
-  toggle() {
+
+  toggle(): void {
     this.isExpanded = !this.isExpanded;
   }
 }

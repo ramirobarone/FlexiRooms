@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BookingDto } from 'src/models/bookingDto';
+import { RoomDto } from 'src/models/bookingDto';
 import { Room } from 'src/models/room';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class AvialableRoomsService {
 
     return this.http.get(this.baseurl + `Bookings/GetSchedulesByRoom?idRoom=` + idRoom + "&date=" + date);
   }
-  public CheckTemporalAvaiabilityRoom (bookingDto: BookingDto): Observable<boolean> {
+  public CheckTemporalAvaiabilityRoom (bookingDto: RoomDto): Observable<boolean> {
     return this.http.post<boolean>(this.baseurl + 'bookings/CheckTemporalAvaiabilityRoom', bookingDto);
   }
 }

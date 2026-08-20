@@ -34,7 +34,7 @@ export class CardHotelComponent {
 
     let currentRoom = { id: id, name: this.name, description: this.description, urlPictures: "" }
 
-    this.router.navigate(['/room', { id: this.idHotel }]);
+    this.router.navigate(['/steps', { id: this.idHotel }]);
 
     //this.RoomService.setCurrentRoom(currentRoom)
   }

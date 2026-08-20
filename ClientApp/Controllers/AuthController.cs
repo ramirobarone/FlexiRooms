@@ -7,37 +7,51 @@ namespace ClientApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAccountService accountService) : ControllerBase
+    public class AuthController(IAccountService accountService, ILogger<AuthController> logger) : ControllerBase
     {
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserLoginDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost(nameof(Authenticat))]
-        public async Task<IActionResult> Authenticat(UserDto userDto)
+        public async Task<IActionResult> Authenticat([FromBody] UserDto userDto)
         {
-            UserLoginDto loginUser = await accountService.Authenticate(userDto);
+            logger.LogInformation("Authenticating user {Email}", userDto.Email);
 
-            if (loginUser is null)
+            try
+            {
+                UserLoginDto loginUser = await accountService.Authenticate(userDto);
+                logger.LogInformation("User {Email} authenticated successfully with role {Role}", userDto.Email, loginUser.Role);
+                return Ok(loginUser);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                logger.LogWarning("Authentication failed for user {Email}", userDto.Email);
                 return Unauthorized();
-
-            return Ok(loginUser);
+            }
         }
-        [HttpPost(nameof(CreateAccount))]
 
+        [HttpPost(nameof(CreateAccount))]
         [ProducesResponseType(typeof(bool), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(bool), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateAccount(UserCreateDto userCreateDto)
+        public async Task<IActionResult> CreateAccount([FromBody] UserCreateDto userCreateDto)
         {
+            logger.LogInformation("Creating account for {Email}", userCreateDto.Email);
+
             if (!ModelState.IsValid)
-                return BadRequest("Error controler");
+            {
+                logger.LogWarning("Invalid model received in CreateAccount for {Email}", userCreateDto.Email);
+                return BadRequest(ModelState);
+            }
 
             bool accountCreated = await accountService.CreateAccount(userCreateDto);
-
             if (accountCreated)
+            {
+                logger.LogInformation("Account created successfully for {Email}", userCreateDto.Email);
                 return Created("/home", accountCreated);
+            }
 
+            logger.LogInformation("Account could not be created because email already exists or role assignment failed for {Email}", userCreateDto.Email);
             return Ok(accountCreated);
-
         }
     }
 }

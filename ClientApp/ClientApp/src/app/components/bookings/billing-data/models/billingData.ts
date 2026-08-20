@@ -1,5 +1,4 @@
 export interface BillingData {
-    id: number;
     customerName: string;
     address: string;
     city: string;
@@ -8,5 +7,4 @@ export interface BillingData {
     country: string;
     phoneNumber: string;
     email: string;
-    paymentMethod: string;    
 }

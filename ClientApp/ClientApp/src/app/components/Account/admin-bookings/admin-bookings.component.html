@@ -1,0 +1,61 @@
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">Reservas</div>
+      <div class="card-body table-responsive">
+        <table class="table table-striped align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Habitación</th>
+              <th>Fecha</th>
+              <th>Horario</th>
+              <th>Precio</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of bookings">
+              <td>#{{ booking.id }}</td>
+              <td>{{ booking.idRoom }}</td>
+              <td>{{ booking.dateReserved | date:'shortDate' }}</td>
+              <td>{{ booking.checkInTime?.time }}</td>
+              <td>{{ booking.price | currency:'ARS' }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="showDetail(booking.id)">Ver</button>
+                <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteBooking(booking.id)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-secondary text-white">Detalle</div>
+      <div class="card-body" *ngIf="selectedBooking; else emptyState">
+        <dl class="row mb-0">
+          <dt class="col-5">Reserva</dt>
+          <dd class="col-7">#{{ selectedBooking?.id }}</dd>
+          <dt class="col-5">Habitación</dt>
+          <dd class="col-7">{{ selectedBooking?.idRoom }}</dd>
+          <dt class="col-5">Fecha</dt>
+          <dd class="col-7">{{ selectedBooking?.dateReserved | date:'fullDate' }}</dd>
+          <dt class="col-5">Horario</dt>
+          <dd class="col-7">{{ selectedBooking?.checkInTime?.time }}</dd>
+          <dt class="col-5">Cliente</dt>
+          <dd class="col-7">{{ selectedBooking?.user?.name }} {{ selectedBooking?.user?.lastName }}</dd>
+          <dt class="col-5">Email</dt>
+          <dd class="col-7">{{ selectedBooking?.user?.email }}</dd>
+          <dt class="col-5">Monto</dt>
+          <dd class="col-7">{{ selectedBooking?.price | currency:'ARS' }}</dd>
+        </dl>
+      </div>
+      <ng-template #emptyState>
+        <div class="card-body text-muted">Selecciona una reserva para ver el detalle.</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

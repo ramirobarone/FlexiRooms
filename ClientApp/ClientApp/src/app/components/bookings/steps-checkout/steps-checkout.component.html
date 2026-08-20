@@ -1,0 +1,14 @@
+<div>
+
+  <app-card-room (nextToBillingData)="checkRoom($event)"></app-card-room>
+
+  <ng-container *ngIf="isBillingDataEnabled">
+    <app-billing-data (checkOut)="checkBillingData($event)"></app-billing-data>
+  </ng-container>
+
+  <ng-container *ngIf="paymentDataEnabled">
+    <app-checkout></app-checkout>
+  </ng-container>
+
+
+</div>

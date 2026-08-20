@@ -1,66 +1,59 @@
-<div class="row position-relative col-md-12">
-  <div class="row">
+<div class="row">
 
-    <div class="col-md-6">
-      <select title="RoomSelected" class="form-select" style="margin:20px 0px" (change)="onChange()"
-              [(ngModel)]="currenRoom">
-        <!-- <option selected value="Seleccionar">Seleccionar</option> -->
-        <option *ngFor="let item of _rooms" value="{{item.id}}">{{item.name}} - {{item.description}}</option>
-      </select>
-    </div>
+  <div class="col-md-6">
+    <label for="comboRooms" class="form-label">Seleccionar habitación</label>
+    <select title="RoomSelected" id="comboRooms" class="form-select" style="margin:20px 0px" (change)="onChange()"
+            [(ngModel)]="currenRoom">
+      <!-- <option selected value="Seleccionar">Seleccionar</option> -->
+      <option *ngFor="let item of _rooms" value="{{item.id}}">{{item.name}} - {{item.description}}</option>
+    </select>
   </div>
-  <div class="row">
+</div>
 
 
-      <div class="card " style="width: 18rem; display: flex; align-items: center;">
-        <img src="{{path}}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">{{name}}</h5>
-          <p class="card-text">{{description}}</p>
-          <p class="card-text">
-            <label>
-              <b>$ {{cost.costPerHour}}</b>
-            </label>
-          </p>
-          <div class="row">
-            <label class="form-label">Fecha de reserva</label>
-            <input type="date" class="form-control" [(ngModel)]="selectedDate" (change)="changeDate()" placeholder="date" [disabled]="disabledDate" />
-          </div>
-
-          <div class="row">
-            <label class="form-label">Horario Disponible Entrada</label>
-
-            <select title="selectTime" class="form-control" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
-              <option *ngFor="let hour of times" value="{{hour.id}}">{{hour.inTime}}</option>
-            </select>
-
-            <ng-container *ngIf="showRoomMessage">
-              <br />
-              <div class="alert alert-warning marginTopBottom">
-                <label class="form-label">La habitación esta ocupada todo el día</label>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="CheckTemporalAvaiabilityRoomMessage">
-              <br />
-              <div class="alert alert-warning marginTopBottom">
-                <label class="form-label">Actualmente alguien habia comenzado el proceso de alquiler para esta habitacion, 
-                  en el dia de la fecha seleccionado y horario seleccionado.
-                El usuario tiene 5 minutos para terminar el proceso de pago, luego la habitacion queda liberada.</label>
-              </div>
-            </ng-container>
-
-          </div>
-          <br />
-          <button class="btn btn-success" (click)="CreateBooking()" [disabled]="btnBookingDisabled">Proceder al pago</button>
-        </div>
-      </div>
-      <div class="col-md-6">
-
-        <ng-container *ngIf="showCheckout">
-          <app-checkout></app-checkout>
-        </ng-container>
-      </div>
+<div class="row">
+  <div class="col-md-3">
+    <img src="{{path}}" class="img-thumbnail" alt="...">
+  </div>
+  <div class="col-md-3">
+    <h5 class="card-title">{{name}}</h5>
+    <p class="card-text">{{description}}</p>
+    <p class="card-text">
+      <label>
+        <b>$ {{cost.costPerHour}}</b>
+      </label>
+    </p>
+    <div class="row">
+      <label class="form-label">Fecha de reserva</label>
+      <input type="date" class="form-control" [(ngModel)]="selectedDate" (change)="changeDate()" placeholder="date" [disabled]="disabledDate" />
     </div>
-    <app-billing-data></app-billing-data> nada
 
+    <div class="row">
+      <label class="form-label">Horario Disponible Entrada</label>
+
+      <select title="selectTime" class="form-control" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
+        <option *ngFor="let hour of times" value="{{hour.id}}">{{hour.inTime}}</option>
+      </select>
+
+      <ng-container *ngIf="showRoomMessage">
+        <br />
+        <div class="alert alert-warning marginTopBottom">
+          <label class="form-label">La habitación esta ocupada todo el día</label>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="CheckTemporalAvaiabilityRoomMessage">
+        <br />
+        <div class="alert alert-warning marginTopBottom">
+          <label class="form-label">
+            Actualmente alguien habia comenzado el proceso de alquiler para esta habitacion,
+            en el dia de la fecha seleccionado y horario seleccionado.
+            El usuario tiene 5 minutos para terminar el proceso de pago, luego la habitacion queda liberada.
+          </label>
+        </div>
+      </ng-container>
+
+    </div>
+    <br />
+    <button class="btn btn-success" (click)="CreateBooking()" [disabled]="btnBookingDisabled">Siguiente</button>
+  </div>
 </div>

@@ -13,6 +13,12 @@ namespace Infrastructure.Models
         public decimal Price { get; set; }
         public Guid UserGuid { get; set; }
         public DateTime DateReserved { get; set; }
+        //public int IdPayment { get; set; }
+        //public string? DatePaymentCreated { get; set; }
+        //public string? DatePaymentApproved { get; set; }
+        //public bool? IsPaymentApproved { get; set; }
+        //public Guid IdemPotencyKey { get; set; }
+
 
         public virtual TimesAvailable? CheckInTime { get; set; }
         public virtual User? User { get; set; }

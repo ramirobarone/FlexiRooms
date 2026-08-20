@@ -1,1 +1,46 @@
-<p>control-room works!</p>
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+      <div>
+        <h2 class="mb-1">Backoffice</h2>
+        <p class="text-muted mb-0">Administra hoteles, habitaciones y reservas desde Angular con Bootstrap.</p>
+      </div>
+      <div class="btn-group" role="group">
+        <button class="btn" [ngClass]="activeTab === 'summary' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'summary'">Resumen</button>
+        <button class="btn" [ngClass]="activeTab === 'hotels' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'hotels'">Hoteles</button>
+        <button class="btn" [ngClass]="activeTab === 'bookings' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'bookings'">Reservas</button>
+      </div>
+    </div>
+
+    <ng-container [ngSwitch]="activeTab">
+      <div *ngSwitchCase="'summary'" class="row g-4">
+        <div class="col-md-4">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+              <h5 class="card-title">Hoteles</h5>
+              <p class="card-text mb-0">Crea y edita la oferta publicada.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-success text-white h-100">
+            <div class="card-body">
+              <h5 class="card-title">Rooms</h5>
+              <p class="card-text mb-0">Gestiona habitaciones desde la API existente.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-secondary text-white h-100">
+            <div class="card-body">
+              <h5 class="card-title">Reservas</h5>
+              <p class="card-text mb-0">Consulta el historial y elimina reservas inválidas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-admin-hotels *ngSwitchCase="'hotels'"></app-admin-hotels>
+      <app-admin-bookings *ngSwitchCase="'bookings'"></app-admin-bookings>
+    </ng-container>
+  </div>
+</div>

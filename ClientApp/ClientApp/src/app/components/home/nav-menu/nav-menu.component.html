@@ -7,27 +7,29 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
-        <div class="marginUserName">
+        <div class="marginUserName me-3">
           <b>
-            <label id="userName">{{userName}}</label>
+            <label id="userName">{{ userName }}</label>
           </b>
         </div>
-        <ul class="navbar-nav flex-grow">
+        <ul class="navbar-nav flex-grow align-items-sm-center">
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
           </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
+            <a class="nav-link text-dark fw-semibold" [routerLink]="['/admin']">Backoffice</a>
+          </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
-            <ng-container *ngIf="isLoged === false">
+            <ng-container *ngIf="!isLoged">
               <a class="nav-link text-dark" [routerLink]="['/login']">Login</a>
             </ng-container>
-            <ng-container *ngIf="isLoged === true">
+            <ng-container *ngIf="isLoged">
               <a class="btn nav-link text-dark" [routerLink]="['/logout']">Logout</a>
             </ng-container>
           </li>
-     
         </ul>
       </div>
     </div>

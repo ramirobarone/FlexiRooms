@@ -7,6 +7,7 @@ namespace Infrastructure.ServiceHttp
         public async Task<TOut> Post(string url, Tin data)
         {
             TOut? resultObject = default;
+            httpClient.DefaultRequestHeaders.Add("X-Idempotency-Key", "");
 
             var conten = new StringContent(System.Text.Json.JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 

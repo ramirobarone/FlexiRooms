@@ -3,15 +3,14 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Mysqlx.Crud;
 
 namespace Infrastructure.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly HotelisContext _hotelisContext;
+        private readonly RoomContainerContext _hotelisContext;
         private DbSet<T> dbSet;
-        public Repository(HotelisContext hotelisContext)
+        public Repository(RoomContainerContext hotelisContext)
         {
             _hotelisContext = hotelisContext;
 

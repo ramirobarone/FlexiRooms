@@ -1,7 +1,12 @@
+using System.Text;
+using Application.Models.Options;
 using ClientApp.Extensions;
 using Infrastructure.Context;
+using Infrastructure.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 public class Program
@@ -9,12 +14,8 @@ public class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        builder.AddServiceDefaults();
-
         string policyName = "ClientApp";
 
-        // Add services to the container.
         builder.Host.UseSerilog((configure, context) =>
         {
             context.WriteTo.File(
@@ -23,104 +24,102 @@ public class Program
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}"
             );
             context.WriteTo.Console(Serilog.Events.LogEventLevel.Information);
-
         });
-
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddHealthChecks();
-
-        //builder.Services.AddDbContext<HotelisContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("hotelis") ?? throw new Exception()));
-        builder.AddMySqlDbContext<HotelisContext>("hotelis");
+        builder.AddNpgsqlDbContext<RoomContainerContext>("hotelis");
 
         builder.Logging.AddConsole();
 #if WINDOWS
         builder.Logging.AddEventLog();
 #endif
         builder.Logging.AddJsonConsole();
+
         builder.Services.AddCors(cors =>
         {
             cors.AddPolicy(policyName, policy =>
             {
-                policy.WithOrigins("https://localhost:44432", "http://localhost:44432").AllowAnyMethod().AllowAnyHeader();
-
-
+                policy.WithOrigins("https://localhost:44432", "http://localhost:44432")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             });
+        });
 
+        JwtOptions jwtOptions = builder.Configuration.GetSection(JwtOptions.JWTOPTIONS).Get<JwtOptions>()
+            ?? throw new InvalidOperationException("JwtOptions configuration is required.");
+
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 8;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<RoomContainerContext>()
+        .AddDefaultTokenProviders();
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtOptions.Authority,
+                ValidAudience = jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key!)),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
+            options.AddPolicy("OwnerAccess", policy => policy.RequireRole("SuperAdmin", "Owner"));
+            options.AddPolicy("HotelManagement", policy => policy.RequireRole("SuperAdmin", "Owner", "Admin"));
+            options.AddPolicy("ReservationUser", policy => policy.RequireRole("SuperAdmin", "Owner", "Admin", "User"));
         });
 
         builder.Services.AddMemoryCache();
         builder.AddInfraStructure();
         builder.AddApplication();
 
-        builder.AddRabbitMQClient("Aspire");
-
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hotelis", Version = "v1" });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description = @"Type into the textbox: Bearer {your JWT token}.",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
-                   {
-                       new OpenApiSecurityScheme {
-                           Reference = new OpenApiReference {
-                                   Type = ReferenceType.SecurityScheme,
-                                       Id = "Bearer"
-                               },
-                               Scheme = "Bearer",
-                               Name = "Bearer",
-                               In = ParameterLocation.Header,
-
-                       },
-                       new List<string> ()
-                   }
-                               });
-        });
-
         var app = builder.Build();
 
-        app.MapDefaultEndpoints();
-
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-
             app.UseHsts();
-
         }
+
         if (app.Environment.IsDevelopment())
         {
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<HotelisContext>();
-                context.Database.EnsureCreated();
-            }
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<RoomContainerContext>();
+            context.Database.Migrate();
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
-
-        app.UseSwagger();
-        app.UseSwaggerUI();
 
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseCors(policyName);
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseStaticFiles();
         app.MapHealthChecks("/health");
         app.MapControllers();
-
-        //app.MapControllerRoute(
-        //name: "default",
-        //pattern: "{controller}/{action=Index}/{id?}");
-
         app.MapFallbackToFile("index.html");
-
         app.Run();
     }
 }

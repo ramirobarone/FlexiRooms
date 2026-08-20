@@ -19,6 +19,7 @@ namespace ClientApp.Extensions
             app.Services.AddScoped<IServiceGeneric<RoomDto>, ServiceRoom>();
             app.Services.AddScoped<IBookings, BookingService>();
             app.Services.AddScoped<IServiceGeneric<RoomDto>, ServiceRoom>();
+            app.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             app.Services.AddScoped<IAccountService, AccountService>();
 
         }

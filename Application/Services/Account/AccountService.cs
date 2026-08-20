@@ -1,67 +1,76 @@
 ﻿using Application.Interfaces;
-using Application.Models.Options;
 using Application.Models.User;
 using Application.Models.Users;
 using Infrastructure.Models;
-using Infrastructure.Repository;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Services.Account
 {
-    public class AccountService(IRepository<User> repositoryUser, IOptions<JwtOptions> jwtOptions) : IAccountService
+    public class AccountService(UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService) : IAccountService
     {
-        private SymmetricSecurityKey? _key;
         public async Task<UserLoginDto> Authenticate(UserDto userDto)
         {
-            //logger.LogInformation("User authenticat is {0}:", userDto.Email);
+            ArgumentNullException.ThrowIfNull(userDto);
 
-            User isValidUser = await IsUserAuthenticated(userDto.Email, userDto.Password);
-
-            //logger.LogInformation("User authenticat is {0}: result is {1}", userDto.Email, isAuthenticate);
-
-            if (isValidUser is not null && !string.IsNullOrEmpty(isValidUser.Email))
+            ApplicationUser? user = await userManager.FindByEmailAsync(userDto.Email);
+            if (user is null)
             {
-                return new UserLoginDto(isValidUser.Name + " " + isValidUser.LastName, CreateToken(isValidUser.Email), 0, isValidUser.UserGuid);
+                throw new UnauthorizedAccessException("The user is not authorizated");
             }
 
-            throw new UnauthorizedAccessException("The user is not authorizated");
-        }
-        private async Task<User> IsUserAuthenticated(string email, string password) => await repositoryUser.GetByIdAsync(x => x.Email == email && x.Password == password);
-        private string CreateToken(string userId)
-        {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions?.Value?.Key ?? throw new SecurityTokenNotYetValidException()));
-            var claims = new List<Claim> {
-                new  (JwtRegisteredClaimNames.Jti, Guid.NewGuid ().ToString ()),
-                new  ("ID", userId),
-            };
+            bool isValidPassword = await userManager.CheckPasswordAsync(user, userDto.Password);
+            if (!isValidPassword)
+            {
+                throw new UnauthorizedAccessException("The user is not authorizated");
+            }
 
-            var token = new JwtSecurityToken(
-                jwtOptions.Value.Authority,
-                jwtOptions.Value.Audience,
-                claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtOptions.Value.TokenDuration)),
-                signingCredentials: new SigningCredentials(_key, SecurityAlgorithms.HmacSha256)
-            );
+            IList<string> roles = await userManager.GetRolesAsync(user);
+            string role = roles.FirstOrDefault() ?? "User";
+            string token = await jwtTokenService.CreateTokenAsync(user);
+            string fullName = $"{user.Name} {user.LastName}".Trim();
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new UserLoginDto(
+                string.IsNullOrWhiteSpace(fullName) ? user.Email ?? string.Empty : fullName,
+                token,
+                0,
+                role,
+                user.UserGuid);
         }
 
         public async Task<bool> CreateAccount(UserCreateDto userCreateDto)
         {
-            if (userCreateDto is null)
-                throw new ArgumentNullException(nameof(userCreateDto));
+            ArgumentNullException.ThrowIfNull(userCreateDto);
 
-            if (await ExistAccount(userCreateDto))
+            ApplicationUser? existingUser = await userManager.FindByEmailAsync(userCreateDto.Email);
+            if (existingUser is not null)
+            {
                 return false;
+            }
 
-            var created = await repositoryUser.CreateAsync(userCreateDto);
+            userCreateDto.CreateUserGuid();
 
-            return created.Entity.Id > 0;
+            ApplicationUser user = new()
+            {
+                UserName = userCreateDto.Email,
+                Email = userCreateDto.Email,
+                Name = userCreateDto.Name,
+                LastName = userCreateDto.LastName,
+                PhoneNumber = userCreateDto.PhoneNumber,
+                IdentityNumber = userCreateDto.IdentityNumber,
+                AccountActivate = true,
+                CodeArea = userCreateDto.CodeArea,
+                UserGuid = userCreateDto.UserGuid ?? Guid.NewGuid(),
+                EmailConfirmed = true
+            };
+
+            IdentityResult createdResult = await userManager.CreateAsync(user, userCreateDto.Password);
+            if (!createdResult.Succeeded)
+            {
+                return false;
+            }
+
+            IdentityResult roleResult = await userManager.AddToRoleAsync(user, "User");
+            return roleResult.Succeeded;
         }
-        private async Task<bool> ExistAccount(UserCreateDto userCreateDto) => await repositoryUser.Exist(x => x.Email == userCreateDto.Email);
     }
 }

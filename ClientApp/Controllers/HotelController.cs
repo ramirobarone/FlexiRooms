@@ -1,14 +1,18 @@
 using Application.Interfaces;
 using Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace ClientApp.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class HotelController(IServiceGeneric<HotelDto> serviceHotel, IServiceSearchByKeyword<HotelDto> serviceBySearchKey, ILogger<HotelController> logger) : ControllerBase
     {
+        [AllowAnonymous]
         [HttpGet(nameof(GetHotels))]
         public async Task<IActionResult> GetHotels(string searchKey)
         {
@@ -50,6 +54,11 @@ namespace ClientApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            hotelDto.IdentityNumber = userId;
             await serviceHotel.Create(hotelDto);
             return Created();
         }

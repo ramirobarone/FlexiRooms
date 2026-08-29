@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(RoomContainerContext))]
+    [DbContext(typeof(FlexiRoomsContext))]
     [Migration("20260820032952_Initial")]
     partial class Initial
     {

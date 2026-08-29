@@ -1,5 +1,6 @@
 using Application.Models.Extensions;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Application.Models
 {
@@ -9,10 +10,12 @@ namespace Application.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? MetaDescription { get; set; }
+        [ValidateNever]
         public Address? AddressHotel { get; set; }
         public string? Email { get; set; }
         public int CodeArea { get; set; }
         public int PhoneNumber { get; set; }
+        public string? IdentityNumber { get; set; }
         public IEnumerable<HotelPictureDto>? Pictures { get; set; }
 
         public static implicit operator HotelDto(Hotel hotel)
@@ -27,6 +30,7 @@ namespace Application.Models
                 MetaDescription = hotel.MetaDescription,
                 Name = hotel.Name,
                 PhoneNumber = hotel.PhoneNumber,
+                IdentityNumber = hotel.IdentityNumber,
                 Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
 
                 AddressHotel = new Models.Address()
@@ -54,6 +58,7 @@ namespace Application.Models
                 MetaDescription = hotel.MetaDescription ?? string.Empty,
                 Name = hotel.Name ?? string.Empty,
                 PhoneNumber = hotel.PhoneNumber,
+                IdentityNumber = hotel.IdentityNumber,
                 AddressHotel = new Address()
                 {
                     Id = hotel.AddressHotel?.Id ?? 0,

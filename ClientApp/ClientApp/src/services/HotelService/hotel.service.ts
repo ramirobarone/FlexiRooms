@@ -23,6 +23,7 @@ export class HotelService {
   }
 
   createHotel(hotel: Hotel): Observable<unknown> {
+    console.log('Creating hotel:', hotel);
     return this.http.post(this.baseurl + 'createHotel', hotel);
   }
 

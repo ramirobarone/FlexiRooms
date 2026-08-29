@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(RoomContainerContext))]
+    [DbContext(typeof(FlexiRoomsContext))]
     partial class RoomContainerContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -572,6 +572,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
+                    b.Property<string>("IdentityNumber")
+                        .HasColumnType("text");
+
                     b.Property<string>("MetaDescription")
                         .HasColumnType("text");
 
@@ -584,6 +587,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressHotelId");
+
+                    b.HasIndex("IdentityNumber");
 
                     b.ToTable("Hotels");
 
@@ -1396,7 +1401,14 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("AddressHotelId");
 
+                    b.HasOne("Infrastructure.Models.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("IdentityNumber")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("AddressHotel");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.HotelPicture", b =>

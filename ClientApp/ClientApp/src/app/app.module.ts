@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { authInterceptor } from './ServicesShared/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/home/nav-menu/nav-menu.component';
@@ -50,7 +51,6 @@ import { AdminBookingsComponent } from './components/Account/admin-bookings/admi
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
@@ -64,7 +64,9 @@ import { AdminBookingsComponent } from './components/Account/admin-bookings/admi
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' }
     ])
   ],
-  providers: [],
+  providers: [
+    provideHttpClient(withInterceptors([authInterceptor]))
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

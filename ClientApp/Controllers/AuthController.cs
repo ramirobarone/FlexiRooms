@@ -1,12 +1,14 @@
 ﻿using Application.Interfaces;
 using Application.Models.User;
 using Application.Models.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+        [AllowAnonymous]
     public class AuthController(IAccountService accountService, ILogger<AuthController> logger) : ControllerBase
     {
         [ProducesResponseType(typeof(UserLoginDto), StatusCodes.Status200OK)]

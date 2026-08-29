@@ -11,7 +11,7 @@ using Serilog;
 
 public class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         string policyName = "ClientApp";
@@ -28,7 +28,7 @@ public class Program
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddHealthChecks();
-        builder.AddNpgsqlDbContext<RoomContainerContext>("hotelis");
+        builder.AddNpgsqlDbContext<FlexiRoomsContext>("hotelis");
 
         builder.Logging.AddConsole();
 #if WINDOWS
@@ -58,7 +58,7 @@ public class Program
             options.Password.RequiredLength = 8;
             options.User.RequireUniqueEmail = true;
         })
-        .AddEntityFrameworkStores<RoomContainerContext>()
+        .AddEntityFrameworkStores<FlexiRoomsContext>()
         .AddDefaultTokenProviders();
 
         builder.Services.AddAuthentication(options =>
@@ -90,6 +90,7 @@ public class Program
             options.AddPolicy("ReservationUser", policy => policy.RequireRole("SuperAdmin", "Owner", "Admin", "User"));
         });
 
+        builder.Services.AddSwaggerGen();
         builder.Services.AddMemoryCache();
         builder.AddInfraStructure();
         builder.AddApplication();
@@ -104,8 +105,19 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             using var scope = app.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<RoomContainerContext>();
+            var context = scope.ServiceProvider.GetRequiredService<FlexiRoomsContext>();
             context.Database.Migrate();
+
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            string[] roleNames = { "SuperAdmin", "Owner", "Admin", "User" };
+
+            foreach (var roleName in roleNames)
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI();

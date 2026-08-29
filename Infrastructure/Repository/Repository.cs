@@ -8,9 +8,9 @@ namespace Infrastructure.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly RoomContainerContext _hotelisContext;
+        private readonly FlexiRoomsContext _hotelisContext;
         private DbSet<T> dbSet;
-        public Repository(RoomContainerContext hotelisContext)
+        public Repository(FlexiRoomsContext hotelisContext)
         {
             _hotelisContext = hotelisContext;
 

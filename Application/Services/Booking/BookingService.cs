@@ -18,7 +18,7 @@ namespace Application.Services.Reserves
         {
             logger.LogInformation("parameters idRoom:{_idRoom} and date: {_date}", _idRoom, _date);
 
-            DateTime date = Convert.ToDateTime(_date);
+            DateTime date = DateTime.SpecifyKind(Convert.ToDateTime(_date), DateTimeKind.Utc);
             List<ScheduleDto> result = new();
 
             IEnumerable<Bookings> bookings = await repositoryBookings.GetAllByIdAsync(x => x.IdRoom == _idRoom

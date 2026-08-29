@@ -64,6 +64,7 @@ namespace Application.Services.Account
             };
 
             IdentityResult createdResult = await userManager.CreateAsync(user, userCreateDto.Password);
+
             if (!createdResult.Succeeded)
             {
                 return false;

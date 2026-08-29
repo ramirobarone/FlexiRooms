@@ -5,6 +5,7 @@ using Application.Services.Account;
 using Application.Services.HotelServices;
 using Application.Services.Reserves;
 using Application.Services.Rooms;
+using Infrastructure.Models;
 
 namespace ClientApp.Extensions
 {
@@ -15,6 +16,7 @@ namespace ClientApp.Extensions
             app.Services.AddOptions<JwtOptions>().BindConfiguration("JwtOptions").ValidateOnStart();
 
             app.Services.AddScoped<IServiceGeneric<HotelDto>, HotelServiceQuery>();
+            app.Services.AddScoped<IServiceGeneric<Bookings>, BookingService>();
             app.Services.AddScoped<IServiceSearchByKeyword<HotelDto>, HotelServiceQuery>();
             app.Services.AddScoped<IServiceGeneric<RoomDto>, ServiceRoom>();
             app.Services.AddScoped<IBookings, BookingService>();

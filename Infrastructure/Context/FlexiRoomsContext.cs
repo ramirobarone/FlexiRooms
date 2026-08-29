@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Context;
 
-public partial class RoomContainerContext : IdentityDbContext<ApplicationUser>
+public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
 {
-    public RoomContainerContext()
+    public FlexiRoomsContext()
     {
 
     }
-    public RoomContainerContext(DbContextOptions<RoomContainerContext> options)
+    public FlexiRoomsContext(DbContextOptions<FlexiRoomsContext> options)
         : base(options)
     {
     }
@@ -40,6 +40,14 @@ public partial class RoomContainerContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
         modelBuilder.SeedDataHotelis();
+
+        modelBuilder.Entity<Hotel>()
+            .HasOne(h => h.Owner)
+            .WithMany()
+            .HasForeignKey(h => h.IdentityNumber)
+            .HasPrincipalKey(u => u.Id)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKERHUB_REPOSITORY: hotelis
-  APP_NAME: hotelis
+  DOCKERHUB_REPOSITORY: flexiRooms
+  APP_NAME: flexiRooms
   APP_PORT: "7291"
   POSTGRES_DB: roomContainer
   POSTGRES_USER: postgres
@@ -68,13 +68,13 @@ jobs:
           script_stop: true
           script: |
             set -e
-            mkdir -p /opt/hotelis
-            cd /opt/hotelis
+            mkdir -p /opt/flexiRooms
+            cd /opt/flexiRooms
             cat > docker-compose.prod.yml <<'EOF'
             services:
               postgres:
                 image: postgres:16
-                container_name: hotelis-postgres
+                container_name: flexiRooms-postgres
                 restart: unless-stopped
                 environment:
                   POSTGRES_DB: ${POSTGRES_DB}
@@ -92,7 +92,7 @@ jobs:
 
               app:
                 image: ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG:-latest}
-                container_name: hotelis-app
+                container_name: flexiRooms-app
                 restart: unless-stopped
                 depends_on:
                   postgres:
@@ -100,7 +100,7 @@ jobs:
                 environment:
                   ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
                   ASPNETCORE_URLS: http://+:8080
-                  ConnectionStrings__hotelis: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+                  ConnectionStrings__flexiRooms: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
                 ports:
                   - "${APP_PORT:-7291}:8080"
                 volumes:

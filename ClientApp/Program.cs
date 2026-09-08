@@ -102,23 +102,23 @@ public class Program
             app.UseHsts();
         }
 
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FlexiRoomsContext>();
+        context.Database.Migrate();
+
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        string[] roleNames = { "SuperAdmin", "Owner", "Admin", "User" };
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
         if (app.Environment.IsDevelopment())
         {
-            using var scope = app.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<FlexiRoomsContext>();
-            context.Database.Migrate();
-
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            string[] roleNames = { "SuperAdmin", "Owner", "Admin", "User" };
-
-            foreach (var roleName in roleNames)
-            {
-                if (!await roleManager.RoleExistsAsync(roleName))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
-
             app.UseSwagger();
             app.UseSwaggerUI();
         }

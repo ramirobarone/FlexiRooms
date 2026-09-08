@@ -11,6 +11,7 @@
 		<LangVersion>preview</LangVersion>
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<UserSecretsId>d8b3cda7-95f6-49ff-a30f-5c3e56f2637c</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,6 +21,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
@@ -85,7 +87,7 @@
 
 	<ItemGroup>
 	  <Content Update="wwwroot\hotel-images\8\carlos-paz-ruta-20-1.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
 </Project>

@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: hotelis-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: roomContainer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "!Jazmin1811"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d roomContainer"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: ClientApp/Dockerfile
+    container_name: hotelis-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__hotelis: Host=postgres;Port=5432;Database=roomContainer;Username=postgres;Password=!Jazmin1811;
+    ports:
+      - "7291:8080"
+    volumes:
+      - hotel-images:/app/wwwroot/hotel-images
+
+volumes:
+  postgres-data:
+  hotel-images:

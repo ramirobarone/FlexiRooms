@@ -9,3 +9,8 @@
 .hotel-disabled {
     color: red;
 }
+
+.carousel-item img {
+    height: 180px;
+    object-fit: cover;
+}

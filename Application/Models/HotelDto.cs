@@ -17,7 +17,7 @@ namespace Application.Models
         public int ProvinceId { get; set; }
         public int CityId { get; set; }
         public Address? AddressHotel { get; set; }
-        //public IEnumerable<HotelPictureDto>? Pictures { get; set; }
+        public IEnumerable<HotelPictureDto>? Pictures { get; set; }
 
         public static implicit operator HotelDto(Hotel hotel)
         {
@@ -32,7 +32,7 @@ namespace Application.Models
                 Name = hotel.Name,
                 PhoneNumber = hotel.PhoneNumber,
                 IdentityNumber = hotel.IdentityNumber,
-                //Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
+                Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
 
                 //AddressHotel = new Models.Address()
                 //{

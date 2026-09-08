@@ -1,5 +1,30 @@
 <div class="card" style="width: 18rem;">
-  <img src="{{image}}" class="card-img-top" alt="...">
+  <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel" *ngIf="images.length; else noImage">
+    <div class="carousel-indicators" *ngIf="images.length > 1">
+      <button *ngFor="let img of images; let i = index" type="button"
+              [attr.data-bs-target]="'#carousel-' + idHotel" [attr.data-bs-slide-to]="i"
+              [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
+              [attr.aria-label]="'Slide ' + (i + 1)"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item" *ngFor="let img of images; let i = index" [class.active]="i === 0">
+        <img [src]="getImageSource(img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+      </div>
+    </div>
+    <ng-container *ngIf="images.length > 1">
+      <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </ng-container>
+  </div>
+  <ng-template #noImage>
+    <img src="" class="card-img-top" alt="...">
+  </ng-template>
   <div class="card-body">
     <div class="row">
       <div class="col-md-12">

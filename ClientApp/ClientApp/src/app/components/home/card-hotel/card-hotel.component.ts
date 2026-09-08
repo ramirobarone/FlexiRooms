@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Room } from 'src/models/room';
 import { Router } from '@angular/router';
+import { hotelPicture } from 'src/models/hotelPicture';
 
 @Component({
   selector: 'app-card-hotel',
@@ -14,7 +15,7 @@ export class CardHotelComponent {
   @Input()
   description: string = ''
   @Input()
-  image: string = ''
+  images: hotelPicture[] = []
   @Input()
   address: string = '';
   @Input()
@@ -26,6 +27,18 @@ export class CardHotelComponent {
 
   constructor(private router: Router) {
 
+  }
+
+  getImageSource(path: string): string {
+    if (!path) {
+      return '';
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+
+    return `${window.location.origin}${path}`;
   }
 
   setCurrentRoom(): void {

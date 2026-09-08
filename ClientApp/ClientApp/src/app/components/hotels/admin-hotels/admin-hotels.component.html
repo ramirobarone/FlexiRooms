@@ -3,7 +3,7 @@
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <span>Hoteles</span>
-        <button class="btn btn-sm btn-light" type="button" (click)="newHotel()">Nuevo</button>
+        <button class="btn btn-sm btn-light" type="button" title="Nuevo" (click)="newHotel()"><i class="bi bi-plus-lg"></i></button>
       </div>
       <div class="card-body table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -21,8 +21,10 @@
               <td>{{ hotel.email }}</td>
               <td>{{ hotel.phoneNumber }}</td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="editHotel(hotel)">Editar</button>
-                <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteHotel(hotel.id)">Eliminar</button>
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editHotel(hotel)"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(hotel)"><i class="bi bi-upload"></i></button>
+                <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(hotel)"><i class="bi bi-images"></i></button>
+                <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteHotel(hotel.id)"><i class="bi bi-trash"></i></button>
               </td>
             </tr>
           </tbody>
@@ -90,9 +92,72 @@
           </div>
         </div>
         <div class="mt-3 d-grid">
-          <button class="btn btn-primary" type="button" (click)="saveHotel()">Guardar hotel</button>
+          <button class="btn btn-primary" type="button" title="Guardar hotel" (click)="saveHotel()"><i class="bi bi-save"></i></button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="dialog-backdrop" *ngIf="isUploadPopupVisible"></div>
+<dialog class="hotel-images-dialog" [open]="isUploadPopupVisible">
+  <div class="modal-header">
+    <h5 class="modal-title">Subir imágenes - {{ selectedHotelForImages?.name }}</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeUploadPopup()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="drag-drop-area"
+         (dragover)="onDragOver($event)"
+         (drop)="onDrop($event)">
+      Arrastrá imágenes aquí o
+      <label class="btn btn-sm btn-outline-primary ms-2 mb-0" title="Seleccionar">
+        <i class="bi bi-folder2-open"></i>
+        <input type="file" multiple accept="image/*" hidden (change)="onFilesSelected($event)" />
+      </label>
+    </div>
+
+    <ul class="list-group mt-3" *ngIf="selectedFiles.length">
+      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let file of selectedFiles; let i = index">
+        <span class="text-truncate me-2">{{ file.name }}</span>
+        <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)"><i class="bi bi-x-lg"></i></button>
+      </li>
+    </ul>
+
+    <p class="text-danger mt-3 mb-0" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" type="button" title="Cancelar" (click)="closeUploadPopup()" [disabled]="isUploadingImages"><i class="bi bi-x-lg"></i></button>
+    <button class="btn btn-primary" type="button" [title]="isUploadingImages ? 'Subiendo...' : 'Subir imágenes'" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
+      <i class="bi" [ngClass]="isUploadingImages ? 'bi-hourglass-split' : 'bi-upload'"></i>
+    </button>
+  </div>
+</dialog>
+
+<div class="dialog-backdrop" *ngIf="isGalleryPopupVisible"></div>
+<dialog class="hotel-images-dialog hotel-images-gallery" [open]="isGalleryPopupVisible">
+  <div class="modal-header">
+    <h5 class="modal-title">Imágenes de {{ selectedHotelForImages?.name }}</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeGalleryPopup()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p class="mb-2" *ngIf="isLoadingImages">Cargando imágenes...</p>
+
+    <p class="text-danger" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+
+    <div class="gallery-grid" *ngIf="!isLoadingImages && hotelImages.length">
+      <img *ngFor="let image of hotelImages"
+           [src]="getImageSource(image.path)"
+           class="img-thumbnail"
+           alt="Imagen del hotel" />
+    </div>
+
+    <p *ngIf="!isLoadingImages && !hotelImages.length && !imagesErrorMessage" class="mb-0">No hay imágenes cargadas para este hotel.</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" type="button" title="Cerrar" (click)="closeGalleryPopup()"><i class="bi bi-x-lg"></i></button>
+  </div>
+</dialog>

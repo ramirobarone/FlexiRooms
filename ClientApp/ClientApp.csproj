@@ -82,4 +82,10 @@
 	<ItemGroup>
 		<None Include="C:\Users\rbarone\source\repos\Hotelis\ClientApp\.editorconfig" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\hotel-images\8\carlos-paz-ruta-20-1.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 </Project>

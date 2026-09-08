@@ -1,3 +1,60 @@
 :host {
   display: block;
 }
+
+.hotel-images-dialog {
+  width: min(700px, 92vw);
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
+.hotel-images-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1040;
+}
+
+.hotel-images-dialog {
+  z-index: 1050;
+}
+
+.hotel-images-dialog .modal-header,
+.hotel-images-dialog .modal-footer,
+.hotel-images-dialog .modal-body {
+  padding: 1rem;
+}
+
+.drag-drop-area {
+  border: 2px dashed #6c757d;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.hotel-images-gallery {
+  width: min(900px, 95vw);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}

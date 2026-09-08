@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Hotel } from 'src/models/hotel';
+import { hotelPicture } from 'src/models/hotelPicture';
 import { EnvironmentsService } from '../../app/ServicesShared/environments.service';
 
 @Injectable({
@@ -35,5 +36,16 @@ getMyHotels(): Observable<Hotel[]> {
 
   deleteHotel(id: number): Observable<unknown> {
     return this.http.delete(this.baseurl + 'deleteHotel?id=' + id);
+  }
+
+  uploadHotelImages(hotelId: number, files: File[]): Observable<hotelPicture[]> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('files', file));
+
+    return this.http.post<hotelPicture[]>(`${this.environmentsService.getUrlBase()}hotelimages/${hotelId}/upload`, formData);
+  }
+
+  getHotelImages(hotelId: number): Observable<hotelPicture[]> {
+    return this.http.get<hotelPicture[]>(`${this.environmentsService.getUrlBase()}hotelimages/${hotelId}`);
   }
 }

@@ -19,12 +19,13 @@ import { LoginComponent } from './components/Account/login/login.component';
 import { AccountCreateComponent } from './components/Account/account-create/account-create.component';
 import { LogoutComponent } from './components/Account/logout/logout.component';
 import { BookingsComponent } from './components/bookings/bookings/bookings.component';
-import { ControlRoomComponent } from './components/Account/control-room/control-room.component';
+import { ControlRoomComponent } from './components/hotels/control-room/control-room.component';
 import { BillingDataComponent } from './components/bookings/billing-data/billing-data.component';
 import { CheckoutComponent } from './components/bookings/checkout/checkout.component';
 import { StepsCheckoutComponent } from './components/bookings/steps-checkout/steps-checkout.component';
-import { AdminHotelsComponent } from './components/Account/admin-hotels/admin-hotels.component';
-import { AdminBookingsComponent } from './components/Account/admin-bookings/admin-bookings.component';
+import { AdminHotelsComponent } from './components/hotels/admin-hotels/admin-hotels.component';
+import { AdminBookingsComponent } from './components/hotels/admin-bookings/admin-bookings.component';
+import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { AdminBookingsComponent } from './components/Account/admin-bookings/admi
     BillingDataComponent,
     StepsCheckoutComponent,
     AdminHotelsComponent,
-    AdminBookingsComponent
+    AdminBookingsComponent,
+    AdminRoomComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

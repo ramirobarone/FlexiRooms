@@ -10,7 +10,7 @@ namespace ClientApp.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class HotelController(IServiceGeneric<HotelDto> serviceHotel, IServiceSearchByKeyword<HotelDto> serviceBySearchKey, ILogger<HotelController> logger) : ControllerBase
+    public class HotelController(IHotelService serviceHotel, ILogger<HotelController> logger) : ControllerBase
     {
         [AllowAnonymous]
         [HttpGet(nameof(GetHotels))]
@@ -21,7 +21,7 @@ namespace ClientApp.Controllers
             if (string.IsNullOrEmpty(searchKey))
                 return NoContent();
 
-            IEnumerable<HotelDto>? resultHotels = await serviceBySearchKey.SearchByKeyword(searchKey);
+            IEnumerable<HotelDto>? resultHotels = await serviceHotel.SearchByKeyword(searchKey);
             logger.LogInformation("NameMethod {nameof(GetHotels)} - ResultSearchKey: {resultHotels}", nameof(GetHotels), System.Text.Json.JsonSerializer.Serialize(resultHotels));
 
             if (resultHotels.Any())
@@ -61,6 +61,20 @@ namespace ClientApp.Controllers
             hotelDto.IdentityNumber = userId;
             await serviceHotel.Create(hotelDto);
             return Created();
+        }
+        [HttpGet(nameof(GetMyHotels))]
+        public async Task<IActionResult> GetMyHotels()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            IEnumerable<HotelDto> myHotels = await serviceHotel.GetMyHotels(userId);
+
+            if (!myHotels.Any())
+                return NoContent();
+
+            return Ok(myHotels);
         }
         [HttpPut(nameof(UpdateHotel))]
         public async Task<IActionResult> UpdateHotel(HotelDto hotelDto)

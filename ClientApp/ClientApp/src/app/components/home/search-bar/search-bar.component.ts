@@ -12,6 +12,7 @@ export class SearchBarComponent {
   @Output() _hotelesEmitter = new EventEmitter<Hotel[]>();
   _hoteles: Hotel[] = [];
   currentString: string = '';
+  isNoResultsPopupVisible = false;
 
   constructor(private hotelService: HotelService) {
   }
@@ -23,9 +24,10 @@ export class SearchBarComponent {
 
     this.hotelService.getHotels(this.currentString).subscribe(res => {
       
-      console.log(res);
-
       this._hoteles = res;
+      if (res === null || (res && this._hoteles.length === 0)) {
+        this.isNoResultsPopupVisible = true;
+      }
       this._hotelesEmitter.emit(this._hoteles);
 
     });

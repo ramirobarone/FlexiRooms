@@ -3,3 +3,9 @@
 
   <button class="btn btn-outline-secondary" type="button" id="button-addon2"  (click)="BuscarHotel()">Buscar</button>
 </div>
+<app-popup
+  [visible]="isNoResultsPopupVisible"
+  title="Sin resultados"
+  description="No hay hoteles disponibles con esa busqueda."
+  (closed)="isNoResultsPopupVisible = false">
+</app-popup>

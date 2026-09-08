@@ -10,13 +10,14 @@ namespace Application.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? MetaDescription { get; set; }
-        [ValidateNever]
-        public Address? AddressHotel { get; set; }
         public string? Email { get; set; }
         public int CodeArea { get; set; }
         public int PhoneNumber { get; set; }
         public string? IdentityNumber { get; set; }
-        public IEnumerable<HotelPictureDto>? Pictures { get; set; }
+        public int ProvinceId { get; set; }
+        public int CityId { get; set; }
+        public Address? AddressHotel { get; set; }
+        //public IEnumerable<HotelPictureDto>? Pictures { get; set; }
 
         public static implicit operator HotelDto(Hotel hotel)
         {
@@ -31,19 +32,19 @@ namespace Application.Models
                 Name = hotel.Name,
                 PhoneNumber = hotel.PhoneNumber,
                 IdentityNumber = hotel.IdentityNumber,
-                Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
+                //Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
 
-                AddressHotel = new Models.Address()
-                {
-                    Id = hotel?.AddressHotel.Id ?? 0,
-                    IdCity = hotel?.AddressHotel.IdCity ?? 0,
-                    Latitud = hotel?.AddressHotel?.Latitud ?? string.Empty,
-                    Longitud = hotel?.AddressHotel?.Longitud ?? string.Empty,
-                    Number = hotel?.AddressHotel?.Number ?? string.Empty,
-                    PostalCode = hotel?.AddressHotel?.PostalCode ?? string.Empty,
-                    Street = hotel?.AddressHotel?.Street ?? string.Empty
+                //AddressHotel = new Models.Address()
+                //{
+                //    Id = hotel?.AddressHotel.Id ?? 0,
+                //    IdCity = hotel?.AddressHotel.IdCity ?? 0,
+                //    Latitud = hotel?.AddressHotel?.Latitud ?? string.Empty,
+                //    Longitud = hotel?.AddressHotel?.Longitud ?? string.Empty,
+                //    Number = hotel?.AddressHotel?.Number ?? string.Empty,
+                //    PostalCode = hotel?.AddressHotel?.PostalCode ?? string.Empty,
+                //    Street = hotel?.AddressHotel?.Street ?? string.Empty
 
-                }
+                //}
             };
         }
 
@@ -62,6 +63,7 @@ namespace Application.Models
                 AddressHotel = new Address()
                 {
                     Id = hotel.AddressHotel?.Id ?? 0,
+
                     IdCity = hotel.AddressHotel?.IdCity ?? 0,
                     Latitud = hotel.AddressHotel?.Latitud ?? string.Empty,
                     Longitud = hotel.AddressHotel?.Longitud ?? string.Empty,

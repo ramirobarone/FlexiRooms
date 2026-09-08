@@ -1,12 +1,19 @@
 
-<app-search-bar (_hotelesEmitter)="loadHotels($event)"></app-search-bar>
+<app-search-bar (_hotelesEmitter)="loadHotels($event)" (noResults)="showNoResultsPopup()"></app-search-bar>
+
+<app-popup
+  [visible]="isNoResultsPopupVisible"
+  title="Sin resultados"
+  description="No hay hoteles disponibles con esa busqueda."
+  (closed)="isNoResultsPopupVisible = false">
+</app-popup>
 
 <div class="row">
   <span *ngFor="let item of _hoteles" class="col-md-3" style="margin: 20px">
     <app-card-hotel name="{{ item.name }}"
                     description="{{ item.description}}"
                     idHotel="{{item.id}}"
-      image="{{item.pictures[0].path}}"></app-card-hotel>
+      image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgLykCbnfnplu7Bl_IcAVPrpUi-CA_-wgq4Ky163LKMn2rW1-UYMsptbHo&s=10"></app-card-hotel>
   </span>
 </div>
 

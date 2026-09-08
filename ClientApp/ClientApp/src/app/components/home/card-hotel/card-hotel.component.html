@@ -7,7 +7,7 @@
         <h5 class="card-title">{{name}}</h5>
         <p class="card-text">{{description}}</p>
 
-        <p class="card-text">Estado: {{stateHotel}} <i style="color: red; font-size: medium;"
+        <p class="card-text" [ngClass]="stateHotel ? 'hotel-enabled' : 'hotel-disabled'">Estado: {{stateHotel ? 'Habilitado' : 'No Habilitado'}} <i style="color: red; font-size: medium;"
             class="bi bi-check-circle-fill"></i> </p>
 
         <p class="card-text">Habitaciones disponibles: {{availableRooms}}</p>

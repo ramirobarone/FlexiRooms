@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./control-room.component.css']
 })
 export class ControlRoomComponent {
-  activeTab: 'summary' | 'hotels' | 'bookings' = 'summary';
+  activeTab: 'summary' | 'hotels' | 'rooms' | 'bookings' = 'summary';
 }

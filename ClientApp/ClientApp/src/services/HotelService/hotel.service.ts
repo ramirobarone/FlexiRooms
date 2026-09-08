@@ -17,7 +17,9 @@ export class HotelService {
   getHotels(keyword: string): Observable<Hotel[]> {
     return this.http.get<Hotel[]>(this.baseurl + 'getHotels?searchKey=' + keyword);
   }
-
+getMyHotels(): Observable<Hotel[]> {
+    return this.http.get<Hotel[]>(this.baseurl + 'getMyHotels');
+}
   getHotel(id: number): Observable<Hotel> {
     return this.http.get<Hotel>(this.baseurl + 'getHotel?idHotel=' + id);
   }

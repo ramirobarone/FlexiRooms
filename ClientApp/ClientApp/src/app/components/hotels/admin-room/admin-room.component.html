@@ -1,0 +1,121 @@
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span>Habitaciones</span>
+        <button class="btn btn-sm btn-light" type="button" (click)="newRoom()">Nueva Habitación</button>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label font-weight-bold">Seleccionar Hotel</label>
+          <select class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
+            <option [ngValue]="0" disabled>-- Seleccione un Hotel --</option>
+            <option *ngFor="let hotel of hotels" [ngValue]="hotel.id">{{ hotel.name }}</option>
+          </select>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Camas</th>
+                <th>Precio / hr</th>
+                <th>Horas</th>
+                <th>Disponible</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let room of rooms">
+                <td>
+                  <strong>{{ room.name }}</strong>
+                  <div class="text-muted small">{{ room.description }}</div>
+                </td>
+                <td>{{ room.bedNumbers }}</td>
+                <td>${{ room.cost?.costPerHour || 0 }}</td>
+                <td>{{ room.cost?.hour || 0 }} hs</td>
+                <td>
+                  <span class="badge" [ngClass]="room.avialableNow ? 'bg-success' : 'bg-secondary'">
+                    {{ room.avialableNow ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="editRoom(room)">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteRoom(room.id)">Eliminar</button>
+                </td>
+              </tr>
+              <tr *ngIf="rooms.length === 0">
+                <td colspan="6" class="text-center text-muted py-3">
+                  No hay habitaciones registradas para este hotel.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        {{ isEditing ? 'Editar habitación' : 'Nueva habitación' }}
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="saveRoom()">
+          <div class="mb-3">
+            <label class="form-label">Nombre de la habitación</label>
+            <input class="form-control" [(ngModel)]="selectedRoom.name" name="name" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="selectedRoom.description" name="description"></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Número de camas</label>
+              <input class="form-control" type="number" min="1" [(ngModel)]="selectedRoom.bedNumbers" name="bedNumbers" required />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Disponible ahora</label>
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="selectedRoom.avialableNow" name="avialableNow" id="avialableSwitch">
+                <label class="form-check-label" for="avialableSwitch">
+                  {{ selectedRoom.avialableNow ? 'Disponible' : 'No disponible' }}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedRoom.cost">
+              <label class="form-label">Costo por hora ($)</label>
+              <input class="form-control" type="number" min="0" [(ngModel)]="selectedRoom.cost.costPerHour" name="costPerHour" required />
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedRoom.cost">
+              <label class="form-label">Duración (horas)</label>
+              <input class="form-control" type="number" min="1" [(ngModel)]="selectedRoom.cost.hour" name="hour" required />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">URL Imagen de la habitación</label>
+              <input class="form-control" [(ngModel)]="imagePath" name="imagePath" placeholder="https://..." />
+            </div>
+          </div>
+
+          <div class="mt-4 d-grid gap-2">
+            <button class="btn btn-primary" type="submit">
+              {{ isEditing ? 'Actualizar habitación' : 'Guardar habitación' }}
+            </button>
+            <button class="btn btn-outline-secondary" type="button" (click)="newRoom()" *ngIf="isEditing">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

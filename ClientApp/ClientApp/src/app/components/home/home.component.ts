@@ -13,6 +13,7 @@ export class HomeComponent {
   _room: Room | null = null;
   _hoteles: Hotel[] = [];
   isBodyVisible: boolean = true;
+  isNoResultsPopupVisible = false;
 
   constructor(private roomService: RoomService) {
 
@@ -22,6 +23,10 @@ export class HomeComponent {
     if (this._hoteles.length > 0)
       this.isBodyVisible = false;
 
-    console.log(this._hoteles);
+    console.log('Home hoteles: ', this._hoteles);
+  }
+
+  showNoResultsPopup(): void {
+    this.isNoResultsPopupVisible = true;
   }
 }

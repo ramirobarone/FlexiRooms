@@ -15,6 +15,7 @@ namespace ClientApp.Extensions
         {
             app.Services.AddOptions<JwtOptions>().BindConfiguration("JwtOptions").ValidateOnStart();
 
+            app.Services.AddScoped<IHotelService, HotelServiceQuery>();
             app.Services.AddScoped<IServiceGeneric<HotelDto>, HotelServiceQuery>();
             app.Services.AddScoped<IServiceGeneric<Bookings>, BookingService>();
             app.Services.AddScoped<IServiceSearchByKeyword<HotelDto>, HotelServiceQuery>();

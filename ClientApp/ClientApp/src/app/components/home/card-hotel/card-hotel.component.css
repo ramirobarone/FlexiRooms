@@ -1,3 +1,11 @@
 .marginButtonRooms{
     margin: 3%;
 }
+
+.hotel-enabled {
+    color: green;
+}
+
+.hotel-disabled {
+    color: red;
+}

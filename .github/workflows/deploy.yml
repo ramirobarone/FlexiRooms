@@ -65,8 +65,16 @@ jobs:
           set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
+          if [[ "$SSH_PRIVATE_KEY" == *'\n'* ]]; then
+            printf '%b' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_deploy
+          else
+            printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_deploy
+          fi
           chmod 600 ~/.ssh/id_deploy
+          ssh-keygen -y -P '' -f ~/.ssh/id_deploy > /dev/null || {
+            echo "SSH_PRIVATE_KEY must contain a valid, unencrypted OpenSSH private key"
+            exit 1
+          }
           ssh-keyscan -p 5283 149.50.150.67 >> ~/.ssh/known_hosts
           cat >> ~/.ssh/config <<'SSH_CONFIG'
           Host 149.50.150.67
@@ -74,7 +82,7 @@ jobs:
             IdentitiesOnly yes
           SSH_CONFIG
           chmod 600 ~/.ssh/config ~/.ssh/known_hosts
-          ssh -p5283 root@149.50.150.67 'bash -se' <<'REMOTE_SCRIPT'
+          ssh -o BatchMode=yes -p5283 root@149.50.150.67 'bash -se' <<'REMOTE_SCRIPT'
             set -e
             mkdir -p /opt/flexiRooms
             cd /opt/flexiRooms

@@ -87,61 +87,17 @@ jobs:
           chmod 600 ~/.ssh/config ~/.ssh/known_hosts
           ssh -o BatchMode=yes -p5283 root@149.50.150.67 'bash -se' <<'REMOTE_SCRIPT'
             set -e
-            mkdir -p /opt/flexiRooms
-            cd /opt/flexiRooms
-            cat > docker-compose.prod.yml <<'EOF'
-            services:
-              postgres:
-                image: postgres:16
-                container_name: flexiRooms-postgres
-                restart: unless-stopped
-                environment:
-                  POSTGRES_DB: ${POSTGRES_DB}
-                  POSTGRES_USER: ${POSTGRES_USER}
-                  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-                ports:
-                  - "${POSTGRES_PORT:-5432}:5432"
-                volumes:
-                  - postgres-data:/var/lib/postgresql/data
-                healthcheck:
-                  test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-                  interval: 10s
-                  timeout: 5s
-                  retries: 5
-
-              app:
-                image: ${DOCKERHUB_USERNAME}/${DOCKERHUB_REPOSITORY}:${IMAGE_TAG:-latest}
-                container_name: flexiRooms-app
-                restart: unless-stopped
-                depends_on:
-                  postgres:
-                    condition: service_healthy
-                environment:
-                  ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
-                  ASPNETCORE_URLS: http://+:8080
-                  ConnectionStrings__flexiRooms: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-                ports:
-                  - "${APP_PORT:-7291}:8080"
-                volumes:
-                  - hotel-images:/app/wwwroot/hotel-images
-
-            volumes:
-              postgres-data:
-              hotel-images:
-            EOF
-            cat > .env <<'EOF'
-            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_REPOSITORY=${{ env.DOCKERHUB_REPOSITORY }}
-            IMAGE_TAG=latest
-            ASPNETCORE_ENVIRONMENT=Production
-            APP_PORT=${{ env.APP_PORT }}
-            POSTGRES_DB=${{ env.POSTGRES_DB }}
-            POSTGRES_USER=${{ env.POSTGRES_USER }}
-            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            POSTGRES_PORT=${{ env.POSTGRES_PORT }}
-            EOF
             printf '%s' '${{ secrets.DOCKERHUB_TOKEN }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin
-            docker compose --env-file .env -f docker-compose.prod.yml pull
-            docker compose --env-file .env -f docker-compose.prod.yml up -d
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPOSITORY }}:latest
+            docker rm -f ${{ env.APP_NAME }} || true
+            docker run -d \
+              --name ${{ env.APP_NAME }} \
+              --restart unless-stopped \
+              -p ${{ env.APP_PORT }}:8080 \
+              -e ASPNETCORE_ENVIRONMENT=Production \
+              -e ASPNETCORE_URLS=http://+:8080 \
+              -e ConnectionStrings__flexiRooms="Host=${{ secrets.POSTGRES_HOST }};Port=${{ env.POSTGRES_PORT }};Database=${{ env.POSTGRES_DB }};Username=${{ env.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}" \
+              -v hotel-images:/app/wwwroot/hotel-images \
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPOSITORY }}:latest
             docker image prune -f
           REMOTE_SCRIPT

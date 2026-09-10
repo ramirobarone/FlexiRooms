@@ -3,7 +3,7 @@ FROM postgres:16
 # Configuración solicitada
 ENV POSTGRES_DB=flexirooms
 ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=FlexiRooms2026!
+ENV POSTGRES_PASSWORD=Jazmin1811!
 
 # Puerto por defecto de PostgreSQL
 EXPOSE 5432

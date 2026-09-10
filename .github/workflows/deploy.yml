@@ -10,8 +10,9 @@ env:
   DOCKERHUB_REPOSITORY: flexiRooms
   APP_NAME: flexiRooms
   APP_PORT: "7291"
-  POSTGRES_DB: roomContainer
+  POSTGRES_DB: flexirooms
   POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: Jazmin1811!
   POSTGRES_PORT: "5432"
 
 jobs:

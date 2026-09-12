@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Input } from '@angular/core';
 import { Observable } from 'rxjs';
+import { EnvironmentsService } from 'src/app/ServicesShared/environments.service';
 import { RoomDto } from 'src/models/bookingDto';
 import { Room } from 'src/models/room';
 
@@ -9,9 +10,9 @@ import { Room } from 'src/models/room';
 })
 export class AvialableRoomsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private environment: EnvironmentsService) { }
 
-  baseurl: string = 'https://localhost:7291/api/';
+  baseurl: string = this.environment.getUrlBase();
 
   getRoom(idhotel: string | undefined): Observable<Room[]> {
     return this.http.get<Room[]>(this.baseurl + 'room/GetRoomById?idhotel=' + idhotel);

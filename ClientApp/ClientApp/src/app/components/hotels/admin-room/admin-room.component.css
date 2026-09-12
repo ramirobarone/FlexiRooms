@@ -1,0 +1,88 @@
+:host {
+  display: block;
+}
+
+.room-images-dialog {
+  width: min(700px, 92vw);
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+}
+
+.room-images-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1040;
+}
+
+.room-images-dialog .modal-header,
+.room-images-dialog .modal-footer,
+.room-images-dialog .modal-body {
+  padding: 1rem;
+}
+
+.drag-drop-area {
+  border: 2px dashed #6c757d;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.drag-drop-area.dragover {
+  background-color: #e9ecef;
+  border-color: #0d6efd;
+}
+
+.room-images-gallery {
+  width: min(900px, 95vw);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery-item {
+  position: relative;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.gallery-item-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(220, 53, 69, 0.85);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.gallery-item-delete:hover {
+  background: #dc3545;
+}

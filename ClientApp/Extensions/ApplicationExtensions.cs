@@ -17,6 +17,7 @@ namespace ClientApp.Extensions
 
             app.Services.AddScoped<IHotelService, HotelServiceQuery>();
             app.Services.AddScoped<IHotelImageService, HotelImageService>();
+            app.Services.AddScoped<IRoomImageService, RoomImageService>();
             app.Services.AddScoped<IServiceGeneric<HotelDto>, HotelServiceQuery>();
             app.Services.AddScoped<IServiceGeneric<Bookings>, BookingService>();
             app.Services.AddScoped<IServiceSearchByKeyword<HotelDto>, HotelServiceQuery>();

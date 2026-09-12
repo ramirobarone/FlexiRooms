@@ -33,16 +33,18 @@
                   <div class="text-muted small">{{ room.description }}</div>
                 </td>
                 <td>{{ room.bedNumbers }}</td>
-                <td>${{ room.cost?.costPerHour || 0 }}</td>
-                <td>{{ room.cost?.hour || 0 }} hs</td>
+                <td>${{ room.cost.costPerHour || 0 }}</td>
+                <td>{{ room.cost.hour || 0 }} hs</td>
                 <td>
                   <span class="badge" [ngClass]="room.avialableNow ? 'bg-success' : 'bg-secondary'">
                     {{ room.avialableNow ? 'Sí' : 'No' }}
                   </span>
                 </td>
                 <td class="text-end">
-                  <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="editRoom(room)">Editar</button>
-                  <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteRoom(room.id)">Eliminar</button>
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editRoom(room)"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(room)"><i class="bi bi-upload"></i></button>
+                  <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(room)"><i class="bi bi-images"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteRoom(room.id)"><i class="bi bi-trash"></i></button>
                 </td>
               </tr>
               <tr *ngIf="rooms.length === 0">
@@ -100,9 +102,16 @@
               <input class="form-control" type="number" min="1" [(ngModel)]="selectedRoom.cost.hour" name="hour" required />
             </div>
 
-            <div class="col-12">
-              <label class="form-label">URL Imagen de la habitación</label>
-              <input class="form-control" [(ngModel)]="imagePath" name="imagePath" placeholder="https://..." />
+            <div class="col-12" *ngIf="isEditing && selectedRoom.id">
+              <label class="form-label">Gestión de imágenes</label>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm" type="button" (click)="openUploadPopup(selectedRoom)">
+                  <i class="bi bi-upload me-1"></i> Subir imágenes (Drag & Drop)
+                </button>
+                <button class="btn btn-outline-info btn-sm" type="button" (click)="openGalleryPopup(selectedRoom)">
+                  <i class="bi bi-images me-1"></i> Galería de imágenes
+                </button>
+              </div>
             </div>
           </div>
 
@@ -119,3 +128,75 @@
     </div>
   </div>
 </div>
+
+<div class="dialog-backdrop" *ngIf="isUploadPopupVisible"></div>
+<dialog class="room-images-dialog" [open]="isUploadPopupVisible">
+  <div class="modal-header">
+    <h5 class="modal-title">Subir imágenes - {{ selectedRoomForImages?.name }}</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeUploadPopup()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="drag-drop-area"
+         [class.dragover]="isDragOver"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)">
+      Arrastrá imágenes aquí o
+      <label class="btn btn-sm btn-outline-primary ms-2 mb-0" title="Seleccionar">
+        <i class="bi bi-folder2-open"></i> Seleccionar
+        <input type="file" multiple accept="image/*" hidden (change)="onFilesSelected($event)" />
+      </label>
+    </div>
+
+    <ul class="list-group mt-3" *ngIf="selectedFiles.length">
+      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let file of selectedFiles; let i = index">
+        <span class="text-truncate me-2">{{ file.name }}</span>
+        <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </li>
+    </ul>
+
+    <p class="text-danger mt-3 mb-0" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" type="button" title="Cancelar" (click)="closeUploadPopup()" [disabled]="isUploadingImages">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <button class="btn btn-primary" type="button" [title]="isUploadingImages ? 'Subiendo...' : 'Subir imágenes'" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
+      <i class="bi" [ngClass]="isUploadingImages ? 'bi-hourglass-split' : 'bi-upload'"></i>
+    </button>
+  </div>
+</dialog>
+
+<div class="dialog-backdrop" *ngIf="isGalleryPopupVisible"></div>
+<dialog class="room-images-dialog room-images-gallery" [open]="isGalleryPopupVisible">
+  <div class="modal-header">
+    <h5 class="modal-title">Imágenes de {{ selectedRoomForImages?.name }}</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeGalleryPopup()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p class="mb-2" *ngIf="isLoadingImages">Cargando imágenes...</p>
+    <p class="text-danger" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+
+    <div class="gallery-grid" *ngIf="!isLoadingImages && roomImages.length">
+      <div class="gallery-item" *ngFor="let image of roomImages">
+        <img [src]="getImageSource(image.path)" class="img-thumbnail" alt="Imagen de la habitación" />
+        <button class="gallery-item-delete" type="button" title="Eliminar imagen" (click)="deleteRoomImage(image.id)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <p class="text-muted text-center py-3" *ngIf="!isLoadingImages && !roomImages.length">
+      Esta habitación no tiene imágenes adicionales registradas.
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" type="button" (click)="closeGalleryPopup()">Cerrar</button>
+  </div>
+</dialog>

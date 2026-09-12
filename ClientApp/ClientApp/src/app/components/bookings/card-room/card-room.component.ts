@@ -1,5 +1,5 @@
 import { AvialableRoomsService } from 'src/services/AvialableRooms/avialable-rooms.service';
-import { Component, Injectable, Input, Output } from '@angular/core';
+import { Component, Injectable, Input, Output, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from 'src/models/room';
 import { Cost } from 'src/models/Cost';
@@ -13,7 +13,7 @@ import { LocalDataBookingService } from '../local-data-booking.service';
   templateUrl: './card-room.component.html',
   styleUrls: ['./card-room.component.css']
 })
-export class CardRoomComponent {
+export class CardRoomComponent implements OnInit {
 
 
   idHotel: string | undefined = '';
@@ -46,8 +46,12 @@ export class CardRoomComponent {
     private localDataBookin: LocalDataBookingService,
     private router: Router) {
     this.idHotel = this.route.snapshot.paramMap.get('id')?.toString();
+  }
+  
+  ngOnInit(): void {
     this.getRoom(this.idHotel);
   }
+
 
   getRoom(idHotel: string | undefined): void {
     console.log('idHotel', idHotel);

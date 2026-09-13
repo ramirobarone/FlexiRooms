@@ -1,3 +1,38 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.login-panel {
+    width: min(100%, 540px);
+    padding: 2rem;
+}
+
+.centered {
+    display: block;
+    margin-inline: auto;
+}
+
 .spacingButton{
     margin-top: 20px;
+}
+
+.login-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.login-alert {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+@media (max-width: 400px) {
+    .login-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

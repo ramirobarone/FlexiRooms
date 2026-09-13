@@ -4,6 +4,13 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+.application-logo {
+  display: block;
+  width: 72px;
+  height: 40px;
+  object-fit: contain;
+}
+
 html {
   font-size: 14px;
 }
@@ -16,6 +23,42 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
-.marginUserName{
-  margin-right: 20px;
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.user-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.logout-button {
+  border: 0;
+  background: transparent;
+  color: #212529;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.5rem;
+}
+
+.logout-button:hover,
+.logout-button:focus {
+  color: #0d6efd;
+}
+
+@media (max-width: 575.98px) {
+  .user-profile {
+    justify-content: flex-end;
+    margin: 10px 0 0;
+  }
 }

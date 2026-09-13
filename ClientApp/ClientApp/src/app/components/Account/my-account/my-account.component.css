@@ -1,0 +1,74 @@
+.account-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.account-panel {
+  width: min(100%, 760px);
+  padding: 2rem;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.account-header h1 {
+  margin-bottom: 0.35rem;
+}
+
+.profile-photo-container {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.profile-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.photo-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #198754;
+  color: #fff;
+  cursor: pointer;
+}
+
+.photo-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+@media (max-width: 575.98px) {
+  .account-panel {
+    padding: 1.25rem;
+  }
+
+  .account-header {
+    align-items: flex-start;
+  }
+}

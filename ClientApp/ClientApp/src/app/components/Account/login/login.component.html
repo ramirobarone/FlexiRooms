@@ -1,23 +1,29 @@
-<div class="row">
-  <div class="col-md-6">
+<div class="login-container">
+  <div class="login-panel rounded-surface">
+
+    <img src="assets/logo.png" alt="Logo" class="img-fluid mb-4 w-50 centered" />
 
     <div class="form-group">
       <label class="form-label">Email</label>
       <input type="email" class="form-control" [(ngModel)]="userDto.email" title="Enter your email"
-             placeholder="Email" />
+        placeholder="Email" />
 
       <label class="form-label">Password</label>
       <input type="password" class="form-control" [(ngModel)]="userDto.password" title="Enter your password"
-             placeholder="Password" />
+        placeholder="Password" />
 
     </div>
-    <div class="form-group row spacingButton">
-      <div class="col-md-6">
-        <button class="btn btn-outline-success" (click)="login()">Ingresar</button>
-      </div>
-      <div class="col-md-6">
-        <button class="btn btn-success" [routerLink]="['/accountCreate']">Crear Cuenta</button>
-      </div>
+    <div class="login-actions spacingButton">
+      <button class="btn btn-outline-success" type="button" (click)="login()" [disabled]="isLoading">
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+      <button class="btn btn-success" type="button" [routerLink]="['/accountCreate']" [disabled]="isLoading">Crear Cuenta</button>
+    </div>
+
+    <div class="alert alert-danger login-alert" role="alert" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+      {{ errorMessage }}
     </div>
 
   </div>

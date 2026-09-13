@@ -1,0 +1,12 @@
+.rounded-image {
+	border-radius: 12px;
+}
+
+.centered-carousel {
+	width: min(100%, 1100px);
+	margin-inline: auto;
+}
+
+.centered-carousel-image {
+	margin-inline: auto;
+}

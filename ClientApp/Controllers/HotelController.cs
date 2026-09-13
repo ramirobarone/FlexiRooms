@@ -29,6 +29,7 @@ namespace ClientApp.Controllers
 
             return NoContent();
         }
+        
 
         [HttpGet(nameof(GetHotel))]
         public async Task<IActionResult> GetHotel([FromQuery] int idHotel)
@@ -76,6 +77,19 @@ namespace ClientApp.Controllers
 
             return Ok(myHotels);
         }
+
+        [AllowAnonymous]
+        [HttpGet(nameof(GetHomeHotels))]
+        public async Task<IActionResult> GetHomeHotels([FromQuery] int pageNumber = 1)
+        {
+            IEnumerable<HotelDto> homeHotels = await serviceHotel.GetHomeHotels(pageNumber);
+
+            if (!homeHotels.Any())
+                return NoContent();
+
+            return Ok(homeHotels);
+        }
+
         [HttpPut(nameof(UpdateHotel))]
         public async Task<IActionResult> UpdateHotel(HotelDto hotelDto)
         {

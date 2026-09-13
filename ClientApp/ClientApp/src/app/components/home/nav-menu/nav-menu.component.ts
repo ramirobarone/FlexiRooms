@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -8,11 +9,13 @@ import { Router } from '@angular/router';
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
   userName: string | null = '';
+  profileImageUrl = 'assets/exterior.jpg';
   isExpanded = false;
   isLoged = false;
+  canAccessControlPanel = false;
   private readonly refreshUserHandler = () => this.refreshUser();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private localStorageService: LocalStorageService) {
   }
 
   ngOnInit(): void {
@@ -25,17 +28,21 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   }
 
   refreshUser(): void {
-    this.userName = localStorage.getItem('fullName');
-    this.isLoged = !(this.userName === null || this.userName === '');
+    const user = this.localStorageService.getUser();
+    this.userName = user?.fullName ?? '';
+    this.isLoged = this.localStorageService.isLoggedIn();
+    this.profileImageUrl = this.localStorageService.getProfileImage() || 'assets/exterior.jpg';
+    this.canAccessControlPanel = this.localStorageService.isOwner() || this.localStorageService.isAdmin();
 
     if (!this.isLoged) {
       this.userName = '';
+      this.profileImageUrl = 'assets/exterior.jpg';
+      this.canAccessControlPanel = false;
     }
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('fullName');
+    this.localStorageService.clearLogin();
     dispatchEvent(new Event('refrescar'));
     this.router.navigate(['/']);
   }

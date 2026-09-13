@@ -15,5 +15,6 @@ namespace Infrastructure.Models
         public bool ProviderAccount { get; set; }
         public int? ManagedHotelId { get; set; }
         public string? OwnedHotelIds { get; set; }
+        public UserProfileImage? UserProfileImage { get; set; }
     }
 }

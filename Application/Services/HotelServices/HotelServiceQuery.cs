@@ -79,6 +79,30 @@ namespace Application.Services.HotelServices
             return hotelDtos;
         }
 
+        public async Task<IEnumerable<HotelDto>> GetHomeHotels(int pageNumber)
+        {
+            const int pageSize = 50;
+
+            if (pageNumber <= 0)
+                pageNumber = 1;
+
+            List<Hotel> hotels = await flexiRoomsContext.Hotels
+                .OrderBy(x => x.Id)
+                .Include(x => x.AddressHotel)
+                .Include(x => x.HotelPictures)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            List<HotelDto> hotelDtos = new();
+            for (int i = 0; i < hotels.Count; i++)
+            {
+                hotelDtos.Add(hotels[i]);
+            }
+
+            return hotelDtos;
+        }
+
         public async Task<IEnumerable<HotelDto>> SearchByKeyword(string keyword)
         {
             if (string.IsNullOrEmpty(keyword))

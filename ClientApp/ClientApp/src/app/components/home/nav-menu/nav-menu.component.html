@@ -1,17 +1,14 @@
 <header>
   <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Flexi Rooms</a>
+      <a class="navbar-brand" [routerLink]="['/']" aria-label="Flexi Rooms">
+        <img src="assets/logo.png" alt="Flexi Rooms" class="application-logo" />
+      </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
         aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
-        <div class="marginUserName me-3">
-          <b>
-            <label id="userName">{{ userName }}</label>
-          </b>
-        </div>
         <ul class="navbar-nav flex-grow align-items-sm-center">
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
@@ -19,7 +16,7 @@
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
           </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="canAccessControlPanel">
             <a class="nav-link text-dark fw-semibold" [routerLink]="['/admin']">Panel de Control</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
@@ -27,10 +24,16 @@
               <a class="nav-link text-dark" [routerLink]="['/login']">Login</a>
             </ng-container>
             <ng-container *ngIf="isLoged">
-              <a class="btn nav-link text-dark" [routerLink]="['/logout']">Logout</a>
+              <button class="logout-button" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="logout()">
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+              </button>
             </ng-container>
           </li>
         </ul>
+        <div class="user-profile" *ngIf="isLoged">
+          <span id="userName" class="user-name">{{ userName }}</span>
+          <img class="user-avatar" [src]="profileImageUrl" alt="Fotografía de usuario" />
+        </div>
       </div>
     </div>
   </nav>

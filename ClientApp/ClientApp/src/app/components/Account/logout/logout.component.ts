@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class LogoutComponent implements OnInit {
 
-  constructor(private router : Router) { }
+  constructor(private router: Router, private localStorageService: LocalStorageService) { }
 
   ngOnInit(): void {
     this.logout();
@@ -17,8 +18,7 @@ export class LogoutComponent implements OnInit {
   logout(): void {
     console.log('logout');
     dispatchEvent(new Event('refrescar'));
-    localStorage.removeItem('token');
-    localStorage.removeItem('fullName');
+    this.localStorageService.clearLogin();
     this.router.navigate(['/']);
   }
 

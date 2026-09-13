@@ -26,6 +26,7 @@ import { StepsCheckoutComponent } from './components/bookings/steps-checkout/ste
 import { AdminHotelsComponent } from './components/hotels/admin-hotels/admin-hotels.component';
 import { AdminBookingsComponent } from './components/hotels/admin-bookings/admin-bookings.component';
 import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.component';
+import { MyAccountComponent } from './components/Account/my-account/my-account.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.co
     StepsCheckoutComponent,
     AdminHotelsComponent,
     AdminBookingsComponent,
-    AdminRoomComponent
+    AdminRoomComponent,
+    MyAccountComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,6 +63,7 @@ import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.co
       { path: 'reserve/:id', component: ReservedComponent, pathMatch: 'full' },
       { path: 'login', component: LoginComponent, pathMatch: 'full' },
       { path: 'accountCreate', component: AccountCreateComponent, pathMatch: 'full' },
+      { path: 'miCuenta', component: MyAccountComponent, pathMatch: 'full' },
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: 'steps/:id', component: StepsCheckoutComponent },
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' }

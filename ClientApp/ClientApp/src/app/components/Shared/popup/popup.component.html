@@ -1,4 +1,4 @@
-<dialog #genericModal closedby="any" aria-labelledby="popup-title" (click)="onBackdropClick($event)" (close)="onClose()">
+<dialog class="rounded-surface" #genericModal closedby="any" aria-labelledby="popup-title" (click)="onBackdropClick($event)" (close)="onClose()">
   <div class="modal-content">
     <div class="modal-header">
       <h5 id="popup-title" class="modal-title">{{ title }}</h5>
@@ -8,7 +8,7 @@
       <p>{{ description }}</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="close()">Cerrar</button>
+      <button type="button" class="btn btn-primary" (click)="close()">Cerrar</button>
     </div>
   </div>
 </dialog>

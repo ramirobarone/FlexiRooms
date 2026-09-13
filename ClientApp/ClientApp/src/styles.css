@@ -17,6 +17,16 @@ code {
 html, body {
   height: 100%;
   margin: 0;
+  font-family: 'Google Sans', sans-serif;
+}
+
+:root {
+  --component-radius: 12px;
+}
+
+.rounded-surface {
+  border: 1px solid #dee2e6;
+  border-radius: var(--component-radius);
 }
 
 body {
@@ -24,8 +34,40 @@ body {
   flex-direction: column;
 }
 
+.btn, .btn-success{
+  border-radius: 20px;
+  /* padding: 0.3rem 2rem; */
+}
+
+.form-control{
+  border-radius: 20px;
+  padding: 0.3rem 2rem;
+}
+.card {
+  border-radius: 20px;
+}
+.alert {
+  border-radius: 20px;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 app-root {
   flex: 1;
+}
+
+.loading-message {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .footer {
@@ -33,4 +75,9 @@ app-root {
   bottom: 0;
   width: 100%;
   background-color: #f8f9fa;
+}
+
+footer .navbar-nav {
+  justify-content: center;
+  width: 100%;
 }

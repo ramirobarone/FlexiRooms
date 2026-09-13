@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Room } from 'src/models/room';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Hotel } from '../../../../models/hotel';
+import { EnvironmentsService } from '../../../ServicesShared/environments.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
 
-  constructor() { }
+  private readonly baseUrl: string;
+
+  constructor(private readonly http: HttpClient,
+              environmentsService: EnvironmentsService) {
+    this.baseUrl = `${environmentsService.getUrlBase()}hotel/`;
+  }
 
   //_rooms: Room[] = [
   //  { id: 1, name: "Habitacion 1", description: "3 personas", urlPictures: "https://dosflorines.com.ar/wp-content/uploads/2020/07/contenedores-habitables.png" },
@@ -22,5 +29,9 @@ export class HomeService {
 
 
     return hoteles;
+  }
+
+  getHomeHotels(pageNumber = 1): Observable<Hotel[]> {
+    return this.http.get<Hotel[]>(`${this.baseUrl}getHomeHotels?pageNumber=${pageNumber}`);
   }
 }

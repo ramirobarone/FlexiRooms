@@ -5,6 +5,7 @@ import { Room } from 'src/models/room';
 import { Cost } from 'src/models/Cost';
 import { RoomDto } from 'src/models/bookingDto';
 import { Schedule } from 'src/models/Schedule';
+import { roomPictures } from 'src/models/roomImages';
 import { EventEmitter } from '@angular/core';
 import { LocalDataBookingService } from '../local-data-booking.service';
 
@@ -20,6 +21,7 @@ export class CardRoomComponent implements OnInit {
   name: string = '';
   description: string = '';
   path: string = '';
+  roompictures: roomPictures[] = [];
   selectedRoom: any;
   selectedDate: any;
   timeSelected: any;
@@ -66,16 +68,34 @@ export class CardRoomComponent implements OnInit {
 
   selectFirst(): void {
     if (this._rooms.length > 0) {
+      this.selectedRoom = this._rooms[0];
+      this.currenRoom = this._rooms[0].id;
       this.name = this._rooms[0].name;
       this.description = this._rooms[0].description;
       this.bedNumbers = this._rooms[0].bedNumbers;
       this.cost = this._rooms[0].cost;
-      this.bedNumbers = this._rooms[0].bedNumbers;
-      this.bedNumbers = this._rooms[0].bedNumbers;
-      this.path = this._rooms[0].roomPictures[0].path;
+      this.roompictures = this._rooms[0].roomPictures || this._rooms[0].roomPictures || [];
+      if (this.roompictures.length > 0) {
+        this.path = this.roompictures[0].path;
+      } else {
+        this.path = this._rooms[0].path || '';
+      }
     }
 
   }
+
+  getImageSource(path: string): string {
+    if (!path) {
+      return '';
+    }
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+
+    return `${window.location.origin}${path}`;
+  }
+
   changeDate(): void {
     this.disabledTime = this.selectedDate !== undefined;
 
@@ -103,11 +123,15 @@ export class CardRoomComponent implements OnInit {
         this.description = this._rooms[i].description;
         this.bedNumbers = this._rooms[i].bedNumbers;
         this.cost = this._rooms[i].cost;
-        this.bedNumbers = this._rooms[i].bedNumbers;
 
         this.disabledDate = false;
 
-        this.path = this._rooms[i].roomPictures[0].path;
+        this.roompictures = this._rooms[i].roomPictures || this._rooms[i].roomPictures || [];
+        if (this.roompictures.length > 0) {
+          this.path = this.roompictures[0].path;
+        } else {
+          this.path = this._rooms[i].path || '';
+        }
 
         this.getTimesFree();
       }

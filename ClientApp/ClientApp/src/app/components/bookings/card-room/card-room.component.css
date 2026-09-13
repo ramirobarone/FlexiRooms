@@ -2,3 +2,8 @@
     margin-bottom:5px;
     margin-top:5px;
 }
+
+.carousel-item img {
+    height: 220px;
+    object-fit: cover;
+}

@@ -3,6 +3,7 @@ import { BillingData } from '../billing-data/models/billingData';
 import { RoomDto } from '../../../../models/bookingDto';
 import { CheckOut } from './Models/checkout';
 import { CreditCard } from '../checkout/Models/creditCard';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-steps-checkout',
@@ -14,7 +15,7 @@ import { CreditCard } from '../checkout/Models/creditCard';
 export class StepsCheckoutComponent {
 
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   isBillingDataEnabled: boolean = false;
   paymentDataEnabled: boolean = false;
@@ -27,6 +28,10 @@ export class StepsCheckoutComponent {
   checkBillingData(event: boolean): void {
     console.log('checkBillingData', event);
     this.paymentDataEnabled = event;
+  }
+
+  backToHotelSearch(): void {
+    this.router.navigate(['/']);
   }
 
   completeCheckout(): void {

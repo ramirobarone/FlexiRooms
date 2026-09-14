@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Room } from 'src/models/room';
 import { Router } from '@angular/router';
 import { hotelPicture } from 'src/models/hotelPicture';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-card-hotel',
@@ -30,8 +31,10 @@ export class CardHotelComponent {
   }
 
   getImageSource(path: string): string {
-    if (!path) {
-      return '';
+
+    console.log('environment', environment);
+    if (!environment.production) {
+      return 'https://flexirooms.com.ar/hotel-images/6/carlos-paz-2.png';
     }
 
     if (path.startsWith('http://') || path.startsWith('https://')) {

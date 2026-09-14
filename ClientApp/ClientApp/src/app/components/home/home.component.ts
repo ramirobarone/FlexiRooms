@@ -22,16 +22,23 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
+    const lastSearchResults = this.homeService.getLastSearchResults();
+    if (lastSearchResults !== null) {
+      this.loadHotels(lastSearchResults);
+      return;
+    }
+
     this.loadHotelsByDefault();
   }
 
   loadHotelsByDefault(): void {
     this.homeService.getHomeHotels().subscribe({
       next: hotels => {
+        this.homeService.setLastSearchResults(hotels ?? [], '');
         this.loadHotels(hotels ?? []);
         if ((hotels ?? []).length !== 0) {
           this.isNoResultsPopupVisible = false;
-          this.isBodyVisible = true;
+          this.isBodyVisible = false;
         }
       },
       error: error => {

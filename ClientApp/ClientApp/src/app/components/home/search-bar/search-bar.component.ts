@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { Hotel } from 'src/models/hotel';
 import { HotelService } from 'src/services/HotelService/hotel.service';
+import { HomeService } from '../service/home.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -14,7 +15,9 @@ export class SearchBarComponent {
   currentString: string = '';
   isNoResultsPopupVisible = false;
 
-  constructor(private hotelService: HotelService) {
+  constructor(private hotelService: HotelService,
+              private homeService: HomeService) {
+    this.currentString = this.homeService.getLastSearchTerm();
   }
 
   BuscarHotel(): void {
@@ -24,7 +27,8 @@ export class SearchBarComponent {
 
     this.hotelService.getHotels(this.currentString).subscribe(res => {
       
-      this._hoteles = res;
+      this._hoteles = res ?? [];
+      this.homeService.setLastSearchResults(this._hoteles, this.currentString);
       if (res === null || (res && this._hoteles.length === 0)) {
         this.isNoResultsPopupVisible = true;
       }

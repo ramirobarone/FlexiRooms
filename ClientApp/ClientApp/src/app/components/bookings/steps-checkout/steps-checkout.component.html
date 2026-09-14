@@ -1,5 +1,9 @@
 <div>
 
+  <button type="button" class="btn btn-outline-secondary mb-3" (click)="backToHotelSearch()">
+    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+  </button>
+
   <app-card-room (nextToBillingData)="checkRoom($event)"></app-card-room>
 
   <ng-container *ngIf="isBillingDataEnabled">

@@ -28,6 +28,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   }
 
   refreshUser(): void {
+
+    if (this.localStorageService.isSessionExpired()) {
+      this.localStorageService.clearLogin();
+    }
+
     const user = this.localStorageService.getUser();
     this.userName = user?.fullName ?? '';
     this.isLoged = this.localStorageService.isLoggedIn();

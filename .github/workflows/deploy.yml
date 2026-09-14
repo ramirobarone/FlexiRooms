@@ -12,7 +12,6 @@ env:
   APP_PORT: "7291"
   POSTGRES_DB: flexirooms
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: Jazmin1811!
   POSTGRES_PORT: "5432"
 
 jobs:
@@ -53,3 +52,16 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Deploy image to server over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull ramirobarone/flexirooms:latest
+            docker stop flexirooms_api || true
+            docker rm flexirooms_api || true
+            docker run -d --name flexirooms_api --network flexirooms_net -p 8080:8080 -v flexirooms_uploads:/app/wwwroot/hotel-images --restart always ramirobarone/flexirooms:latest

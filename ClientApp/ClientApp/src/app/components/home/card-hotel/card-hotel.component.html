@@ -1,5 +1,6 @@
-<div class="card" style="width: 18rem;">
-  <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel" *ngIf="images.length; else noImage">
+<div class="card hotel-card">
+  <div class="hotel-card-media">
+    <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel" *ngIf="images.length; else noImage">
     <div class="carousel-indicators" *ngIf="images.length > 1">
       <button *ngFor="let img of images; let i = index" type="button"
               [attr.data-bs-target]="'#carousel-' + idHotel" [attr.data-bs-slide-to]="i"
@@ -8,7 +9,7 @@
     </div>
     <div class="carousel-inner">
       <div class="carousel-item" *ngFor="let img of images; let i = index" [class.active]="i === 0">
-        <img [src]="getImageSource(img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+        <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
       </div>
     </div>
     <ng-container *ngIf="images.length > 1">
@@ -21,25 +22,15 @@
         <span class="visually-hidden">Siguiente</span>
       </button>
     </ng-container>
-  </div>
-  <ng-template #noImage>
-    <img src="" class="card-img-top" alt="...">
-  </ng-template>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-12">
-
-        <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">{{description}}</p>
-
-        <p class="card-text" [ngClass]="stateHotel ? 'hotel-enabled' : 'hotel-disabled'">Estado: {{stateHotel ? 'Habilitado' : 'No Habilitado'}} <i style="color: red; font-size: medium;"
-            class="bi bi-check-circle-fill"></i> </p>
-
-        <p class="card-text">Habitaciones disponibles: {{availableRooms}}</p>
-      </div>
-
     </div>
-    <a class="btn btn-primary marginButtonRooms"  [routerLink]="['/steps', idHotel]">Habitaciones</a>
-    <!-- <a href="/reserve/{{idHotel}}" class="btn btn-primary" (click)="setCurrentRoom()">Reservas</a> -->
+    <ng-template #noImage>
+      <img src="" class="hotel-card-image" alt="...">
+    </ng-template>
+  </div>
+  <div class="card-body hotel-card-overlay">
+    <h5 class="card-title">{{name}}</h5>
+    <a class="btn btn-primary marginButtonRooms" [routerLink]="['/steps', idHotel]">
+      <i class="bi bi-eye"></i>
+    </a>
   </div>
 </div>

@@ -1,5 +1,47 @@
-.marginButtonRooms{
-    margin: 3%;
+.hotel-card {
+    position: relative;
+    width: 18rem;
+    height: 18rem;
+    overflow: hidden;
+    border: 0;
+}
+
+.hotel-card-media,
+.hotel-card-media .carousel,
+.hotel-card-media .carousel-inner,
+.hotel-card-media .carousel-item {
+    height: 100%;
+}
+
+.hotel-card-media .carousel-item img,
+.hotel-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hotel-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    color: white;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent 45%, rgba(0, 0, 0, 0.65));
+}
+
+.hotel-card-overlay .card-title {
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.hotel-card-overlay .marginButtonRooms {
+    align-self: flex-end;
+    margin: 0;
+    pointer-events: auto;
 }
 
 .hotel-enabled {
@@ -10,7 +52,8 @@
     color: red;
 }
 
-.carousel-item img {
-    height: 180px;
-    object-fit: cover;
+.hotel-card-media .carousel-control-prev,
+.hotel-card-media .carousel-control-next,
+.hotel-card-media .carousel-indicators {
+    z-index: 3;
 }

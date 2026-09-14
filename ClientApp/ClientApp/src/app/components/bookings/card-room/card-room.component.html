@@ -2,7 +2,7 @@
 
   <div class="col-md-6">
     <label for="comboRooms" class="form-label">Seleccionar habitación</label>
-    <select title="RoomSelected" id="comboRooms" class="form-select" style="margin:20px 0px" (change)="onChange()"
+    <select title="RoomSelected" id="comboRooms" class="form-select" style="margin:20px 0px" (change)="onChange()" (select)="onChange()"
             [(ngModel)]="currenRoom">
       <!-- <option selected value="Seleccionar">Seleccionar</option> -->
       <option *ngFor="let item of _rooms" value="{{item.id}}">{{item.name}} - {{item.description}}</option>

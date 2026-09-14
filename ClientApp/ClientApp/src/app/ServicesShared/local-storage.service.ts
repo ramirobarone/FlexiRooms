@@ -70,7 +70,28 @@ export class LocalStorageService {
   }
 
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    return !this.isSessionExpired();
+  }
+
+  isSessionExpired(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return true;
+    }
+
+    try {
+      const tokenParts = token.split('.');
+      if (tokenParts.length < 2) {
+        return true;
+      }
+
+      const payload = JSON.parse(this.decodeBase64Url(tokenParts[1])) as Record<string, unknown>;
+      const expiration = payload['exp'];
+
+      return typeof expiration !== 'number' || expiration * 1000 <= Date.now();
+    } catch {
+      return true;
+    }
   }
 
   getRoles(): string[] {

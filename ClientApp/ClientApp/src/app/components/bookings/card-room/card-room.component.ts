@@ -52,6 +52,11 @@ export class CardRoomComponent implements OnInit {
   
   ngOnInit(): void {
     this.getRoom(this.idHotel);
+
+    if (this._rooms.length === 1) {
+      this.fillRoomFinded(this._rooms[0].id);
+    } 
+
   }
 
 

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { RoomDto } from 'src/models/bookingDto';
 import { CheckOut } from '../../steps-checkout/Models/checkout';
 import { CheckOutResponse } from '../../Models/CheckoutResponse';
+import { EnvironmentsService } from 'src/app/ServicesShared/environments.service';
 
 export interface PaymentConfiguration {
   publicKey: string;
@@ -26,9 +27,9 @@ export interface MercadoPagoPaymentData {
 })
 export class CheckoutService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private environmentService: EnvironmentsService) { }
 
-  baseurl: string = 'https://localhost:7291/api/';
+  baseurl: string = this.environmentService.getUrlBase();
 
   createBooking(booking: CheckOut): Observable<CheckOutResponse> {
     return this.http.post<CheckOutResponse>(this.baseurl + 'Bookings/CreateBooking', booking);

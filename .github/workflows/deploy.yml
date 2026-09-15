@@ -53,13 +53,27 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Validate SSH private key
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p .ssh
+          printf '%b\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > .ssh/deploy_key
+          chmod 600 .ssh/deploy_key
+
+          if ! grep -Eq '^-----BEGIN (OPENSSH|RSA|EC|DSA) PRIVATE KEY-----$' .ssh/deploy_key; then
+            echo "::error::SSH_PRIVATE_KEY must contain the complete private key, including its BEGIN/END lines."
+            exit 1
+          fi
+
       - name: Deploy image to server over SSH
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_path: .ssh/deploy_key
           script: |
             docker pull ramirobarone/flexirooms:latest
             docker stop flexirooms_api || true

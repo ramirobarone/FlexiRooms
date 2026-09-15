@@ -27,6 +27,7 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     public DbSet<RoomPicture> RoomPictures { get; set; }
     //public DbSet<User> Users { get; set; }
     public DbSet<PreBooking> PreBooking { get; set; }
+    public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
 
     public DbSet<HotelPicture> HotelPicture { get; set; }
@@ -58,6 +59,27 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .WithOne()
             .HasForeignKey<UserProfileImage>(image => image.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasIndex(payment => payment.MercadoPagoPaymentId)
+            .IsUnique();
+
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasIndex(payment => payment.IdempotencyKey)
+            .IsUnique();
+
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasOne(payment => payment.ApplicationUser)
+            .WithMany(user => user.PaymentTransactions)
+            .HasForeignKey(payment => payment.ApplicationUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasOne(payment => payment.Booking)
+            .WithMany()
+            .HasForeignKey(payment => payment.BookingId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

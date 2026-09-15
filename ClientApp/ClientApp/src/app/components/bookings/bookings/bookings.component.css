@@ -1,0 +1,89 @@
+.bookings-page {
+	max-width: 1180px;
+}
+
+.section-label {
+	color: #176b59;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: uppercase;
+}
+
+.booking-count {
+	border-left: 3px solid #d7a928;
+	color: #495057;
+	font-weight: 600;
+	padding: 0.35rem 0.75rem;
+}
+
+.booking-table,
+.state-panel {
+	background: #fff;
+	border: 1px solid #dee2e6;
+	border-radius: 8px;
+}
+
+.state-panel {
+	align-items: center;
+	color: #6c757d;
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+	min-height: 180px;
+	padding: 2rem;
+}
+
+.table thead th {
+	background: #f4f6f5;
+	border-bottom-width: 1px;
+	color: #495057;
+	font-size: 0.78rem;
+	font-weight: 700;
+	padding: 0.9rem 1rem;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.table tbody td {
+	padding: 1rem;
+}
+
+.time-range {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.pagination-wrap {
+	align-items: center;
+	border-top: 1px solid #dee2e6;
+	display: flex;
+	justify-content: space-between;
+	padding: 0.9rem 1rem;
+}
+
+.door-code-modal {
+	display: block;
+}
+
+.modal-content {
+	border: 0;
+	border-radius: 8px;
+	box-shadow: 0 1rem 3rem rgba(26, 38, 34, 0.2);
+}
+
+.door-code {
+	color: #176b59;
+	display: block;
+	font-size: 2.25rem;
+	font-weight: 700;
+	letter-spacing: 0.35rem;
+}
+
+@media (max-width: 575.98px) {
+	.pagination-wrap {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+}

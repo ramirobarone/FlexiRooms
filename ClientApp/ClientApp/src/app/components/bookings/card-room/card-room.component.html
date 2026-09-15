@@ -1,7 +1,7 @@
 <div class="row">
 
   <div class="col-md-6">
-    <label for="comboRooms" class="form-label">Seleccionar habitación</label>
+    <!-- <label for="comboRooms" class="form-label">Seleccionar habitación</label> -->
     <select title="RoomSelected" id="comboRooms" class="form-select" style="margin:20px 0px" (change)="onChange()" (select)="onChange()"
             [(ngModel)]="currenRoom">
       <!-- <option selected value="Seleccionar">Seleccionar</option> -->
@@ -43,6 +43,7 @@
   <div class="col-md-3">
     <h5 class="card-title">{{name}}</h5>
     <p class="card-text">{{description}}</p>
+    <p class="card-text">Duración estadia: <strong>{{ cost.hour }} horas</strong></p>
     <p class="card-text">
       <label>
         <b>$ {{cost.costPerHour}}</b>
@@ -59,6 +60,10 @@
       <select title="selectTime" class="form-control" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
         <option *ngFor="let hour of times" value="{{hour.id}}">{{hour.inTime}}</option>
       </select>
+
+      <div *ngIf="checkoutTime" class="alert alert-info marginTopBottom mb-0" role="status">
+        Hora de salida: <strong>{{ checkoutTime }}</strong>
+      </div>
 
       <ng-container *ngIf="showRoomMessage">
         <br />

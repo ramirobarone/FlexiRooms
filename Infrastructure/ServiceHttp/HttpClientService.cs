@@ -4,32 +4,20 @@ namespace Infrastructure.ServiceHttp
 {
     public class HttpClientService<Tin, TOut>(HttpClient httpClient) : IHttpClientService<Tin, TOut>
     {
-        public async Task<TOut> Post(string url, Tin data)
+        public async Task<TOut> Post(string url, Tin data, string idempotencyKey)
         {
-            TOut? resultObject = default;
-            httpClient.DefaultRequestHeaders.Add("X-Idempotency-Key", "");
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Add("X-Idempotency-Key", idempotencyKey);
+            request.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 
-            var conten = new StringContent(System.Text.Json.JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
+            using HttpResponseMessage response = await httpClient.SendAsync(request);
+            string content = await response.Content.ReadAsStringAsync();
 
-            var response = await httpClient.PostAsync(url, conten);
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException($"Mercado Pago devolvió el estado {(int)response.StatusCode}: {content}");
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var content = await conten.ReadAsStringAsync();
-
-                if (conten is not null)
-                {
-                    resultObject = System.Text.Json.JsonSerializer.Deserialize<TOut>(content);
-
-                    if (resultObject is TOut)
-                        return (TOut)resultObject;
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    throw new Exception("Problemas al realizar el pago.");
-            }
-
-            return resultObject ?? throw new ArgumentNullException();
+            return System.Text.Json.JsonSerializer.Deserialize<TOut>(content)
+                ?? throw new InvalidOperationException("Mercado Pago no devolvió un pago válido.");
         }
     }
 }

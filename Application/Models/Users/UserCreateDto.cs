@@ -23,7 +23,7 @@ namespace Application.Models.Users
         public required string LastName { get;  init; }
         [MinLength(3)]
         public string CodeArea { get; init; }
-        [MinLength(8)]
+        [MinLength(7)]
         public string PhoneNumber { get; init; }
         [MinLength(8)]
         public string IdentityNumber { get; init; }

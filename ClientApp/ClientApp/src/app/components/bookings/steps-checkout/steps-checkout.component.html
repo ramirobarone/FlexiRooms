@@ -1,18 +1,35 @@
-<div>
-
+<div class="checkout-steps container py-3">
   <button type="button" class="btn btn-outline-secondary mb-3" (click)="backToHotelSearch()">
     <i class="bi bi-arrow-left" aria-hidden="true"></i>
   </button>
 
-  <app-card-room (nextToBillingData)="checkRoom($event)"></app-card-room>
+  <section class="checkout-step" [class.is-complete]="isBillingDataEnabled">
+    <div class="step-header">
+      <div class="step-indicator" aria-hidden="true">1</div>
+      <h2 class="h5 mb-0">Seleccioná la habitación</h2>
+    </div>
+    <div class="step-content">
+      <app-card-room (nextToBillingData)="checkRoom($event)"></app-card-room>
+    </div>
+  </section>
 
-  <ng-container *ngIf="isBillingDataEnabled">
-    <app-billing-data (checkOut)="checkBillingData($event)"></app-billing-data>
-  </ng-container>
+  <section *ngIf="isBillingDataEnabled" class="checkout-step" [class.is-complete]="paymentDataEnabled">
+    <div class="step-header">
+      <div class="step-indicator" aria-hidden="true">2</div>
+      <h2 class="h5 mb-0">Datos de facturación</h2>
+    </div>
+    <div class="step-content">
+      <app-billing-data (checkOut)="checkBillingData($event)"></app-billing-data>
+    </div>
+  </section>
 
-  <ng-container *ngIf="paymentDataEnabled">
-    <app-checkout></app-checkout>
-  </ng-container>
-
-
+  <section *ngIf="paymentDataEnabled" class="checkout-step">
+    <div class="step-header">
+      <div class="step-indicator" aria-hidden="true">3</div>
+      <h2 class="h5 mb-0">Pago</h2>
+    </div>
+    <div class="step-content">
+      <app-checkout></app-checkout>
+    </div>
+  </section>
 </div>

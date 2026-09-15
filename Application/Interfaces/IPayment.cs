@@ -1,9 +1,10 @@
 ﻿using Application.Models.Booking;
+using Application.Models.CheckOut;
 
 namespace Application.Interfaces
 {
     public interface IPayment
     {
-        Task CreatePayment(CheckoutBooking checkout);
+        Task<ResponsePayment> CreatePayment(CheckoutBooking checkout);
     }
 }

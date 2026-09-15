@@ -51,9 +51,17 @@ namespace Application.Services.Rooms
 
         public async Task<bool> IsAvailable(AvailableRequestDto availableDto)
         {
+            DateTime normalizedDate = availableDto.date.Kind switch
+            {
+                DateTimeKind.Utc => availableDto.date,
+                DateTimeKind.Local => availableDto.date.ToUniversalTime(),
+                DateTimeKind.Unspecified => DateTime.SpecifyKind(availableDto.date, DateTimeKind.Utc),
+                _ => DateTime.SpecifyKind(availableDto.date, DateTimeKind.Utc)
+            };
+
             return await repositoryBooking.Exist(x => x.IdRoom == availableDto.idRoom
                 && x.CheckInTimeId == availableDto.idCheckTime
-                && x.DateReserved == availableDto.date);
+                && x.DateReserved == normalizedDate);
         }
 
         public async Task<IEnumerable<ScheduleDto>> GetTimesAsync()

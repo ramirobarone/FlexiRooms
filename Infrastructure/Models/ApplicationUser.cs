@@ -16,5 +16,6 @@ namespace Infrastructure.Models
         public int? ManagedHotelId { get; set; }
         public string? OwnedHotelIds { get; set; }
         public UserProfileImage? UserProfileImage { get; set; }
+        public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = [];
     }
 }

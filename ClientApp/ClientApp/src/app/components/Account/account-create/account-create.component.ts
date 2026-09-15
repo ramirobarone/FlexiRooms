@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserCreateDto } from '../Models/accountDto';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -16,16 +16,14 @@ export class AccountCreateComponent implements OnInit {
 
   userCreateDto: UserCreateDto = { email: 'ramiro_barone@hotmail.com', password: 'ramiro0908', name: 'ramiro', codeArea: '351', phoneNumber: '7572518', identityNumber: '30331219', lastName: 'barone' };
 
-  formAccount!: FormGroup;
-
   ngOnInit(): void {
-    this.formAccount = new FormGroup({
-      'email': new FormControl(this.userCreateDto.email, [Validators.required]),
-      'identityNummber': new FormControl(this.userCreateDto.identityNumber, [Validators.required])
-    });
   }
 
-  createAccount(): void {
+  createAccount(form: NgForm): void {
+    if (form.invalid) {
+      return;
+    }
+
     console.log(this.userCreateDto);
     this.serviceAccount.createAccount(this.userCreateDto).subscribe({
       next: (res: boolean) => {

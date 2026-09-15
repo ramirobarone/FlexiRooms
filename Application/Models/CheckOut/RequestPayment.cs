@@ -7,17 +7,30 @@
         public object? application_fee { get; set; }
         public bool binary_mode { get; set; } = true;
         public object? campaign_id { get; set; }
-        public bool capture { get; set; }
+        public bool capture { get; set; } = true;
         public object? coupon_amount { get; set; }
         public string? description { get; set; }
         public object? differential_pricing_id { get; set; }
         public string? external_reference { get; set; }
         public int installments { get; set; }
         public object? metadata { get; set; }
-        public Payer1? payer { get; set; }
+        public PaymentPayer? payer { get; set; }
+        public string? issuer_id { get; set; }
         public string? payment_method_id { get; set; }
         public string? token { get; set; }
-        public int transaction_amount { get; set; }
+        public decimal transaction_amount { get; set; }
+    }
+
+    public class PaymentPayer
+    {
+        public string? email { get; set; }
+        public PaymentIdentification? identification { get; set; }
+    }
+
+    public class PaymentIdentification
+    {
+        public string? type { get; set; }
+        public string? number { get; set; }
     }
     public class Phone
     {

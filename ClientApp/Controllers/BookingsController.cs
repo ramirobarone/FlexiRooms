@@ -1,8 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.Models.Booking;
 using Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Claims;
 
 namespace ClientApp.Controllers
 {
@@ -70,10 +72,11 @@ namespace ClientApp.Controllers
         }
 
         [HttpGet, Route(nameof(GetBookingsByUserGuid))]
-        public async Task<IActionResult> GetBookingsByUserGuid(Guid userGuid)
+        public async Task<IActionResult> GetBookingsByUserGuid()
         {
-            if (userGuid == Guid.Empty)
-                return NoContent();
+            string? userGuidClaim = User.FindFirstValue("user_guid");
+            if (!Guid.TryParse(userGuidClaim, out Guid userGuid))
+                return Unauthorized();
 
             return Ok(await bookings.GetBookingsByUserGuidAsync(userGuid));
         }

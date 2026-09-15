@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Application.Models.Booking;
 using Application.Models.Booking.Available;
 using Infrastructure.Models;
 using Infrastructure.Repository;
@@ -12,13 +13,14 @@ namespace Application.Services.Reserves
     public class BookingService(IRepository<Bookings> repositoryBookings,
         IRepository<Room> repositoryRoom,
         IRepository<TimesAvailable> repositorySchedule,
+        IRepository<PaymentTransaction> paymentRepository,
         ILogger<BookingService> logger) : IBookings, IServiceGeneric<Bookings>
     {
         public async Task<IEnumerable<ScheduleDto>> GetSchedulesyRoom(int _idRoom, string _date)
         {
             logger.LogInformation("parameters idRoom:{_idRoom} and date: {_date}", _idRoom, _date);
 
-            DateTime date = DateTime.SpecifyKind(Convert.ToDateTime(_date), DateTimeKind.Utc);
+            DateTime date = NormalizeToUtc(Convert.ToDateTime(_date));
             List<ScheduleDto> result = new();
 
             IEnumerable<Bookings> bookings = await repositoryBookings.GetAllByIdAsync(x => x.IdRoom == _idRoom
@@ -42,6 +44,7 @@ namespace Application.Services.Reserves
             EntityEntry<Bookings>? bookingSaved = null;
 
             ArgumentNullException.ThrowIfNull(booking);
+            booking.DateReserved = NormalizeToUtc(booking.DateReserved);
 
             if (await ExistBooking(booking))
                 throw new BookingException("Hay una reserva para ese dia y hora");
@@ -76,8 +79,43 @@ namespace Application.Services.Reserves
 
         public async Task<Bookings> GetById(int id) => await repositoryBookings.GetByIdAsync(x => x.Id == id);
 
-        public async Task<IEnumerable<Bookings>> GetBookingsByUserGuidAsync(Guid userGuid)
-            => await repositoryBookings.GetAllByIdAsync(x => x.UserGuid == userGuid);
+        public async Task<IEnumerable<UserBookingDto>> GetBookingsByUserGuidAsync(Guid userGuid)
+        {
+            IEnumerable<Bookings> userBookings = await repositoryBookings.GetAllByIdAsync(
+                booking => booking.UserGuid == userGuid,
+                query => query.OrderByDescending(booking => booking.DateReserved),
+                query => query.Include(booking => booking.CheckInTime));
+            int[] bookingIds = userBookings.Select(booking => booking.Id).ToArray();
+            int[] roomIds = userBookings.Select(booking => booking.IdRoom).Distinct().ToArray();
+            IEnumerable<Room> rooms = await repositoryRoom.GetAllByIdAsync(
+                room => roomIds.Contains(room.Id),
+                query => query.Include(room => room.Cost));
+            IEnumerable<PaymentTransaction> payments = await paymentRepository.GetAllByIdAsync(
+                payment => payment.BookingId.HasValue && bookingIds.Contains(payment.BookingId.Value));
+            Dictionary<int, Room> roomsById = rooms.ToDictionary(room => room.Id);
+            Dictionary<int, string> paymentStatusByBookingId = payments
+                .Where(payment => payment.BookingId.HasValue)
+                .GroupBy(payment => payment.BookingId!.Value)
+                .ToDictionary(group => group.Key, group => group.OrderByDescending(payment => payment.CreatedAtUtc).First().Status);
+
+            return userBookings.Select(booking =>
+            {
+                string startTime = booking.CheckInTime?.Time ?? "00:00";
+                TimeSpan parsedStartTime = TimeSpan.TryParse(startTime, out TimeSpan value) ? value : TimeSpan.Zero;
+                int durationHours = roomsById.GetValueOrDefault(booking.IdRoom)?.Cost?.Hour ?? 0;
+                DateTime start = booking.DateReserved.Date.Add(parsedStartTime);
+                DateTime end = start.AddHours(durationHours);
+
+                return new UserBookingDto(
+                    booking.Id,
+                    booking.IdRoom,
+                    start.Date,
+                    end.Date,
+                    start.ToString("HH:mm"),
+                    end.ToString("HH:mm"),
+                    paymentStatusByBookingId.GetValueOrDefault(booking.Id, "unknown"));
+            });
+        }
 
         public async Task<Bookings> GetDetailAsync(int id)
         {
@@ -100,5 +138,14 @@ namespace Application.Services.Reserves
             => await repositoryBookings.Exist(x => x.IdRoom == booking.IdRoom
                 && x.CheckInTimeId == booking.CheckInTimeId
                 && x.DateReserved == booking.DateReserved);
+
+        private static DateTime NormalizeToUtc(DateTime value)
+            => value.Kind switch
+            {
+                DateTimeKind.Utc => value,
+                DateTimeKind.Local => value.ToUniversalTime(),
+                DateTimeKind.Unspecified => DateTime.SpecifyKind(value, DateTimeKind.Utc),
+                _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
+            };
     }
 }

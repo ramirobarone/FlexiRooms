@@ -65,6 +65,7 @@ import { MyAccountComponent } from './components/Account/my-account/my-account.c
       { path: 'accountCreate', component: AccountCreateComponent, pathMatch: 'full' },
       { path: 'miCuenta', component: MyAccountComponent, pathMatch: 'full' },
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
+      { path: 'MisReservas', component: BookingsComponent, pathMatch: 'full' },
       { path: 'steps/:id', component: StepsCheckoutComponent },
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' }
     ])

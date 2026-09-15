@@ -28,15 +28,4 @@ namespace Infrastructure.Models
             return $"{nameof(Id)}: {Id} - {nameof(DateReserved)}:{DateReserved} - {nameof(CheckInTime)}:{CheckInTime?.Time} - {nameof(IdRoom)}:{IdRoom} -{nameof(Price)}: {Price} - {nameof(User.Id)}:{User?.Id}";
         }
     }
-    public class DetailPayment
-    {
-        [DatabaseGenerated (DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public string? XIdempotencyKey { get; set; }
-        public decimal Amount { get; set; }
-        public string? IdTransaccion {  get; set; }
-        public string? StateTransaction { get; set; }
-
-
-    }
 }

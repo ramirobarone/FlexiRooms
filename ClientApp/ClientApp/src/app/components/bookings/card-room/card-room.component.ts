@@ -33,6 +33,7 @@ export class CardRoomComponent implements OnInit {
   disabledDate = true;
   btnBookingDisabled = true;
   showCheckout = false;
+  checkoutTime = '';
   bedNumbers = 0;
 
   times: Schedule[] = [];
@@ -144,6 +145,23 @@ export class CardRoomComponent implements OnInit {
   }
   SelectTime(): void {
     this.btnBookingDisabled = this.timeSelected === undefined || this.timeSelected === 0;
+    this.checkoutTime = '';
+
+    const selectedSchedule = this.times.find(schedule => String(schedule.id) === String(this.timeSelected));
+    if (selectedSchedule && this.cost.hour > 0) {
+      this.checkoutTime = this.calculateCheckoutTime(selectedSchedule.inTime, this.cost.hour);
+    }
+  }
+
+  calculateCheckoutTime(checkInTime: string, durationHours: number): string {
+    const [hours, minutes] = checkInTime.split(':').map(Number);
+    const totalMinutes = (hours * 60) + minutes + (durationHours * 60);
+    const nextDay = totalMinutes >= 24 * 60;
+    const checkoutHours = Math.floor((totalMinutes % (24 * 60)) / 60);
+    const checkoutMinutes = totalMinutes % 60;
+    const formattedTime = `${String(checkoutHours).padStart(2, '0')}:${String(checkoutMinutes).padStart(2, '0')}`;
+
+    return nextDay ? `${formattedTime} del día siguiente` : formattedTime;
   }
 
   CreateBooking(): void {

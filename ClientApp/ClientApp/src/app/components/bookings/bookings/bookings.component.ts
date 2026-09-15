@@ -14,6 +14,8 @@ export class BookingsComponent implements OnInit {
   isLoading = true;
   hasError = false;
   selectedBooking?: UserBooking;
+  instructionsBooking?: UserBooking;
+  termsBooking?: UserBooking;
 
   constructor(@Inject(BookingsService) private bookingsService: BookingsService) {}
 
@@ -63,6 +65,22 @@ export class BookingsComponent implements OnInit {
 
   closeDoorCode(): void {
     this.selectedBooking = undefined;
+  }
+
+  showInstructions(booking: UserBooking): void {
+    this.instructionsBooking = booking;
+  }
+
+  closeInstructions(): void {
+    this.instructionsBooking = undefined;
+  }
+
+  showTerms(booking: UserBooking): void {
+    this.termsBooking = booking;
+  }
+
+  closeTerms(): void {
+    this.termsBooking = undefined;
   }
 
   paymentStatusLabel(status: string): string {

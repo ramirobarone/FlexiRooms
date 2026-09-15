@@ -54,9 +54,17 @@
 						<td><span class="time-range">{{ booking.startTime }}</span></td>
 						<td><span class="time-range">{{ booking.endTime }}</span></td>
 						<td class="text-end">
-							<button class="btn btn-sm btn-outline-primary text-nowrap" type="button" (click)="showDoorCode(booking)">
-								<i class="bi bi-key me-1" aria-hidden="true"></i>Ver código
-							</button>
+							<div class="d-flex flex-wrap justify-content-end gap-2">
+								<button class="btn btn-sm btn-outline-primary text-nowrap" type="button" (click)="showDoorCode(booking)">
+									<i class="bi bi-key me-1" aria-hidden="true"></i>Ver código
+								</button>
+								<button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showInstructions(booking)">
+									<i class="bi bi-info-circle me-1" aria-hidden="true"></i>Instrucciones de uso
+								</button>
+								<button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showTerms(booking)">
+									<i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Términos y condiciones
+								</button>
+							</div>
 						</td>
 					</tr>
 				</tbody>
@@ -101,6 +109,54 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" (click)="closeDoorCode()">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="instructionsBooking"></div>
+<div class="modal fade show" *ngIf="instructionsBooking" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="instructionsTitle" (click)="closeInstructions()">
+	<div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div>
+					<p class="section-label mb-1">Reserva #{{ instructionsBooking.id }}</p>
+					<h2 class="modal-title fs-5" id="instructionsTitle">Instrucciones de uso</h2>
+				</div>
+				<button type="button" class="btn-close" aria-label="Cerrar" (click)="closeInstructions()"></button>
+			</div>
+			<div class="modal-body py-4">
+				<p class="mb-0" *ngIf="instructionsBooking.instruccionesDeUso; else noInstructions">{{ instructionsBooking.instruccionesDeUso }}</p>
+				<ng-template #noInstructions>
+					<p class="text-muted mb-0">No hay instrucciones de uso disponibles para este hotel.</p>
+				</ng-template>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" (click)="closeInstructions()">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="termsBooking"></div>
+<div class="modal fade show" *ngIf="termsBooking" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="termsTitle" (click)="closeTerms()">
+	<div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div>
+					<p class="section-label mb-1">Reserva #{{ termsBooking.id }}</p>
+					<h2 class="modal-title fs-5" id="termsTitle">Términos y condiciones</h2>
+				</div>
+				<button type="button" class="btn-close" aria-label="Cerrar" (click)="closeTerms()"></button>
+			</div>
+			<div class="modal-body py-4">
+				<p class="mb-0" *ngIf="termsBooking.terminosYCondiciones; else noTerms">{{ termsBooking.terminosYCondiciones }}</p>
+				<ng-template #noTerms>
+					<p class="text-muted mb-0">No hay términos y condiciones disponibles para este hotel.</p>
+				</ng-template>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" (click)="closeTerms()">Cerrar</button>
 			</div>
 		</div>
 	</div>

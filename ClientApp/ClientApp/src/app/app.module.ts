@@ -27,6 +27,7 @@ import { AdminHotelsComponent } from './components/hotels/admin-hotels/admin-hot
 import { AdminBookingsComponent } from './components/hotels/admin-bookings/admin-bookings.component';
 import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.component';
 import { MyAccountComponent } from './components/Account/my-account/my-account.component';
+import { ContactComponent } from './components/home/contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { MyAccountComponent } from './components/Account/my-account/my-account.c
     AdminHotelsComponent,
     AdminBookingsComponent,
     AdminRoomComponent,
-    MyAccountComponent
+    MyAccountComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -67,7 +69,8 @@ import { MyAccountComponent } from './components/Account/my-account/my-account.c
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: 'MisReservas', component: BookingsComponent, pathMatch: 'full' },
       { path: 'steps/:id', component: StepsCheckoutComponent },
-      { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' }
+      { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' },
+      { path: 'contacto', component: ContactComponent, pathMatch: 'full' }
     ])
   ],
   providers: [

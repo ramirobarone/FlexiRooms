@@ -10,10 +10,10 @@
       </button>
       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
         <ul class="navbar-nav flex-grow align-items-sm-center">
-          <li class="nav-item" [routerLinkActive]="['link-active']">
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
             <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
           </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
             <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="canAccessControlPanel">
@@ -21,7 +21,7 @@
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <ng-container *ngIf="!isLoged">
-              <a class="nav-link text-dark" [routerLink]="['/login']">Login</a>
+              <a class="nav-link text-dark" [routerLink]="['/login']">Ingresar</a>
             </ng-container>
             <ng-container *ngIf="isLoged">
               <button class="logout-button" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="logout()">

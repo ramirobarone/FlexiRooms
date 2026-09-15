@@ -18,6 +18,7 @@ namespace ClientApp.Extensions
             webApplication.Services.AddScoped<IRepository<TimesAvailable>, Repository<TimesAvailable>>();
             webApplication.Services.AddScoped<IRepository<User>, Repository<User>>();
             webApplication.Services.AddScoped<IRepository<PaymentTransaction>, Repository<PaymentTransaction>>();
+            webApplication.Services.AddScoped<IRepository<HotelInfo>, Repository<HotelInfo>>();
 
             MercadoPagoOption mercadoPagoOption = new();
             webApplication.Configuration.GetSection(MercadoPagoOption.MercadoPagoOptionName).Bind(mercadoPagoOption);

@@ -11,6 +11,8 @@ export interface UserBooking {
   startTime: string;
   endTime: string;
   paymentStatus: string;
+  terminosYCondiciones?: string;
+  instruccionesDeUso?: string;
 }
 
 @Injectable({ providedIn: 'root' })

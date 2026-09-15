@@ -14,6 +14,7 @@ namespace Application.Services.Reserves
         IRepository<Room> repositoryRoom,
         IRepository<TimesAvailable> repositorySchedule,
         IRepository<PaymentTransaction> paymentRepository,
+        IRepository<HotelInfo> hotelInfoRepository,
         ILogger<BookingService> logger) : IBookings, IServiceGeneric<Bookings>
     {
         public async Task<IEnumerable<ScheduleDto>> GetSchedulesyRoom(int _idRoom, string _date)
@@ -89,7 +90,7 @@ namespace Application.Services.Reserves
             int[] roomIds = userBookings.Select(booking => booking.IdRoom).Distinct().ToArray();
             IEnumerable<Room> rooms = await repositoryRoom.GetAllByIdAsync(
                 room => roomIds.Contains(room.Id),
-                query => query.Include(room => room.Cost));
+                query => query.Include(room => room.Cost).Include(room => room.Hotels));
             IEnumerable<PaymentTransaction> payments = await paymentRepository.GetAllByIdAsync(
                 payment => payment.BookingId.HasValue && bookingIds.Contains(payment.BookingId.Value));
             Dictionary<int, Room> roomsById = rooms.ToDictionary(room => room.Id);
@@ -98,13 +99,19 @@ namespace Application.Services.Reserves
                 .GroupBy(payment => payment.BookingId!.Value)
                 .ToDictionary(group => group.Key, group => group.OrderByDescending(payment => payment.CreatedAtUtc).First().Status);
 
+            int[] hotelIds = roomsById.Values.Where(room => room.Hotels is not null).Select(room => room.Hotels!.Id).Distinct().ToArray();
+            IEnumerable<HotelInfo> hotelInfos = await hotelInfoRepository.GetAllByIdAsync(hotelInfo => hotelIds.Contains(hotelInfo.HotelId));
+            Dictionary<int, HotelInfo> hotelInfoByHotelId = hotelInfos.ToDictionary(hotelInfo => hotelInfo.HotelId);
+
             return userBookings.Select(booking =>
             {
                 string startTime = booking.CheckInTime?.Time ?? "00:00";
                 TimeSpan parsedStartTime = TimeSpan.TryParse(startTime, out TimeSpan value) ? value : TimeSpan.Zero;
-                int durationHours = roomsById.GetValueOrDefault(booking.IdRoom)?.Cost?.Hour ?? 0;
+                Room? room = roomsById.GetValueOrDefault(booking.IdRoom);
+                int durationHours = room?.Cost?.Hour ?? 0;
                 DateTime start = booking.DateReserved.Date.Add(parsedStartTime);
                 DateTime end = start.AddHours(durationHours);
+                HotelInfo? hotelInfo = room?.Hotels is not null ? hotelInfoByHotelId.GetValueOrDefault(room.Hotels.Id) : null;
 
                 return new UserBookingDto(
                     booking.Id,
@@ -113,7 +120,9 @@ namespace Application.Services.Reserves
                     end.Date,
                     start.ToString("HH:mm"),
                     end.ToString("HH:mm"),
-                    paymentStatusByBookingId.GetValueOrDefault(booking.Id, "unknown"));
+                    paymentStatusByBookingId.GetValueOrDefault(booking.Id, "unknown"),
+                    hotelInfo?.TerminosYCondiciones,
+                    hotelInfo?.InstruccionesDeUso);
             });
         }
 

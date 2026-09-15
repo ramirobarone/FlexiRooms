@@ -1,0 +1,33 @@
+<div class="contact-container">
+  <div class="contact-panel rounded-surface">
+    <h1 class="mb-1">Contacto</h1>
+    <p class="text-muted mb-4">Escribinos tu consulta y te responderemos a la brevedad.</p>
+
+    <form #contactForm="ngForm" (ngSubmit)="sendQuery(contactForm)" novalidate>
+      <div class="form-group mb-3">
+        <label class="form-label" for="name">Nombre</label>
+        <input type="text" id="name" class="form-control" [(ngModel)]="name" name="name" #nameField="ngModel"
+          required minlength="3" title="Nombre" placeholder="Ingrese su nombre"
+          [class.is-invalid]="nameField.dirty && nameField.invalid" />
+        <div class="invalid-feedback" *ngIf="nameField.dirty && nameField.errors?.['required']">Ingrese su nombre.</div>
+        <div class="invalid-feedback" *ngIf="nameField.dirty && nameField.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label" for="query">Consulta</label>
+        <textarea id="query" class="form-control" rows="5" [(ngModel)]="query" name="query" #queryField="ngModel"
+          required minlength="10" title="Consulta" placeholder="Escriba su consulta"
+          [class.is-invalid]="queryField.dirty && queryField.invalid"></textarea>
+        <div class="invalid-feedback" *ngIf="queryField.dirty && queryField.errors?.['required']">Ingrese su consulta.</div>
+        <div class="invalid-feedback" *ngIf="queryField.dirty && queryField.errors?.['minlength']">La consulta debe tener al menos 10 caracteres.</div>
+      </div>
+
+      <button type="submit" class="btn btn-success">Enviar consulta</button>
+
+      <div class="alert alert-success mt-3" role="alert" *ngIf="submitted">
+        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+        Le responderemos a la brevedad.
+      </div>
+    </form>
+  </div>
+</div>

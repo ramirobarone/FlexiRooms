@@ -1,0 +1,10 @@
+.contact-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.contact-panel {
+    width: min(100%, 540px);
+    padding: 2rem;
+}

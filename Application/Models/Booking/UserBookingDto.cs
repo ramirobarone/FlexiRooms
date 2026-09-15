@@ -7,5 +7,7 @@ namespace Application.Models.Booking
         DateTime EndDate,
         string StartTime,
         string EndTime,
-        string PaymentStatus);
+        string PaymentStatus,
+        string? TerminosYCondiciones,
+        string? InstruccionesDeUso);
 }

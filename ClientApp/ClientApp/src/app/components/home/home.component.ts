@@ -6,8 +6,9 @@ import { RoomService } from '../bookings/card-room/service/room.service';
 import { HomeService } from './service/home.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    standalone: false
 })
 export class HomeComponent {
   fullName = '';

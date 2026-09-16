@@ -4,9 +4,10 @@ import { UpdateUserInformationDto, UserInformationDto } from '../Models/userInfo
 import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 
 @Component({
-  selector: 'app-my-account',
-  templateUrl: './my-account.component.html',
-  styleUrls: ['./my-account.component.css']
+    selector: 'app-my-account',
+    templateUrl: './my-account.component.html',
+    styleUrls: ['./my-account.component.css'],
+    standalone: false
 })
 export class MyAccountComponent implements OnInit {
   user: UserInformationDto | null = null;

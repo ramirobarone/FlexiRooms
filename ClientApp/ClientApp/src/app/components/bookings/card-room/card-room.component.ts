@@ -10,9 +10,10 @@ import { EventEmitter } from '@angular/core';
 import { LocalDataBookingService } from '../local-data-booking.service';
 
 @Component({
-  selector: 'app-card-room',
-  templateUrl: './card-room.component.html',
-  styleUrls: ['./card-room.component.css']
+    selector: 'app-card-room',
+    templateUrl: './card-room.component.html',
+    styleUrls: ['./card-room.component.css'],
+    standalone: false
 })
 export class CardRoomComponent implements OnInit {
 

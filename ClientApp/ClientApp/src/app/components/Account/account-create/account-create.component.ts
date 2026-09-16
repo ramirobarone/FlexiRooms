@@ -6,9 +6,10 @@ import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-account-create',
-  templateUrl: './account-create.component.html',
-  styleUrls: ['./account-create.component.css']
+    selector: 'app-account-create',
+    templateUrl: './account-create.component.html',
+    styleUrls: ['./account-create.component.css'],
+    standalone: false
 })
 export class AccountCreateComponent implements OnInit {
   constructor(private serviceAccount: AccountService, private router:Router) { }

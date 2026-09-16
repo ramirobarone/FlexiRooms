@@ -56,7 +56,7 @@ import { ContactComponent } from './components/home/contact/contact.component';
     ContactComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([

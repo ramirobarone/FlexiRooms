@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Room } from 'src/models/room';
 import { Router } from '@angular/router';
 import { hotelPicture } from 'src/models/hotelPicture';
@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
     selector: 'app-card-hotel',
     templateUrl: './card-hotel.component.html',
     styleUrls: ['./card-hotel.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CardHotelComponent {

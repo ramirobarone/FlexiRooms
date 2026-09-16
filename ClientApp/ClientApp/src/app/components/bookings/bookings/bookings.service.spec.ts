@@ -2,7 +2,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { EnvironmentsService } from '../../../ServicesShared/environments.service';
 import { BookingsService, UserBooking } from './bookings.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('BookingsService', () => {
   let service: BookingsService;
@@ -14,7 +14,7 @@ describe('BookingsService', () => {
     providers: [
         BookingsService,
         { provide: EnvironmentsService, useValue: { getUrlBase: () => 'https://hotelis.test/api/' } },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AdminBookingsService } from '../../../admin/services/admin-bookings.service';
 import { AdminBooking } from '../../../admin/models/admin-booking.model';
 
@@ -6,6 +6,7 @@ import { AdminBooking } from '../../../admin/models/admin-booking.model';
     selector: 'app-admin-bookings',
     templateUrl: './admin-bookings.component.html',
     styleUrls: ['./admin-bookings.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminBookingsComponent implements OnInit {

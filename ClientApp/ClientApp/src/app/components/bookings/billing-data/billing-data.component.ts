@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BillingData } from './models/billingData';
 import { LocalDataBookingService } from '../local-data-booking.service';
@@ -7,6 +7,7 @@ import { LocalDataBookingService } from '../local-data-booking.service';
     selector: 'app-billing-data',
     templateUrl: './billing-data.component.html',
     styleUrls: ['./billing-data.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BillingDataComponent {

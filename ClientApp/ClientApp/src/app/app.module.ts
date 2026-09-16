@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { authInterceptor } from './ServicesShared/auth.interceptor';
 
@@ -74,7 +74,7 @@ import { ContactComponent } from './components/home/contact/contact.component';
     ])
   ],
   providers: [
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor]))
   ],
   bootstrap: [AppComponent]
 })

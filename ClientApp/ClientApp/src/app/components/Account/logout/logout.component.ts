@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 
@@ -7,6 +7,7 @@ import { LocalStorageService } from '../../../ServicesShared/local-storage.servi
     selector: 'app-logout',
     templateUrl: './logout.component.html',
     styleUrls: ['./logout.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LogoutComponent implements OnInit {

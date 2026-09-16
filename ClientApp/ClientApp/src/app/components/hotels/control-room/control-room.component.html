@@ -13,36 +13,44 @@
       </div>
     </div>
 
-    <ng-container [ngSwitch]="activeTab">
-      <div *ngSwitchCase="'summary'" class="row g-4">
-        <div class="col-md-4">
-          <div class="card bg-primary text-white h-100" (click)="activeTab = 'hotels'" style="cursor: pointer;">
-            <div class="card-body">
-              <h5 class="card-title">Hoteles</h5>
-              <p class="card-text mb-0">Crea y edita la oferta publicada.</p>
+    @switch (activeTab) {
+      @case ('summary') {
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card bg-primary text-white h-100" (click)="activeTab = 'hotels'" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">Hoteles</h5>
+                <p class="card-text mb-0">Crea y edita la oferta publicada.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-success text-white h-100" (click)="activeTab = 'rooms'" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">Rooms</h5>
+                <p class="card-text mb-0">Gestiona habitaciones desde la API existente.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-secondary text-white h-100" (click)="activeTab = 'bookings'" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">Reservas</h5>
+                <p class="card-text mb-0">Consulta el historial y elimina reservas inválidas.</p>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card bg-success text-white h-100" (click)="activeTab = 'rooms'" style="cursor: pointer;">
-            <div class="card-body">
-              <h5 class="card-title">Rooms</h5>
-              <p class="card-text mb-0">Gestiona habitaciones desde la API existente.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card bg-secondary text-white h-100" (click)="activeTab = 'bookings'" style="cursor: pointer;">
-            <div class="card-body">
-              <h5 class="card-title">Reservas</h5>
-              <p class="card-text mb-0">Consulta el historial y elimina reservas inválidas.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <app-admin-hotels *ngSwitchCase="'hotels'"></app-admin-hotels>
-      <app-admin-room *ngSwitchCase="'rooms'"></app-admin-room>
-      <app-admin-bookings *ngSwitchCase="'bookings'"></app-admin-bookings>
-    </ng-container>
+      }
+      @case ('hotels') {
+        <app-admin-hotels></app-admin-hotels>
+      }
+      @case ('rooms') {
+        <app-admin-room></app-admin-room>
+      }
+      @case ('bookings') {
+        <app-admin-bookings></app-admin-bookings>
+      }
+    }
   </div>
 </div>

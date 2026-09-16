@@ -13,23 +13,27 @@
     </div>
   </section>
 
-  <section *ngIf="isBillingDataEnabled" class="checkout-step" [class.is-complete]="paymentDataEnabled">
-    <div class="step-header">
-      <div class="step-indicator" aria-hidden="true">2</div>
-      <h2 class="h5 mb-0">Datos de facturación</h2>
-    </div>
-    <div class="step-content">
-      <app-billing-data (checkOut)="checkBillingData($event)"></app-billing-data>
-    </div>
-  </section>
+  @if (isBillingDataEnabled) {
+    <section class="checkout-step" [class.is-complete]="paymentDataEnabled">
+      <div class="step-header">
+        <div class="step-indicator" aria-hidden="true">2</div>
+        <h2 class="h5 mb-0">Datos de facturación</h2>
+      </div>
+      <div class="step-content">
+        <app-billing-data (checkOut)="checkBillingData($event)"></app-billing-data>
+      </div>
+    </section>
+  }
 
-  <section *ngIf="paymentDataEnabled" class="checkout-step">
-    <div class="step-header">
-      <div class="step-indicator" aria-hidden="true">3</div>
-      <h2 class="h5 mb-0">Pago</h2>
-    </div>
-    <div class="step-content">
-      <app-checkout></app-checkout>
-    </div>
-  </section>
+  @if (paymentDataEnabled) {
+    <section class="checkout-step">
+      <div class="step-header">
+        <div class="step-indicator" aria-hidden="true">3</div>
+        <h2 class="h5 mb-0">Pago</h2>
+      </div>
+      <div class="step-content">
+        <app-checkout></app-checkout>
+      </div>
+    </section>
+  }
 </div>

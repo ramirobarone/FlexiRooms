@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Room } from '../../../../models/room';
 import { Hotel } from '../../../../models/hotel';
 import { roomPictures } from '../../../../models/roomImages';
@@ -10,6 +10,7 @@ import { RoomImageService } from '../../../../services/RoomImageService/room-ima
     selector: 'app-admin-room',
     templateUrl: './admin-room.component.html',
     styleUrls: ['./admin-room.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminRoomComponent implements OnInit {

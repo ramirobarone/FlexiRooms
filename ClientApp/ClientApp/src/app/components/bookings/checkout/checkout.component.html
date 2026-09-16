@@ -1,9 +1,13 @@
 <section class="checkout-payment">
   <!-- <h3 class="h4 mb-3">Pago</h3> -->
   <!-- <div *ngIf="isLoading" class="text-center py-3" role="status">
-    <div class="spinner-border text-primary" aria-hidden="true"></div>
-  </div> -->
-  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
-  <div *ngIf="successMessage" class="alert alert-success" role="status">{{ successMessage }}</div>
-  <div id="cardPaymentBrick_container"></div>
+  <div class="spinner-border text-primary" aria-hidden="true"></div>
+</div> -->
+@if (errorMessage) {
+  <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+}
+@if (successMessage) {
+  <div class="alert alert-success" role="status">{{ successMessage }}</div>
+}
+<div id="cardPaymentBrick_container"></div>
 </section>

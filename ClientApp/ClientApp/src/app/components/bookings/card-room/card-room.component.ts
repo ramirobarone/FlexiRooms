@@ -1,5 +1,5 @@
 import { AvialableRoomsService } from 'src/services/AvialableRooms/avialable-rooms.service';
-import { Component, Injectable, Input, Output, OnInit } from '@angular/core';
+import { Component, Injectable, Input, Output, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from 'src/models/room';
 import { Cost } from 'src/models/Cost';
@@ -13,6 +13,7 @@ import { LocalDataBookingService } from '../local-data-booking.service';
     selector: 'app-card-room',
     templateUrl: './card-room.component.html',
     styleUrls: ['./card-room.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CardRoomComponent implements OnInit {

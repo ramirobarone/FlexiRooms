@@ -9,7 +9,9 @@
     </div>
     <div class="carousel-inner">
       <div class="carousel-item" *ngFor="let img of images; let i = index" [class.active]="i === 0">
-        <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+        <a [routerLink]="['/steps', idHotel]">
+          <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+        </a>
       </div>
     </div>
     <ng-container *ngIf="images.length > 1">
@@ -24,7 +26,9 @@
     </ng-container>
     </div>
     <ng-template #noImage>
-      <img src="" class="hotel-card-image" alt="...">
+      <a [routerLink]="['/steps', idHotel]">
+        <img src="" class="hotel-card-image" alt="...">
+      </a>
     </ng-template>
     <button type="button" class="btn btn-light share-hotel-btn" title="Compartir" (click)="shareHotel($event)">
       <i class="bi bi-share"></i>
@@ -33,8 +37,5 @@
   </div>
   <div class="card-body hotel-card-overlay">
     <h5 class="card-title">{{name}}</h5>
-    <a class="btn btn-primary marginButtonRooms" [routerLink]="['/steps', idHotel]">
-      <i class="bi bi-eye"></i>
-    </a>
   </div>
 </div>

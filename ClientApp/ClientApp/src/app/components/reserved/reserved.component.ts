@@ -4,9 +4,10 @@ import { RouterModule } from '@angular/router';
 import { RoomService } from '../bookings/card-room/service/room.service';
 
 @Component({
-  selector: 'app-reserved',
-  templateUrl: './reserved.component.html',
-  styleUrls: ['./reserved.component.css']
+    selector: 'app-reserved',
+    templateUrl: './reserved.component.html',
+    styleUrls: ['./reserved.component.css'],
+    standalone: false
 })
 export class ReservedComponent {
 

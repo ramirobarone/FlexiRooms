@@ -6,9 +6,10 @@ import { LocalStorageService } from '../../../ServicesShared/local-storage.servi
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    standalone: false
 })
 export class LoginComponent {
   @ViewChild('fullNameLabel') fullNameChild!: ElementRef;

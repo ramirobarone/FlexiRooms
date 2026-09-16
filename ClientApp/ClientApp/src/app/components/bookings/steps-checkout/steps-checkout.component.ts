@@ -6,9 +6,10 @@ import { CreditCard } from '../checkout/Models/creditCard';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-steps-checkout',
-  templateUrl: './steps-checkout.component.html',
-  styleUrls: ['./steps-checkout.component.css']
+    selector: 'app-steps-checkout',
+    templateUrl: './steps-checkout.component.html',
+    styleUrls: ['./steps-checkout.component.css'],
+    standalone: false
 })
 
 

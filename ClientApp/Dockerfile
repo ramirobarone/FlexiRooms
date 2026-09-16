@@ -2,9 +2,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Node para compilar Angular durante dotnet publish (Angular 15 compatible)
+# Node para compilar Angular durante dotnet publish (Angular 20 requiere Node 20.19+/22.12+/24.x)
 RUN apt-get update && apt-get install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 

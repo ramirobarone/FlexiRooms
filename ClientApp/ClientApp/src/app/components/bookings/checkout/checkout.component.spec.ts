@@ -12,7 +12,7 @@ describe('CheckoutComponent', () => {
     payer: { email: 'guest@example.com' }
   };
 
-  function createComponent(booking?: { IdRoom: number; Date: string; CheckInTimeId: number; userGuid: string }): {
+  function createComponent(booking?: { IdRoom: number; Date: string; CheckInTimeId: number; CostId: number; userGuid: string }): {
     component: CheckoutComponent;
     checkoutService: jasmine.SpyObj<CheckoutService>;
     router: jasmine.SpyObj<Router>;
@@ -27,7 +27,7 @@ describe('CheckoutComponent', () => {
   }
 
   it('sends the Brick token with the selected booking', async () => {
-    const { component, checkoutService, router } = createComponent({ IdRoom: 4, Date: '2026-09-14', CheckInTimeId: 2, userGuid: 'user-guid' });
+    const { component, checkoutService, router } = createComponent({ IdRoom: 4, Date: '2026-09-14', CheckInTimeId: 2, CostId: 1, userGuid: 'user-guid' });
     checkoutService.processPayment.and.returnValue(of({ paymentId: 123, status: 'approved' }));
 
     await component.processPayment(payment);

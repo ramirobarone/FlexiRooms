@@ -7,9 +7,10 @@ import { HotelService } from '../../../../services/HotelService/hotel.service';
 import { GeographyService } from '../../../../services/GeographyService/geography.service';
 
 @Component({
-  selector: 'app-admin-hotels',
-  templateUrl: './admin-hotels.component.html',
-  styleUrls: ['./admin-hotels.component.css']
+    selector: 'app-admin-hotels',
+    templateUrl: './admin-hotels.component.html',
+    styleUrls: ['./admin-hotels.component.css'],
+    standalone: false
 })
 export class AdminHotelsComponent implements OnInit {
   hotels: Hotel[] = [];

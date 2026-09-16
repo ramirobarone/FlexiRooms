@@ -1,7 +1,8 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { EnvironmentsService } from '../../../ServicesShared/environments.service';
 import { BookingsService, UserBooking } from './bookings.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BookingsService', () => {
   let service: BookingsService;
@@ -9,12 +10,14 @@ describe('BookingsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         BookingsService,
-        { provide: EnvironmentsService, useValue: { getUrlBase: () => 'https://hotelis.test/api/' } }
-      ]
-    });
+        { provide: EnvironmentsService, useValue: { getUrlBase: () => 'https://hotelis.test/api/' } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     service = TestBed.inject(BookingsService);
     httpController = TestBed.inject(HttpTestingController);

@@ -4,9 +4,10 @@ import { BillingData } from './models/billingData';
 import { LocalDataBookingService } from '../local-data-booking.service';
 
 @Component({
-  selector: 'app-billing-data',
-  templateUrl: './billing-data.component.html',
-  styleUrls: ['./billing-data.component.css']
+    selector: 'app-billing-data',
+    templateUrl: './billing-data.component.html',
+    styleUrls: ['./billing-data.component.css'],
+    standalone: false
 })
 export class BillingDataComponent {
 

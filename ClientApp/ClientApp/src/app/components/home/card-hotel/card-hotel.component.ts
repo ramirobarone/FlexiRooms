@@ -5,9 +5,10 @@ import { hotelPicture } from 'src/models/hotelPicture';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-card-hotel',
-  templateUrl: './card-hotel.component.html',
-  styleUrls: ['./card-hotel.component.css']
+    selector: 'app-card-hotel',
+    templateUrl: './card-hotel.component.html',
+    styleUrls: ['./card-hotel.component.css'],
+    standalone: false
 })
 export class CardHotelComponent {
 

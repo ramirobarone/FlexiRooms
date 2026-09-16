@@ -3,9 +3,10 @@ import { AdminBookingsService } from '../../../admin/services/admin-bookings.ser
 import { AdminBooking } from '../../../admin/models/admin-booking.model';
 
 @Component({
-  selector: 'app-admin-bookings',
-  templateUrl: './admin-bookings.component.html',
-  styleUrls: ['./admin-bookings.component.css']
+    selector: 'app-admin-bookings',
+    templateUrl: './admin-bookings.component.html',
+    styleUrls: ['./admin-bookings.component.css'],
+    standalone: false
 })
 export class AdminBookingsComponent implements OnInit {
   bookings: AdminBooking[] = [];

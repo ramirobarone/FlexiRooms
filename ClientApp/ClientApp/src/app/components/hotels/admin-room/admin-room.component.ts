@@ -76,13 +76,23 @@ export class AdminRoomComponent implements OnInit {
 
   editRoom(room: Room): void {
     this.selectedRoom = JSON.parse(JSON.stringify(room));
-    if (!this.selectedRoom.cost) {
-      this.selectedRoom.cost = { id: 0, idRoom: room.id, costPerHour: 0, hour: 0 };
+    if (!this.selectedRoom.costs || this.selectedRoom.costs.length === 0) {
+      this.selectedRoom.costs = [{ id: 0, idRoom: room.id, costPerHour: 0, hour: 1 }];
     }
     this.imagePath = (this.selectedRoom.roomPictures && this.selectedRoom.roomPictures.length > 0)
       ? this.selectedRoom.roomPictures[0].path
       : this.selectedRoom.path || '';
     this.isEditing = true;
+  }
+
+  addCostOption(): void {
+    this.selectedRoom.costs.push({ id: 0, idRoom: this.selectedRoom.id, costPerHour: 0, hour: 1 });
+  }
+
+  removeCostOption(index: number): void {
+    if (this.selectedRoom.costs.length > 1) {
+      this.selectedRoom.costs.splice(index, 1);
+    }
   }
 
   saveRoom(): void {
@@ -275,7 +285,7 @@ export class AdminRoomComponent implements OnInit {
       path: '',
       bedNumbers: 1,
       avialableNow: true,
-      cost: { id: 0, idRoom: 0, costPerHour: 0, hour: 1 },
+      costs: [{ id: 0, idRoom: 0, costPerHour: 0, hour: 1 }],
       roomPictures: []
     };
   }

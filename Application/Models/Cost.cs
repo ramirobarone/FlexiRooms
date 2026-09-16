@@ -11,7 +11,7 @@ namespace Application.Models
 
         public static implicit operator CostDto(Cost cost)
         {
-            return new CostDto { Id = cost.Id, CostPerHour = cost.CostPerTime, Hour = cost.Hour };
+            return new CostDto { Id = cost.Id, IdRoom = cost.RoomId, CostPerHour = cost.CostPerTime, Hour = cost.Hour };
         }
     }
 }

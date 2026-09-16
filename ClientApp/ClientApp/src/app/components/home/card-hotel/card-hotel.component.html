@@ -26,6 +26,10 @@
     <ng-template #noImage>
       <img src="" class="hotel-card-image" alt="...">
     </ng-template>
+    <button type="button" class="btn btn-light share-hotel-btn" title="Compartir" (click)="shareHotel($event)">
+      <i class="bi bi-share"></i>
+    </button>
+    <div class="copied-toast" *ngIf="showCopiedMessage">Enlace copiado</div>
   </div>
   <div class="card-body hotel-card-overlay">
     <h5 class="card-title">{{name}}</h5>

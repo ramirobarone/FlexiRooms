@@ -26,6 +26,8 @@ export class CardHotelComponent {
   @Input()
   idHotel: string = '';
 
+  showCopiedMessage: boolean = false;
+
   constructor(private router: Router) {
 
   }
@@ -53,6 +55,17 @@ export class CardHotelComponent {
     this.router.navigate(['/steps', { id: this.idHotel }]);
 
     //this.RoomService.setCurrentRoom(currentRoom)
+  }
+
+  shareHotel(event: Event): void {
+    event.stopPropagation();
+
+    const url = `${window.location.origin}/steps/${this.idHotel}`;
+
+    navigator.clipboard.writeText(url).then(() => {
+      this.showCopiedMessage = true;
+      setTimeout(() => this.showCopiedMessage = false, 2000);
+    });
   }
 
 }

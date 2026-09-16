@@ -19,17 +19,18 @@ namespace ClientApp.Controllers
         ILogger<PaymentsController> logger) : ControllerBase
     {
         [HttpGet("public-key")]
-        public async Task<IActionResult> GetPublicKey(int roomId)
+        public async Task<IActionResult> GetPublicKey(int roomId, int costId = 0)
         {
             string? publicKey = configuration.GetSection(MercadoPagoOption.MercadoPagoOptionName).Get<MercadoPagoOption>()?.PublicKey;
             if (string.IsNullOrWhiteSpace(publicKey))
                 return Problem("Mercado Pago no está configurado.");
 
-            Room room = await roomRepository.GetByIdAsync(room => room.Id == roomId, query => query.Include(room => room.Cost));
-            if (room?.Cost is null)
+            Room room = await roomRepository.GetByIdAsync(room => room.Id == roomId, query => query.Include(room => room.Costs));
+            Cost? selectedCost = room?.Costs?.FirstOrDefault(cost => cost.Id == costId) ?? room?.Costs?.FirstOrDefault();
+            if (selectedCost is null)
                 return NotFound(new { message = "No se encontró el precio de la habitación." });
 
-            return Ok(new { publicKey, amount = room.Cost.CostPerTime });
+            return Ok(new { publicKey, amount = selectedCost.CostPerTime });
         }
 
         [HttpPost]

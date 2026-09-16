@@ -42,6 +42,7 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
+
         modelBuilder.SeedDataHotelis();
 
         modelBuilder.Entity<Hotel>()

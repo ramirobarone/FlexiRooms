@@ -9,7 +9,7 @@ namespace Application.Models
         public string? Description { get; set; }
         public int BedNumbers { get; set; }
         public bool AvialableNow { get; set; }
-        public CostDto? Cost { get; set; }
+        public IEnumerable<CostDto>? Costs { get; set; }
         public IEnumerable<RoomPictures>? RoomPictures { get; set; }
 
         public static explicit operator RoomDto(Room room)
@@ -22,7 +22,7 @@ namespace Application.Models
                 Description = room.Description,
                 BedNumbers = room.BedNumbers,
                 RoomPictures = room.RoomPictures.Select(p => new RoomPictures() { Id = p.Id, Path= p.Name }).ToList(),
-                Cost= room.Cost
+                Costs = room.Costs?.Select(cost => (CostDto)cost).ToList()
             };
         }
     }

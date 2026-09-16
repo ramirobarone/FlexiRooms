@@ -51,7 +51,8 @@ namespace Application.Services.Reserves
                 throw new BookingException("Hay una reserva para ese dia y hora");
 
             Room resultRoom = await GetRoomWithCost(booking.IdRoom);
-            booking.Price = resultRoom.Cost?.CostPerTime ?? booking.Price;
+            Cost? selectedCost = resultRoom.Costs?.FirstOrDefault(cost => cost.Id == booking.CostId) ?? resultRoom.Costs?.FirstOrDefault();
+            booking.Price = selectedCost?.CostPerTime ?? booking.Price;
 
             if (RoomIsNotNullOrEmpty(resultRoom))
                 bookingSaved = await repositoryBookings.CreateAsync(booking);
@@ -90,7 +91,7 @@ namespace Application.Services.Reserves
             int[] roomIds = userBookings.Select(booking => booking.IdRoom).Distinct().ToArray();
             IEnumerable<Room> rooms = await repositoryRoom.GetAllByIdAsync(
                 room => roomIds.Contains(room.Id),
-                query => query.Include(room => room.Cost).Include(room => room.Hotels));
+                query => query.Include(room => room.Costs).Include(room => room.Hotels));
             IEnumerable<PaymentTransaction> payments = await paymentRepository.GetAllByIdAsync(
                 payment => payment.BookingId.HasValue && bookingIds.Contains(payment.BookingId.Value));
             Dictionary<int, Room> roomsById = rooms.ToDictionary(room => room.Id);
@@ -108,7 +109,8 @@ namespace Application.Services.Reserves
                 string startTime = booking.CheckInTime?.Time ?? "00:00";
                 TimeSpan parsedStartTime = TimeSpan.TryParse(startTime, out TimeSpan value) ? value : TimeSpan.Zero;
                 Room? room = roomsById.GetValueOrDefault(booking.IdRoom);
-                int durationHours = room?.Cost?.Hour ?? 0;
+                int durationHours = room?.Costs?.FirstOrDefault(cost => cost.Id == booking.CostId)?.Hour
+                    ?? room?.Costs?.FirstOrDefault()?.Hour ?? 0;
                 DateTime start = booking.DateReserved.Date.Add(parsedStartTime);
                 DateTime end = start.AddHours(durationHours);
                 HotelInfo? hotelInfo = room?.Hotels is not null ? hotelInfoByHotelId.GetValueOrDefault(room.Hotels.Id) : null;
@@ -139,7 +141,7 @@ namespace Application.Services.Reserves
         }
 
         private async Task<Room> GetRoomWithCost(int idRoom)
-            => await repositoryRoom.GetByIdAsync(x => x.Id == idRoom, y => y.Include(y => y.Cost));
+            => await repositoryRoom.GetByIdAsync(x => x.Id == idRoom, y => y.Include(y => y.Costs));
 
         private bool RoomIsNotNullOrEmpty(Room room) => room is not null;
 

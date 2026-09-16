@@ -57,3 +57,31 @@
 .hotel-card-media .carousel-indicators {
     z-index: 3;
 }
+
+.share-hotel-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 4;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    opacity: 0.9;
+}
+
+.copied-toast {
+    position: absolute;
+    top: 3rem;
+    right: 0.5rem;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}

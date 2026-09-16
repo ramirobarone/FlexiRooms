@@ -22,8 +22,12 @@
               <td>{{ booking.checkInTime?.time }}</td>
               <td>{{ booking.price | currency:'ARS' }}</td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="showDetail(booking.id)">Ver</button>
-                <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteBooking(booking.id)">Eliminar</button>
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Ver" (click)="showDetail(booking.id)">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteBooking(booking.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
               </td>
             </tr>
           </tbody>

@@ -39,7 +39,9 @@ export class CardRoomComponent implements OnInit {
   times: Schedule[] = [];
   _rooms: Room[] = [];
   _booking: RoomDto | undefined;
+  costs: Cost[] = [];
   cost: Cost = { id: 0, idRoom: 0, costPerHour: 0, hour: 0 };
+  selectedCostId: any;
 
 
   @Output() nextToBillingData: EventEmitter<any> = new EventEmitter();
@@ -53,11 +55,6 @@ export class CardRoomComponent implements OnInit {
   
   ngOnInit(): void {
     this.getRoom(this.idHotel);
-
-    if (this._rooms.length === 1) {
-      this.fillRoomFinded(this._rooms[0].id);
-    } 
-
   }
 
 
@@ -66,6 +63,11 @@ export class CardRoomComponent implements OnInit {
     this.roomService.getRoom(idHotel).subscribe(res => {
       this._rooms = res;
       this.selectFirst();
+
+      // con una sola habitación el select no dispara (change), hay que habilitar la fecha manualmente
+      if (this._rooms.length === 1) {
+        this.fillRoomFinded(this._rooms[0].id);
+      }
     });
   }
   onChange() {
@@ -79,7 +81,7 @@ export class CardRoomComponent implements OnInit {
       this.name = this._rooms[0].name;
       this.description = this._rooms[0].description;
       this.bedNumbers = this._rooms[0].bedNumbers;
-      this.cost = this._rooms[0].cost;
+      this.selectCostOptions(this._rooms[0].costs);
       this.roompictures = this._rooms[0].roomPictures || this._rooms[0].roomPictures || [];
       if (this.roompictures.length > 0) {
         this.path = this.roompictures[0].path;
@@ -87,7 +89,6 @@ export class CardRoomComponent implements OnInit {
         this.path = this._rooms[0].path || '';
       }
     }
-
   }
 
   getImageSource(path: string): string {
@@ -128,7 +129,7 @@ export class CardRoomComponent implements OnInit {
         this.name = this._rooms[i].name;
         this.description = this._rooms[i].description;
         this.bedNumbers = this._rooms[i].bedNumbers;
-        this.cost = this._rooms[i].cost;
+        this.selectCostOptions(this._rooms[i].costs);
 
         this.disabledDate = false;
 
@@ -142,6 +143,17 @@ export class CardRoomComponent implements OnInit {
         this.getTimesFree();
       }
     }
+  }
+
+  selectCostOptions(costs: Cost[]): void {
+    this.costs = costs || [];
+    this.cost = this.costs[0] || { id: 0, idRoom: 0, costPerHour: 0, hour: 0 };
+    this.selectedCostId = this.cost.id;
+  }
+
+  onCostChange(): void {
+    this.cost = this.costs.find(c => String(c.id) === String(this.selectedCostId)) || this.cost;
+    this.SelectTime();
   }
   SelectTime(): void {
     this.btnBookingDisabled = this.timeSelected === undefined || this.timeSelected === 0;
@@ -179,7 +191,9 @@ export class CardRoomComponent implements OnInit {
     this.roomService.CheckTemporalAvaiabilityRoom({
       IdRoom: this.selectedRoom.id,
       Date: this.selectedDate,
-      CheckInTimeId: this.timeSelected, userGuid: userGuid
+      CheckInTimeId: this.timeSelected,
+      CostId: this.cost.id,
+      userGuid: userGuid
     })
       .subscribe(
         (response: boolean) => {
@@ -196,6 +210,7 @@ export class CardRoomComponent implements OnInit {
               IdRoom: this.selectedRoom.id,
               Date: this.selectedDate,
               CheckInTimeId: this.timeSelected,
+              CostId: this.cost.id,
               userGuid: userGuid || ''
             };
             this.localDataBookin.setBookingDto(this._booking);

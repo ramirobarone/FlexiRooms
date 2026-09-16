@@ -10,7 +10,7 @@ export class LocalDataBookingService {
 
   constructor() { }
   billingData: BillingData = { customerName: '', address: '', city: '', state: '', zipCode: '', country: '', phoneNumber: '', email: '' };
-  bookingDto: RoomDto = { IdRoom: 0, CheckInTimeId: 0, Date: '', userGuid:'' };
+  bookingDto: RoomDto = { IdRoom: 0, CheckInTimeId: 0, CostId: 0, Date: '', userGuid:'' };
   creditCard: CreditCard = { cardNumber: '', expirationDate: '', cvv: 0, fullName: '' };
 
   setBillingData(billingData: BillingData): void {

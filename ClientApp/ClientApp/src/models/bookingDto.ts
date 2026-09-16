@@ -4,5 +4,6 @@ export class RoomDto {
   IdRoom: number = 0;
   Date: string = '';
   CheckInTimeId: number = 0;
+  CostId: number = 0;
   userGuid: string = '';
 }

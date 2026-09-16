@@ -12,7 +12,7 @@ namespace Infrastructure.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public Hotel? Hotels { get; set; }
-        public Cost? Cost { get; set; }
+        public ICollection<Cost>? Costs { get; set; }
         public ICollection<RoomPicture>? RoomPictures { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using MercadoPago.Error;
 using MercadoPago.Resource.Payment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Application.Services.Booking
 {
@@ -25,8 +26,9 @@ namespace Application.Services.Booking
             ApplicationUser user = await userManager.Users.SingleOrDefaultAsync(user => user.UserGuid == checkout.RoomDto.UserGuid)
                 ?? throw new InvalidOperationException("No se encontró el usuario de la transacción.");
             Room room = await roomRepository.GetByIdAsync(room => room.Id == checkout.RoomDto.IdRoom,
-                query => query.Include(room => room.Cost));
-            decimal amount = room.Cost?.CostPerTime
+                query => query.Include(room => room.Costs));
+            decimal amount = room.Costs?.FirstOrDefault(cost => cost.Id == checkout.RoomDto.CostId)?.CostPerTime
+                ?? room.Costs?.FirstOrDefault()?.CostPerTime
                 ?? throw new InvalidOperationException("La habitación no tiene un precio configurado.");
 
             var request = new PaymentCreateRequest

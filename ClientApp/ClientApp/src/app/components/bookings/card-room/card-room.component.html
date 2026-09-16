@@ -2,7 +2,7 @@
 
   <div class="col-md-6">
     <!-- <label for="comboRooms" class="form-label">Seleccionar habitación</label> -->
-    <select title="RoomSelected" id="comboRooms" class="form-select" style="margin:20px 0px" (change)="onChange()" (select)="onChange()"
+    <select title="RoomSelected" id="comboRooms" class="form-select select-styled" style="margin:20px 0px" (change)="onChange()"
             [(ngModel)]="currenRoom">
       <!-- <option selected value="Seleccionar">Seleccionar</option> -->
       <option *ngFor="let item of _rooms" value="{{item.id}}">{{item.name}} - {{item.description}}</option>
@@ -43,6 +43,12 @@
   <div class="col-md-3">
     <h5 class="card-title">{{name}}</h5>
     <p class="card-text">{{description}}</p>
+    <div class="row" *ngIf="costs.length > 1">
+      <label class="form-label">Duración y precio</label>
+      <select title="selectCost" class="form-control select-styled" [(ngModel)]="selectedCostId" (change)="onCostChange()">
+        <option *ngFor="let c of costs" value="{{c.id}}">{{c.hour}} horas - $ {{c.costPerHour}}</option>
+      </select>
+    </div>
     <p class="card-text">Duración estadia: <strong>{{ cost.hour }} horas</strong></p>
     <p class="card-text">
       <label>
@@ -51,13 +57,13 @@
     </p>
     <div class="row">
       <label class="form-label">Fecha de reserva</label>
-      <input type="date" class="form-control" [(ngModel)]="selectedDate" (change)="changeDate()" placeholder="date" [disabled]="disabledDate" />
+      <input type="date" class="form-control" [(ngModel)]="selectedDate" (change)="changeDate()" placeholder="date" />
     </div>
 
     <div class="row">
       <label class="form-label">Horario Disponible Entrada</label>
 
-      <select title="selectTime" class="form-control" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
+      <select title="selectTime" class="form-control select-styled" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
         <option *ngFor="let hour of times" value="{{hour.id}}">{{hour.inTime}}</option>
       </select>
 

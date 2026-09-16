@@ -9,7 +9,7 @@ export class Room {
   path: string = '';
   bedNumbers: number = 0;
   avialableNow: boolean = true;
-  cost: Cost = { id: 0, idRoom: 0, costPerHour: 0, hour: 0 };
+  costs: Cost[] = [];
   roomPictures: roomPictures[] = [];
 }
 

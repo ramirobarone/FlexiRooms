@@ -35,7 +35,7 @@ namespace Application.Services.Rooms
         {
             logger.LogInformation("Method Name {GetAllById} - Parameter: {entity}", nameof(GetAllById), entity);
 
-            IEnumerable<Room> rooms = await repositoryRoom.GetAllByIdAsync(x => x.Hotels.Id == entity, null, z => z.Include(x => x.RoomPictures).Include(x => x.Cost));
+            IEnumerable<Room> rooms = await repositoryRoom.GetAllByIdAsync(x => x.Hotels.Id == entity, null, z => z.Include(x => x.RoomPictures).Include(x => x.Costs));
             IList<RoomDto> roomsResult = rooms.Select(room => (RoomDto)room).ToList();
 
             logger.LogInformation("Method Name {GetAllById} -  Parameter: {entity} - Result: {roomsResult}", nameof(GetAllById), entity, System.Text.Json.JsonSerializer.Serialize(roomsResult));
@@ -45,7 +45,7 @@ namespace Application.Services.Rooms
 
         public async Task<RoomDto> GetById(int id)
         {
-            Room room = await repositoryRoom.GetByIdAsync(x => x.Id == id, z => z.Include(x => x.RoomPictures).Include(x => x.Cost).Include(x => x.Hotels));
+            Room room = await repositoryRoom.GetByIdAsync(x => x.Id == id, z => z.Include(x => x.RoomPictures).Include(x => x.Costs).Include(x => x.Hotels));
             return room is null ? new RoomDto() : (RoomDto)room;
         }
 
@@ -82,7 +82,7 @@ namespace Application.Services.Rooms
         {
             ArgumentNullException.ThrowIfNull(entity);
 
-            var room = await repositoryRoom.GetByIdAsync(x => x.Id == entity.Id, z => z.Include(x => x.Cost).Include(x => x.RoomPictures).Include(x => x.Hotels));
+            var room = await repositoryRoom.GetByIdAsync(x => x.Id == entity.Id, z => z.Include(x => x.Costs).Include(x => x.RoomPictures).Include(x => x.Hotels));
             var hotel = room.Hotels;
 
             room.Name = entity.Name;
@@ -90,9 +90,13 @@ namespace Application.Services.Rooms
             room.BedNumbers = entity.BedNumbers;
             room.AvialableNow = entity.AvialableNow;
             room.Hotels = hotel;
-            room.Cost ??= new Cost();
-            room.Cost.CostPerTime = entity.Cost?.CostPerHour ?? room.Cost.CostPerTime;
-            room.Cost.Hour = entity.Cost?.Hour ?? room.Cost.Hour;
+            room.Costs = entity.Costs?.Select(cost => new Cost
+            {
+                Id = cost.Id > 0 ? cost.Id : 0,
+                RoomId = entity.Id,
+                CostPerTime = cost.CostPerHour,
+                Hour = cost.Hour
+            }).ToList() ?? new List<Cost>();
             room.RoomPictures = entity.RoomPictures?.Select(p => new RoomPicture { Id = p.Id, Name = p.Path }).ToList();
 
             await repositoryRoom.UpdateAsync(room);
@@ -107,12 +111,11 @@ namespace Application.Services.Rooms
                 BedNumbers = entity.BedNumbers,
                 AvialableNow = entity.AvialableNow,
                 Hotels = hotel,
-                Cost = entity.Cost is null ? null : new Cost
+                Costs = entity.Costs?.Select(cost => new Cost
                 {
-                    Id = entity.Cost.Id,
-                    CostPerTime = entity.Cost.CostPerHour,
-                    Hour = entity.Cost.Hour
-                },
+                    CostPerTime = cost.CostPerHour,
+                    Hour = cost.Hour
+                }).ToList(),
                 RoomPictures = entity.RoomPictures?.Select(p => new RoomPicture
                 {
                     Id = p.Id,

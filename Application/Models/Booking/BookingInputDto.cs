@@ -7,6 +7,7 @@ namespace Application.Models.Booking
         public required int IdRoom { get; set; }
         public required DateTime Date { get; set; }
         public required int CheckInTimeId { get;set;}
+        public int CostId { get; set; }
 
         public Guid UserGuid { get; set; }
 
@@ -14,7 +15,7 @@ namespace Application.Models.Booking
         {
             ArgumentNullException.ThrowIfNull(dto);
 
-            return new Bookings() { IdRoom = dto.IdRoom, DateReserved = NormalizeToUtc(dto.Date), CheckInTimeId = dto.CheckInTimeId, UserGuid = dto.UserGuid };
+            return new Bookings() { IdRoom = dto.IdRoom, DateReserved = NormalizeToUtc(dto.Date), CheckInTimeId = dto.CheckInTimeId, CostId = dto.CostId, UserGuid = dto.UserGuid };
         }
 
         private static DateTime NormalizeToUtc(DateTime value)

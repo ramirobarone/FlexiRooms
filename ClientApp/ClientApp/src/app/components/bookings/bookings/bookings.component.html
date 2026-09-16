@@ -1,163 +1,192 @@
 <main class="bookings-page container py-4 py-lg-5">
-	<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-4">
-		<div>
-			<p class="section-label mb-1">Tu estadía</p>
-			<h1 class="h2 mb-1">Mis reservas</h1>
-			<p class="text-muted mb-0">Consulta los datos y el acceso de cada reserva.</p>
-		</div>
-		<span class="booking-count" *ngIf="!isLoading && !hasError">
-			{{ bookings.length }} {{ bookings.length === 1 ? 'reserva' : 'reservas' }}
-		</span>
-	</div>
+  <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-4">
+    <div>
+      <p class="section-label mb-1">Tu estadía</p>
+      <h1 class="h2 mb-1">Mis reservas</h1>
+      <p class="text-muted mb-0">Consulta los datos y el acceso de cada reserva.</p>
+    </div>
+    @if (!isLoading && !hasError) {
+      <span class="booking-count">
+        {{ bookings.length }} {{ bookings.length === 1 ? 'reserva' : 'reservas' }}
+      </span>
+    }
+  </div>
 
-	<div class="state-panel" *ngIf="isLoading" role="status" aria-live="polite">
-		<div class="spinner-border spinner-border-sm" aria-hidden="true"></div>
-		<span>Cargando reservas...</span>
-	</div>
+  @if (isLoading) {
+    <div class="state-panel" role="status" aria-live="polite">
+      <div class="spinner-border spinner-border-sm" aria-hidden="true"></div>
+      <span>Cargando reservas...</span>
+    </div>
+  }
 
-	<div class="alert alert-danger d-flex justify-content-between align-items-center" *ngIf="hasError" role="alert">
-		<span>No pudimos cargar tus reservas.</span>
-		<button class="btn btn-sm btn-outline-danger" type="button" (click)="loadBookings()">Reintentar</button>
-	</div>
+  @if (hasError) {
+    <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+      <span>No pudimos cargar tus reservas.</span>
+      <button class="btn btn-sm btn-outline-danger" type="button" (click)="loadBookings()">Reintentar</button>
+    </div>
+  }
 
-	<div class="state-panel" *ngIf="!isLoading && !hasError && bookings.length === 0">
-		<i class="bi bi-calendar2-x fs-3" aria-hidden="true"></i>
-		<span>Todavía no tienes reservas realizadas.</span>
-	</div>
+  @if (!isLoading && !hasError && bookings.length === 0) {
+    <div class="state-panel">
+      <i class="bi bi-calendar2-x fs-3" aria-hidden="true"></i>
+      <span>Todavía no tienes reservas realizadas.</span>
+    </div>
+  }
 
-	<section class="booking-table" *ngIf="!isLoading && !hasError && bookings.length > 0" aria-label="Listado de reservas">
-		<div class="table-responsive">
-			<table class="table align-middle mb-0">
-				<thead>
-					<tr>
-						<th scope="col">Reserva</th>
-						<th scope="col">Habitación</th>
-						<th scope="col">Estado de pago</th>
-						<th scope="col">Fecha de inicio</th>
-						<th scope="col">Fecha de fin</th>
-						<th scope="col">Horario de inicio</th>
-						<th scope="col">Horario de fin</th>
-						<th scope="col" class="text-end">Acceso</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr *ngFor="let booking of pagedBookings">
-						<td class="fw-semibold">#{{ booking.id }}</td>
-						<td>{{ booking.roomId }}</td>
-						<td>
-							<span class="badge rounded-pill" [ngClass]="paymentStatusClass(booking.paymentStatus)">
-								{{ paymentStatusLabel(booking.paymentStatus) }}
-							</span>
-						</td>
-						<td>{{ booking.startDate | date:'dd/MM/yyyy' }}</td>
-						<td>{{ booking.endDate | date:'dd/MM/yyyy' }}</td>
-						<td><span class="time-range">{{ booking.startTime }}</span></td>
-						<td><span class="time-range">{{ booking.endTime }}</span></td>
-						<td class="text-end">
-							<div class="d-flex flex-wrap justify-content-end gap-2">
-								<button class="btn btn-sm btn-outline-primary text-nowrap" type="button" (click)="showDoorCode(booking)">
-									<i class="bi bi-key me-1" aria-hidden="true"></i>Ver código
-								</button>
-								<button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showInstructions(booking)">
-									<i class="bi bi-info-circle me-1" aria-hidden="true"></i>Instrucciones de uso
-								</button>
-								<button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showTerms(booking)">
-									<i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Términos y condiciones
-								</button>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<nav class="pagination-wrap" *ngIf="totalPages > 1" aria-label="Paginación de reservas">
-			<span class="text-muted small">Página {{ currentPage }} de {{ totalPages }}</span>
-			<ul class="pagination pagination-sm mb-0">
-				<li class="page-item" [class.disabled]="currentPage === 1">
-					<button class="page-link" type="button" aria-label="Página anterior" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
-						<i class="bi bi-chevron-left" aria-hidden="true"></i>
-					</button>
-				</li>
-				<li class="page-item" *ngFor="let page of pageNumbers" [class.active]="page === currentPage">
-					<button class="page-link" type="button" [attr.aria-current]="page === currentPage ? 'page' : null" (click)="goToPage(page)">{{ page }}</button>
-				</li>
-				<li class="page-item" [class.disabled]="currentPage === totalPages">
-					<button class="page-link" type="button" aria-label="Página siguiente" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
-						<i class="bi bi-chevron-right" aria-hidden="true"></i>
-					</button>
-				</li>
-			</ul>
-		</nav>
-	</section>
+  @if (!isLoading && !hasError && bookings.length > 0) {
+    <section class="booking-table" aria-label="Listado de reservas">
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Reserva</th>
+              <th scope="col">Habitación</th>
+              <th scope="col">Estado de pago</th>
+              <th scope="col">Fecha de inicio</th>
+              <th scope="col">Fecha de fin</th>
+              <th scope="col">Horario de inicio</th>
+              <th scope="col">Horario de fin</th>
+              <th scope="col" class="text-end">Acceso</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (booking of pagedBookings; track booking) {
+              <tr>
+                <td class="fw-semibold">#{{ booking.id }}</td>
+                <td>{{ booking.roomId }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="paymentStatusClass(booking.paymentStatus)">
+                    {{ paymentStatusLabel(booking.paymentStatus) }}
+                  </span>
+                </td>
+                <td>{{ booking.startDate | date:'dd/MM/yyyy' }}</td>
+                <td>{{ booking.endDate | date:'dd/MM/yyyy' }}</td>
+                <td><span class="time-range">{{ booking.startTime }}</span></td>
+                <td><span class="time-range">{{ booking.endTime }}</span></td>
+                <td class="text-end">
+                  <div class="d-flex flex-wrap justify-content-end gap-2">
+                    <button class="btn btn-sm btn-outline-primary text-nowrap" type="button" (click)="showDoorCode(booking)">
+                      <i class="bi bi-key me-1" aria-hidden="true"></i>Ver código
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showInstructions(booking)">
+                      <i class="bi bi-info-circle me-1" aria-hidden="true"></i>Instrucciones de uso
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showTerms(booking)">
+                      <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Términos y condiciones
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (totalPages > 1) {
+        <nav class="pagination-wrap" aria-label="Paginación de reservas">
+          <span class="text-muted small">Página {{ currentPage }} de {{ totalPages }}</span>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link" type="button" aria-label="Página anterior" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+              </button>
+            </li>
+            @for (page of pageNumbers; track page) {
+              <li class="page-item" [class.active]="page === currentPage">
+                <button class="page-link" type="button" [attr.aria-current]="page === currentPage ? 'page' : null" (click)="goToPage(page)">{{ page }}</button>
+              </li>
+            }
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link" type="button" aria-label="Página siguiente" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      }
+    </section>
+  }
 </main>
 
-<div class="modal-backdrop fade show" *ngIf="selectedBooking"></div>
-<div class="modal fade show door-code-modal" *ngIf="selectedBooking" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="doorCodeTitle" (click)="closeDoorCode()">
-	<div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-		<div class="modal-content">
-			<div class="modal-header">
-				<div>
-					<p class="section-label mb-1">Reserva #{{ selectedBooking.id }}</p>
-					<h2 class="modal-title fs-5" id="doorCodeTitle">Código de la puerta</h2>
-				</div>
-				<button type="button" class="btn-close" aria-label="Cerrar" (click)="closeDoorCode()"></button>
-			</div>
-			<div class="modal-body text-center py-4">
-				<p class="text-muted mb-2">Habitación {{ selectedBooking.roomId }}</p>
-				<output class="door-code" aria-label="Código de acceso">{{ doorCode }}</output>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" (click)="closeDoorCode()">Cerrar</button>
-			</div>
-		</div>
-	</div>
-</div>
+@if (selectedBooking) {
+  <div class="modal-backdrop fade show"></div>
+}
+@if (selectedBooking) {
+  <div class="modal fade show door-code-modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="doorCodeTitle" (click)="closeDoorCode()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <p class="section-label mb-1">Reserva #{{ selectedBooking.id }}</p>
+            <h2 class="modal-title fs-5" id="doorCodeTitle">Código de la puerta</h2>
+          </div>
+          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeDoorCode()"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="text-muted mb-2">Habitación {{ selectedBooking.roomId }}</p>
+          <output class="door-code" aria-label="Código de acceso">{{ doorCode }}</output>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="closeDoorCode()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 
-<div class="modal-backdrop fade show" *ngIf="instructionsBooking"></div>
-<div class="modal fade show" *ngIf="instructionsBooking" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="instructionsTitle" (click)="closeInstructions()">
-	<div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-		<div class="modal-content">
-			<div class="modal-header">
-				<div>
-					<p class="section-label mb-1">Reserva #{{ instructionsBooking.id }}</p>
-					<h2 class="modal-title fs-5" id="instructionsTitle">Instrucciones de uso</h2>
-				</div>
-				<button type="button" class="btn-close" aria-label="Cerrar" (click)="closeInstructions()"></button>
-			</div>
-			<div class="modal-body py-4">
-				<p class="mb-0" *ngIf="instructionsBooking.instruccionesDeUso; else noInstructions">{{ instructionsBooking.instruccionesDeUso }}</p>
-				<ng-template #noInstructions>
-					<p class="text-muted mb-0">No hay instrucciones de uso disponibles para este hotel.</p>
-				</ng-template>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" (click)="closeInstructions()">Cerrar</button>
-			</div>
-		</div>
-	</div>
-</div>
+@if (instructionsBooking) {
+  <div class="modal-backdrop fade show"></div>
+}
+@if (instructionsBooking) {
+  <div class="modal fade show" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="instructionsTitle" (click)="closeInstructions()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <p class="section-label mb-1">Reserva #{{ instructionsBooking.id }}</p>
+            <h2 class="modal-title fs-5" id="instructionsTitle">Instrucciones de uso</h2>
+          </div>
+          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeInstructions()"></button>
+        </div>
+        <div class="modal-body py-4">
+          @if (instructionsBooking.instruccionesDeUso) {
+            <p class="mb-0">{{ instructionsBooking.instruccionesDeUso }}</p>
+          } @else {
+            <p class="text-muted mb-0">No hay instrucciones de uso disponibles para este hotel.</p>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="closeInstructions()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 
-<div class="modal-backdrop fade show" *ngIf="termsBooking"></div>
-<div class="modal fade show" *ngIf="termsBooking" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="termsTitle" (click)="closeTerms()">
-	<div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-		<div class="modal-content">
-			<div class="modal-header">
-				<div>
-					<p class="section-label mb-1">Reserva #{{ termsBooking.id }}</p>
-					<h2 class="modal-title fs-5" id="termsTitle">Términos y condiciones</h2>
-				</div>
-				<button type="button" class="btn-close" aria-label="Cerrar" (click)="closeTerms()"></button>
-			</div>
-			<div class="modal-body py-4">
-				<p class="mb-0" *ngIf="termsBooking.terminosYCondiciones; else noTerms">{{ termsBooking.terminosYCondiciones }}</p>
-				<ng-template #noTerms>
-					<p class="text-muted mb-0">No hay términos y condiciones disponibles para este hotel.</p>
-				</ng-template>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" (click)="closeTerms()">Cerrar</button>
-			</div>
-		</div>
-	</div>
-</div>
+@if (termsBooking) {
+  <div class="modal-backdrop fade show"></div>
+}
+@if (termsBooking) {
+  <div class="modal fade show" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="termsTitle" (click)="closeTerms()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <p class="section-label mb-1">Reserva #{{ termsBooking.id }}</p>
+            <h2 class="modal-title fs-5" id="termsTitle">Términos y condiciones</h2>
+          </div>
+          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeTerms()"></button>
+        </div>
+        <div class="modal-body py-4">
+          @if (termsBooking.terminosYCondiciones) {
+            <p class="mb-0">{{ termsBooking.terminosYCondiciones }}</p>
+          } @else {
+            <p class="text-muted mb-0">No hay términos y condiciones disponibles para este hotel.</p>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="closeTerms()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

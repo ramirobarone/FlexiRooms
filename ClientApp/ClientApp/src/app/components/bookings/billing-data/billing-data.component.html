@@ -10,7 +10,7 @@
         <label for="name" class="form-label">Nombre Completo</label>
         <input type="text" id="name" name="name" class="form-control" formControlName="name" 
           [(ngModel)]="billingData.customerName"
-          [ngClass]="{ 'error': billingForm.errors?.['name']}">
+          [ngClass]="{ 'error': $safeNavigationMigration(billingForm.errors?.['name'])}">
 
         <div [hidden]="billingForm.get('name')?.valid || billingForm.get('name')?.pristine" class="alert alert-danger mt-3">
           Ingresar el nombre completo

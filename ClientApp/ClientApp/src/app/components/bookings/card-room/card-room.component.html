@@ -3,9 +3,11 @@
   <div class="col-md-6">
     <!-- <label for="comboRooms" class="form-label">Seleccionar habitación</label> -->
     <select title="RoomSelected" id="comboRooms" class="form-select select-styled" style="margin:20px 0px" (change)="onChange()"
-            [(ngModel)]="currenRoom">
+      [(ngModel)]="currenRoom">
       <!-- <option selected value="Seleccionar">Seleccionar</option> -->
-      <option *ngFor="let item of _rooms" value="{{item.id}}">{{item.name}} - {{item.description}}</option>
+      @for (item of _rooms; track item) {
+        <option value="{{item.id}}">{{item.name}} - {{item.description}}</option>
+      }
     </select>
   </div>
 </div>
@@ -13,42 +15,53 @@
 
 <div class="row">
   <div class="col-md-4">
-    <div id="carouselRoom" class="carousel slide" data-bs-ride="carousel" *ngIf="roompictures && roompictures.length; else noImage">
-      <div class="carousel-indicators" *ngIf="roompictures.length > 1">
-        <button *ngFor="let img of roompictures; let i = index" type="button"
+    @if (roompictures && roompictures.length) {
+      <div id="carouselRoom" class="carousel slide" data-bs-ride="carousel">
+        @if (roompictures.length > 1) {
+          <div class="carousel-indicators">
+            @for (img of roompictures; track img; let i = $index) {
+              <button type="button"
                 data-bs-target="#carouselRoom" [attr.data-bs-slide-to]="i"
                 [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
-                [attr.aria-label]="'Slide ' + (i + 1)"></button>
-      </div>
-      <div class="carousel-inner">
-        <div class="carousel-item" *ngFor="let img of roompictures; let i = index" [class.active]="i === 0">
-          <img [src]="getImageSource(img.path)" class="d-block w-100 img-thumbnail" alt="{{name}}">
+              [attr.aria-label]="'Slide ' + (i + 1)"></button>
+            }
+          </div>
+        }
+        <div class="carousel-inner">
+          @for (img of roompictures; track img; let i = $index) {
+            <div class="carousel-item" [class.active]="i === 0">
+              <img [src]="getImageSource(img.path)" class="d-block w-100 img-thumbnail" alt="{{name}}">
+            </div>
+          }
         </div>
+        @if (roompictures.length > 1) {
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselRoom" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselRoom" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        }
       </div>
-      <ng-container *ngIf="roompictures.length > 1">
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselRoom" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselRoom" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Siguiente</span>
-        </button>
-      </ng-container>
-    </div>
-    <ng-template #noImage>
+    } @else {
       <img [src]="path ? getImageSource(path) : ''" class="img-thumbnail" alt="...">
-    </ng-template>
+    }
   </div>
   <div class="col-md-3">
     <h5 class="card-title">{{name}}</h5>
     <p class="card-text">{{description}}</p>
-    <div class="row" *ngIf="costs.length > 1">
-      <label class="form-label">Duración y precio</label>
-      <select title="selectCost" class="form-control select-styled" [(ngModel)]="selectedCostId" (change)="onCostChange()">
-        <option *ngFor="let c of costs" value="{{c.id}}">{{c.hour}} horas - $ {{c.costPerHour}}</option>
-      </select>
-    </div>
+    @if (costs.length > 1) {
+      <div class="row">
+        <label class="form-label">Duración y precio</label>
+        <select title="selectCost" class="form-control select-styled" [(ngModel)]="selectedCostId" (change)="onCostChange()">
+          @for (c of costs; track c) {
+            <option value="{{c.id}}">{{c.hour}} horas - $ {{c.costPerHour}}</option>
+          }
+        </select>
+      </div>
+    }
     <p class="card-text">Duración estadia: <strong>{{ cost.hour }} horas</strong></p>
     <p class="card-text">
       <label>
@@ -64,20 +77,24 @@
       <label class="form-label">Horario Disponible Entrada</label>
 
       <select title="selectTime" class="form-control select-styled" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
-        <option *ngFor="let hour of times" value="{{hour.id}}">{{hour.inTime}}</option>
+        @for (hour of times; track hour) {
+          <option value="{{hour.id}}">{{hour.inTime}}</option>
+        }
       </select>
 
-      <div *ngIf="checkoutTime" class="alert alert-info marginTopBottom mb-0" role="status">
-        Hora de salida: <strong>{{ checkoutTime }}</strong>
-      </div>
+      @if (checkoutTime) {
+        <div class="alert alert-info marginTopBottom mb-0" role="status">
+          Hora de salida: <strong>{{ checkoutTime }}</strong>
+        </div>
+      }
 
-      <ng-container *ngIf="showRoomMessage">
+      @if (showRoomMessage) {
         <br />
         <div class="alert alert-warning marginTopBottom">
           <label class="form-label">La habitación esta ocupada todo el día</label>
         </div>
-      </ng-container>
-      <ng-container *ngIf="CheckTemporalAvaiabilityRoomMessage">
+      }
+      @if (CheckTemporalAvaiabilityRoomMessage) {
         <br />
         <div class="alert alert-warning marginTopBottom">
           <label class="form-label">
@@ -86,7 +103,7 @@
             El usuario tiene 5 minutos para terminar el proceso de pago, luego la habitacion queda liberada.
           </label>
         </div>
-      </ng-container>
+      }
 
     </div>
     <br />

@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker: Redeploy flexirooms_api",
+            "type": "shell",
+            "command": "docker pull ramirobarone/flexirooms:latest; docker stop flexirooms_api || true; docker rm flexirooms_api || true; docker run -d --name flexirooms_api --network flexirooms_net -p 8080:8080 -v flexirooms_uploads:/app/wwwroot/hotel-images --restart always ramirobarone/flexirooms:latest",
+            "options": {
+                "shell": {
+                    "executable": "bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            }
+        }
+    ]
+}

@@ -9,17 +9,19 @@
 </app-popup>
 
 <div class="row justify-content-center">
-  <span *ngFor="let item of _hoteles" class="col-md-3" style="margin: 20px">
-    <app-card-hotel name="{{ item.name }}"
-                    description="{{ item.description}}"
-                    idHotel="{{item.id}}"
+  @for (item of _hoteles; track item) {
+    <span class="col-md-3" style="margin: 20px">
+      <app-card-hotel name="{{ item.name }}"
+        description="{{ item.description}}"
+        idHotel="{{item.id}}"
       [images]="item.pictures"></app-card-hotel>
-  </span>
+    </span>
+  }
 </div>
 
-<ng-container *ngIf="isBodyVisible">
+@if (isBodyVisible) {
   <div class="row align-items-center justify-content-center text-center">
     <app-body-principal></app-body-principal>
   </div>
-</ng-container>
+}
 

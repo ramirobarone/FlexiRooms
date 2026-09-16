@@ -15,21 +15,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let booking of bookings">
-              <td>#{{ booking.id }}</td>
-              <td>{{ booking.idRoom }}</td>
-              <td>{{ booking.dateReserved | date:'shortDate' }}</td>
-              <td>{{ booking.checkInTime?.time }}</td>
-              <td>{{ booking.price | currency:'ARS' }}</td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Ver" (click)="showDetail(booking.id)">
-                  <i class="bi bi-eye"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteBooking(booking.id)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
+            @for (booking of bookings; track booking) {
+              <tr>
+                <td>#{{ booking.id }}</td>
+                <td>{{ booking.idRoom }}</td>
+                <td>{{ booking.dateReserved | date:'shortDate' }}</td>
+                <td>{{ booking.checkInTime?.time }}</td>
+                <td>{{ booking.price | currency:'ARS' }}</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Ver" (click)="showDetail(booking.id)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteBooking(booking.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -39,27 +41,28 @@
   <div class="col-lg-4">
     <div class="card shadow-sm h-100">
       <div class="card-header bg-secondary text-white">Detalle</div>
-      <div class="card-body" *ngIf="selectedBooking; else emptyState">
-        <dl class="row mb-0">
-          <dt class="col-5">Reserva</dt>
-          <dd class="col-7">#{{ selectedBooking?.id }}</dd>
-          <dt class="col-5">Habitación</dt>
-          <dd class="col-7">{{ selectedBooking?.idRoom }}</dd>
-          <dt class="col-5">Fecha</dt>
-          <dd class="col-7">{{ selectedBooking?.dateReserved | date:'fullDate' }}</dd>
-          <dt class="col-5">Horario</dt>
-          <dd class="col-7">{{ selectedBooking?.checkInTime?.time }}</dd>
-          <dt class="col-5">Cliente</dt>
-          <dd class="col-7">{{ selectedBooking?.user?.name }} {{ selectedBooking?.user?.lastName }}</dd>
-          <dt class="col-5">Email</dt>
-          <dd class="col-7">{{ selectedBooking?.user?.email }}</dd>
-          <dt class="col-5">Monto</dt>
-          <dd class="col-7">{{ selectedBooking?.price | currency:'ARS' }}</dd>
-        </dl>
-      </div>
-      <ng-template #emptyState>
+      @if (selectedBooking) {
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-5">Reserva</dt>
+            <dd class="col-7">#{{ selectedBooking?.id }}</dd>
+            <dt class="col-5">Habitación</dt>
+            <dd class="col-7">{{ selectedBooking?.idRoom }}</dd>
+            <dt class="col-5">Fecha</dt>
+            <dd class="col-7">{{ $safeNavigationMigration(selectedBooking?.dateReserved) | date:'fullDate' }}</dd>
+            <dt class="col-5">Horario</dt>
+            <dd class="col-7">{{ selectedBooking?.checkInTime?.time }}</dd>
+            <dt class="col-5">Cliente</dt>
+            <dd class="col-7">{{ selectedBooking?.user?.name }} {{ selectedBooking?.user?.lastName }}</dd>
+            <dt class="col-5">Email</dt>
+            <dd class="col-7">{{ selectedBooking?.user?.email }}</dd>
+            <dt class="col-5">Monto</dt>
+            <dd class="col-7">{{ $safeNavigationMigration(selectedBooking?.price) | currency:'ARS' }}</dd>
+          </dl>
+        </div>
+      } @else {
         <div class="card-body text-muted">Selecciona una reserva para ver el detalle.</div>
-      </ng-template>
+      }
     </div>
   </div>
 </div>

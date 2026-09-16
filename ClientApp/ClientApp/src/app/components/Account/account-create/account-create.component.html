@@ -1,68 +1,88 @@
 <form #accountForm="ngForm" (ngSubmit)="createAccount(accountForm)" novalidate>
-<div class="row">
-  <div class="col-md-6">
+  <div class="row">
+    <div class="col-md-6">
 
 
-    <div class="form-group">
+      <div class="form-group">
 
-      <label class="form-label">Email</label>
-      <input type="email" class="form-control" [(ngModel)]="userCreateDto.email" name="email" id="email" #email required title="Email" placeholder="Ingrese su email"/>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-control" [(ngModel)]="userCreateDto.password" name="password" title="Password" placeholder="Ingrese su password" />
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Verificar Password</label>
-      <input type="password" class="form-control" name="passwordConfirmation" title="Verificar Password" placeholder="Verifique su password" />
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Número de Documento</label>
-      <input type="text" class="form-control" [(ngModel)]="userCreateDto.identityNumber" name="identityNumber" #identityNumber="ngModel" minlength="8" required title="Número de Documento" placeholder="Ingrese su número de documento" [class.is-invalid]="identityNumber.dirty && identityNumber.invalid" />
-      <div class="invalid-feedback" *ngIf="identityNumber.dirty && identityNumber.errors?.['required']">Ingrese su número de documento.</div>
-      <div class="invalid-feedback" *ngIf="identityNumber.dirty && identityNumber.errors?.['minlength']">El número de documento debe tener al menos 8 caracteres.</div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Nombre</label>
-      <input type="text" class="form-control" [(ngModel)]="userCreateDto.name" name="name" #name="ngModel" minlength="3" required title="Nombre" placeholder="Ingrese su nombre" [class.is-invalid]="name.dirty && name.invalid" />
-      <div class="invalid-feedback" *ngIf="name.dirty && name.errors?.['required']">Ingrese su nombre.</div>
-      <div class="invalid-feedback" *ngIf="name.dirty && name.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Apellido</label>
-      <input type="text" class="form-control" [(ngModel)]="userCreateDto.lastName" name="lastName" #lastName="ngModel" minlength="3" required title="Apellido" placeholder="Ingrese su apellido" [class.is-invalid]="lastName.dirty && lastName.invalid" />
-      <div class="invalid-feedback" *ngIf="lastName.dirty && lastName.errors?.['required']">Ingrese su apellido.</div>
-      <div class="invalid-feedback" *ngIf="lastName.dirty && lastName.errors?.['minlength']">El apellido debe tener al menos 3 caracteres.</div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Codigo de Area</label>
-      <input type="text" class="form-control" [(ngModel)]="userCreateDto.codeArea" name="codeArea" #codeArea="ngModel" minlength="3" required title="Codigo de Area" placeholder="Ingrese su codigo de area" [class.is-invalid]="codeArea.dirty && codeArea.invalid" />
-      <div class="invalid-feedback" *ngIf="codeArea.dirty && codeArea.errors?.['required']">Ingrese el código de área.</div>
-      <div class="invalid-feedback" *ngIf="codeArea.dirty && codeArea.errors?.['minlength']">El código de área debe tener al menos 3 caracteres.</div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Telefono</label>
-      <input type="text" class="form-control" maxlength="10" [(ngModel)]="userCreateDto.phoneNumber" name="phoneNumber" #phoneNumber="ngModel" minlength="7" required title="Telefono" placeholder="Ingrese su telefono" [class.is-invalid]="phoneNumber.dirty && phoneNumber.invalid" />
-      <div class="invalid-feedback" *ngIf="phoneNumber.dirty && phoneNumber.errors?.['required']">Ingrese su teléfono.</div>
-      <div class="invalid-feedback" *ngIf="phoneNumber.dirty && phoneNumber.errors?.['minlength']">El teléfono debe tener al menos 7 caracteres.</div>
-    </div>
-
-    <div class="row marginButton">
-      <div class="col-md-6">
-        <button type="submit" class="btn btn-success">Crear Cuenta</button>
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" [(ngModel)]="userCreateDto.email" name="email" id="email" #email required title="Email" placeholder="Ingrese su email"/>
       </div>
 
-      <div class="col-md-6 position-relative">
-        <button class="btn btn-outline-success position-absolute end-0" [routerLink]="['/home']">Volver</button>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" [(ngModel)]="userCreateDto.password" name="password" title="Password" placeholder="Ingrese su password" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Verificar Password</label>
+        <input type="password" class="form-control" name="passwordConfirmation" title="Verificar Password" placeholder="Verifique su password" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Número de Documento</label>
+        <input type="text" class="form-control" [(ngModel)]="userCreateDto.identityNumber" name="identityNumber" #identityNumber="ngModel" minlength="8" required title="Número de Documento" placeholder="Ingrese su número de documento" [class.is-invalid]="identityNumber.dirty && identityNumber.invalid" />
+        @if (identityNumber.dirty && identityNumber.errors?.['required']) {
+          <div class="invalid-feedback">Ingrese su número de documento.</div>
+        }
+        @if (identityNumber.dirty && identityNumber.errors?.['minlength']) {
+          <div class="invalid-feedback">El número de documento debe tener al menos 8 caracteres.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" [(ngModel)]="userCreateDto.name" name="name" #name="ngModel" minlength="3" required title="Nombre" placeholder="Ingrese su nombre" [class.is-invalid]="name.dirty && name.invalid" />
+        @if (name.dirty && name.errors?.['required']) {
+          <div class="invalid-feedback">Ingrese su nombre.</div>
+        }
+        @if (name.dirty && name.errors?.['minlength']) {
+          <div class="invalid-feedback">El nombre debe tener al menos 3 caracteres.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Apellido</label>
+        <input type="text" class="form-control" [(ngModel)]="userCreateDto.lastName" name="lastName" #lastName="ngModel" minlength="3" required title="Apellido" placeholder="Ingrese su apellido" [class.is-invalid]="lastName.dirty && lastName.invalid" />
+        @if (lastName.dirty && lastName.errors?.['required']) {
+          <div class="invalid-feedback">Ingrese su apellido.</div>
+        }
+        @if (lastName.dirty && lastName.errors?.['minlength']) {
+          <div class="invalid-feedback">El apellido debe tener al menos 3 caracteres.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Codigo de Area</label>
+        <input type="text" class="form-control" [(ngModel)]="userCreateDto.codeArea" name="codeArea" #codeArea="ngModel" minlength="3" required title="Codigo de Area" placeholder="Ingrese su codigo de area" [class.is-invalid]="codeArea.dirty && codeArea.invalid" />
+        @if (codeArea.dirty && codeArea.errors?.['required']) {
+          <div class="invalid-feedback">Ingrese el código de área.</div>
+        }
+        @if (codeArea.dirty && codeArea.errors?.['minlength']) {
+          <div class="invalid-feedback">El código de área debe tener al menos 3 caracteres.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefono</label>
+        <input type="text" class="form-control" maxlength="10" [(ngModel)]="userCreateDto.phoneNumber" name="phoneNumber" #phoneNumber="ngModel" minlength="7" required title="Telefono" placeholder="Ingrese su telefono" [class.is-invalid]="phoneNumber.dirty && phoneNumber.invalid" />
+        @if (phoneNumber.dirty && phoneNumber.errors?.['required']) {
+          <div class="invalid-feedback">Ingrese su teléfono.</div>
+        }
+        @if (phoneNumber.dirty && phoneNumber.errors?.['minlength']) {
+          <div class="invalid-feedback">El teléfono debe tener al menos 7 caracteres.</div>
+        }
+      </div>
+
+      <div class="row marginButton">
+        <div class="col-md-6">
+          <button type="submit" class="btn btn-success">Crear Cuenta</button>
+        </div>
+
+        <div class="col-md-6 position-relative">
+          <button class="btn btn-outline-success position-absolute end-0" [routerLink]="['/home']">Volver</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </form>

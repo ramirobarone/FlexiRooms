@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, Renderer2, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UserDto, UserLoginDto } from './Models/userDto';
 import { AccountService } from './Service/account.service';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { finalize } from 'rxjs';
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LoginComponent {

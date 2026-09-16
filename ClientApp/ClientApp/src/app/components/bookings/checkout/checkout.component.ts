@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomDto } from '../../../../models/bookingDto';
 import { CheckoutService, MercadoPagoPaymentData } from './service/checkout.service';
@@ -14,6 +14,7 @@ declare global {
     selector: 'app-checkout',
     templateUrl: './checkout.component.html',
     styleUrls: ['./checkout.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CheckoutComponent implements AfterViewInit, OnDestroy {

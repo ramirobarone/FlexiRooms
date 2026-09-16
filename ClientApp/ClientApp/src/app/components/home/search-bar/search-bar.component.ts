@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Hotel } from 'src/models/hotel';
 import { HotelService } from 'src/services/HotelService/hotel.service';
 import { HomeService } from '../service/home.service';
@@ -7,6 +7,7 @@ import { HomeService } from '../service/home.service';
     selector: 'app-search-bar',
     templateUrl: './search-bar.component.html',
     styleUrls: ['./search-bar.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchBarComponent {

@@ -52,15 +52,40 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      # - name: Deploy image to server over SSH
-      #   uses: appleboy/ssh-action@v1.2.2
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     port: ${{ secrets.SSH_PORT }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key_path: .ssh/deploy_key
-      #     script: |
-      #       docker pull ramirobarone/flexirooms:latest
-      #       docker stop flexirooms_api || true
-      #       docker rm flexirooms_api || true
-      #       docker run -d --name flexirooms_api --network flexirooms_net -p 8080:8080 -v flexirooms_uploads:/app/wwwroot/hotel-images --restart always ramirobarone/flexirooms:latest
+      - name: Materialize SSH private key
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p .ssh
+          printf '%b\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > .ssh/deploy_key
+          chmod 600 .ssh/deploy_key
+
+          if ! grep -Eq '^-----BEGIN (OPENSSH|RSA|EC|DSA) PRIVATE KEY-----$' .ssh/deploy_key; then
+            echo "::error::SSH_PRIVATE_KEY must contain the complete private key, including its BEGIN/END lines."
+            exit 1
+          fi
+
+          echo "SSH key received: $(wc -l < .ssh/deploy_key) lines, $(wc -c < .ssh/deploy_key) bytes"
+          ssh-keygen -lf .ssh/deploy_key
+
+      - name: Deploy image to server over SSH
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          MP_PUBLIC_KEY: ${{ vars.mercadopago_publickey }}
+          MP_TOKEN: ${{ vars.mercadopago_token }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key_path: .ssh/deploy_key
+          envs: MP_PUBLIC_KEY,MP_TOKEN
+          script: |
+            docker pull ramirobarone/flexirooms:latest
+            docker stop flexirooms_api || true
+            docker rm flexirooms_api || true
+            docker run -d --name flexirooms_api --network flexirooms_net -p 8080:8080 \
+              -v flexirooms_uploads:/app/wwwroot/hotel-images \
+              -e MercadoPago__PublicKey="$MP_PUBLIC_KEY" \
+              -e MercadoPago__Token="$MP_TOKEN" \
+              --restart always ramirobarone/flexirooms:latest

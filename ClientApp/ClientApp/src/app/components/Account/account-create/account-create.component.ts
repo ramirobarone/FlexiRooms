@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UserCreateDto } from '../Models/accountDto';
 import { NgForm } from '@angular/forms';
 import { AccountService } from '../account.service';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
     selector: 'app-account-create',
     templateUrl: './account-create.component.html',
     styleUrls: ['./account-create.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AccountCreateComponent implements OnInit {

@@ -8,23 +8,27 @@
       <input type="email" class="form-control" [(ngModel)]="userDto.email" title="Enter your email"
         placeholder="Email" />
 
-      <label class="form-label">Password</label>
-      <input type="password" class="form-control" [(ngModel)]="userDto.password" title="Enter your password"
-        placeholder="Password" />
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" [(ngModel)]="userDto.password" title="Enter your password"
+          placeholder="Password" />
 
-    </div>
-    <div class="login-actions spacingButton">
-      <button class="btn btn-outline-success" type="button" (click)="login()" [disabled]="isLoading">
-        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" *ngIf="isLoading"></span>
-        {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
-      </button>
-      <button class="btn btn-success" type="button" [routerLink]="['/accountCreate']" [disabled]="isLoading">Crear Cuenta</button>
-    </div>
+        </div>
+        <div class="login-actions spacingButton">
+          <button class="btn btn-outline-success" type="button" (click)="login()" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            }
+            {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
+          </button>
+          <button class="btn btn-success" type="button" [routerLink]="['/accountCreate']" [disabled]="isLoading">Crear Cuenta</button>
+        </div>
 
-    <div class="alert alert-danger login-alert" role="alert" *ngIf="errorMessage">
-      <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-      {{ errorMessage }}
-    </div>
+        @if (errorMessage) {
+          <div class="alert alert-danger login-alert" role="alert">
+            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+            {{ errorMessage }}
+          </div>
+        }
 
-  </div>
-</div>
+      </div>
+    </div>

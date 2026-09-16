@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-popup',
     templateUrl: './popup.component.html',
     styleUrls: ['./popup.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PopupComponent implements AfterViewInit, OnChanges {

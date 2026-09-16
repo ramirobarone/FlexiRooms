@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BillingData } from '../billing-data/models/billingData';
 import { RoomDto } from '../../../../models/bookingDto';
 import { CheckOut } from './Models/checkout';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
     selector: 'app-steps-checkout',
     templateUrl: './steps-checkout.component.html',
     styleUrls: ['./steps-checkout.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

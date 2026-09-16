@@ -1,39 +1,48 @@
 <div class="card hotel-card">
   <div class="hotel-card-media">
-    <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel" *ngIf="images.length; else noImage">
-    <div class="carousel-indicators" *ngIf="images.length > 1">
-      <button *ngFor="let img of images; let i = index" type="button"
-              [attr.data-bs-target]="'#carousel-' + idHotel" [attr.data-bs-slide-to]="i"
-              [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
+    @if (images.length) {
+      <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel">
+        @if (images.length > 1) {
+          <div class="carousel-indicators">
+            @for (img of images; track img; let i = $index) {
+              <button type="button"
+                [attr.data-bs-target]="'#carousel-' + idHotel" [attr.data-bs-slide-to]="i"
+                [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
               [attr.aria-label]="'Slide ' + (i + 1)"></button>
-    </div>
-    <div class="carousel-inner">
-      <div class="carousel-item" *ngFor="let img of images; let i = index" [class.active]="i === 0">
-        <a [routerLink]="['/steps', idHotel]">
-          <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
-        </a>
+            }
+          </div>
+        }
+        <div class="carousel-inner">
+          @for (img of images; track img; let i = $index) {
+            <div class="carousel-item" [class.active]="i === 0">
+              <a [routerLink]="['/steps', idHotel]">
+                <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+              </a>
+            </div>
+          }
+        </div>
+        @if (images.length > 1) {
+          <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        }
       </div>
-    </div>
-    <ng-container *ngIf="images.length > 1">
-      <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Siguiente</span>
-      </button>
-    </ng-container>
-    </div>
-    <ng-template #noImage>
+    } @else {
       <a [routerLink]="['/steps', idHotel]">
         <img src="" class="hotel-card-image" alt="...">
       </a>
-    </ng-template>
+    }
     <button type="button" class="btn btn-light share-hotel-btn" title="Compartir" (click)="shareHotel($event)">
       <i class="bi bi-share"></i>
     </button>
-    <div class="copied-toast" *ngIf="showCopiedMessage">Enlace copiado</div>
+    @if (showCopiedMessage) {
+      <div class="copied-toast">Enlace copiado</div>
+    }
   </div>
   <div class="card-body hotel-card-overlay">
     <h5 class="card-title">{{name}}</h5>

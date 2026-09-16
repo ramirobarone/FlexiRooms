@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 
@@ -6,6 +6,7 @@ import { LocalStorageService } from '../../../ServicesShared/local-storage.servi
     selector: 'app-nav-menu',
     templateUrl: './nav-menu.component.html',
     styleUrls: ['./nav-menu.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NavMenuComponent implements OnInit, OnDestroy {

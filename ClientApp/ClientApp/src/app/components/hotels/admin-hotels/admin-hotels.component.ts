@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Hotel } from '../../../../models/hotel';
 import { Province } from '../../../../models/Province';
 import { City } from '../../../../models/City';
@@ -10,6 +10,7 @@ import { GeographyService } from '../../../../services/GeographyService/geograph
     selector: 'app-admin-hotels',
     templateUrl: './admin-hotels.component.html',
     styleUrls: ['./admin-hotels.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminHotelsComponent implements OnInit {

@@ -16,17 +16,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let hotel of hotels">
-              <td>{{ hotel.name }}</td>
-              <td>{{ hotel.email }}</td>
-              <td>{{ hotel.phoneNumber }}</td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editHotel(hotel)"><i class="bi bi-pencil"></i></button>
-                <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(hotel)"><i class="bi bi-upload"></i></button>
-                <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(hotel)"><i class="bi bi-images"></i></button>
-                <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteHotel(hotel.id)"><i class="bi bi-trash"></i></button>
-              </td>
-            </tr>
+            @for (hotel of hotels; track hotel) {
+              <tr>
+                <td>{{ hotel.name }}</td>
+                <td>{{ hotel.email }}</td>
+                <td>{{ hotel.phoneNumber }}</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editHotel(hotel)"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(hotel)"><i class="bi bi-upload"></i></button>
+                  <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(hotel)"><i class="bi bi-images"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteHotel(hotel.id)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -80,14 +82,18 @@
             <label class="form-label">Provincia</label>
             <select class="form-select" [(ngModel)]="selectedHotel.addressHotel.idProvince" (ngModelChange)="onProvinceChange()">
               <option [ngValue]="0">Seleccione una provincia</option>
-              <option *ngFor="let province of provinces" [ngValue]="province.id">{{ province.name }}</option>
+              @for (province of provinces; track province) {
+                <option [ngValue]="province.id">{{ province.name }}</option>
+              }
             </select>
           </div>
           <div class="col-md-4">
             <label class="form-label">Ciudad</label>
             <select class="form-select" [(ngModel)]="selectedHotel.addressHotel.idCity" [disabled]="!cities.length">
               <option [ngValue]="0">Seleccione una ciudad</option>
-              <option *ngFor="let city of cities" [ngValue]="city.id">{{ city.name }}</option>
+              @for (city of cities; track city) {
+                <option [ngValue]="city.id">{{ city.name }}</option>
+              }
             </select>
           </div>
         </div>
@@ -99,7 +105,9 @@
   </div>
 </div>
 
-<div class="dialog-backdrop" *ngIf="isUploadPopupVisible"></div>
+@if (isUploadPopupVisible) {
+  <div class="dialog-backdrop"></div>
+}
 <dialog class="hotel-images-dialog" [open]="isUploadPopupVisible">
   <div class="modal-header">
     <h5 class="modal-title">Subir imágenes - {{ selectedHotelForImages?.name }}</h5>
@@ -108,8 +116,8 @@
 
   <div class="modal-body">
     <div class="drag-drop-area"
-         (dragover)="onDragOver($event)"
-         (drop)="onDrop($event)">
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)">
       Arrastrá imágenes aquí o
       <label class="btn btn-sm btn-outline-primary ms-2 mb-0" title="Seleccionar">
         <i class="bi bi-folder2-open"></i>
@@ -117,14 +125,20 @@
       </label>
     </div>
 
-    <ul class="list-group mt-3" *ngIf="selectedFiles.length">
-      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let file of selectedFiles; let i = index">
-        <span class="text-truncate me-2">{{ file.name }}</span>
-        <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)"><i class="bi bi-x-lg"></i></button>
-      </li>
-    </ul>
+    @if (selectedFiles.length) {
+      <ul class="list-group mt-3">
+        @for (file of selectedFiles; track file; let i = $index) {
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="text-truncate me-2">{{ file.name }}</span>
+            <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)"><i class="bi bi-x-lg"></i></button>
+          </li>
+        }
+      </ul>
+    }
 
-    <p class="text-danger mt-3 mb-0" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+    @if (imagesErrorMessage) {
+      <p class="text-danger mt-3 mb-0">{{ imagesErrorMessage }}</p>
+    }
   </div>
 
   <div class="modal-footer">
@@ -135,7 +149,9 @@
   </div>
 </dialog>
 
-<div class="dialog-backdrop" *ngIf="isGalleryPopupVisible"></div>
+@if (isGalleryPopupVisible) {
+  <div class="dialog-backdrop"></div>
+}
 <dialog class="hotel-images-dialog hotel-images-gallery" [open]="isGalleryPopupVisible">
   <div class="modal-header">
     <h5 class="modal-title">Imágenes de {{ selectedHotelForImages?.name }}</h5>
@@ -143,18 +159,28 @@
   </div>
 
   <div class="modal-body">
-    <p class="mb-2" *ngIf="isLoadingImages">Cargando imágenes...</p>
+    @if (isLoadingImages) {
+      <p class="mb-2">Cargando imágenes...</p>
+    }
 
-    <p class="text-danger" *ngIf="imagesErrorMessage">{{ imagesErrorMessage }}</p>
+    @if (imagesErrorMessage) {
+      <p class="text-danger">{{ imagesErrorMessage }}</p>
+    }
 
-    <div class="gallery-grid" *ngIf="!isLoadingImages && hotelImages.length">
-      <img *ngFor="let image of hotelImages"
-           [src]="getImageSource(image.path)"
-           class="img-thumbnail"
-           alt="Imagen del hotel" />
-    </div>
+    @if (!isLoadingImages && hotelImages.length) {
+      <div class="gallery-grid">
+        @for (image of hotelImages; track image) {
+          <img
+            [src]="getImageSource(image.path)"
+            class="img-thumbnail"
+            alt="Imagen del hotel" />
+        }
+      </div>
+    }
 
-    <p *ngIf="!isLoadingImages && !hotelImages.length && !imagesErrorMessage" class="mb-0">No hay imágenes cargadas para este hotel.</p>
+    @if (!isLoadingImages && !hotelImages.length && !imagesErrorMessage) {
+      <p class="mb-0">No hay imágenes cargadas para este hotel.</p>
+    }
   </div>
 
   <div class="modal-footer">

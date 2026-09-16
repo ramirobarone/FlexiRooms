@@ -10,30 +10,38 @@
       </button>
       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
         <ul class="navbar-nav flex-grow align-items-sm-center">
-          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
-            <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="isLoged">
-            <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="canAccessControlPanel">
-            <a class="nav-link text-dark fw-semibold" [routerLink]="['/admin']">Panel de Control</a>
-          </li>
+          @if (isLoged) {
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+              <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
+            </li>
+          }
+          @if (isLoged) {
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+              <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
+            </li>
+          }
+          @if (canAccessControlPanel) {
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+              <a class="nav-link text-dark fw-semibold" [routerLink]="['/admin']">Panel de Control</a>
+            </li>
+          }
           <li class="nav-item" [routerLinkActive]="['link-active']">
-            <ng-container *ngIf="!isLoged">
+            @if (!isLoged) {
               <a class="nav-link text-dark" [routerLink]="['/login']">Ingresar</a>
-            </ng-container>
-            <ng-container *ngIf="isLoged">
+            }
+            @if (isLoged) {
               <button class="logout-button" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="logout()">
                 <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
               </button>
-            </ng-container>
+            }
           </li>
         </ul>
-        <div class="user-profile" *ngIf="isLoged">
-          <span id="userName" class="user-name">{{ userName }}</span>
-          <img class="user-avatar" [src]="profileImageUrl" alt="Fotografía de usuario" />
-        </div>
+        @if (isLoged) {
+          <div class="user-profile">
+            <span id="userName" class="user-name">{{ userName }}</span>
+            <img class="user-avatar" [src]="profileImageUrl" alt="Fotografía de usuario" />
+          </div>
+        }
       </div>
     </div>
   </nav>

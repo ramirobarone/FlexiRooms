@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AccountService } from '../account.service';
 import { UpdateUserInformationDto, UserInformationDto } from '../Models/userInformationDto';
 import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
@@ -7,6 +7,7 @@ import { LocalStorageService } from '../../../ServicesShared/local-storage.servi
     selector: 'app-my-account',
     templateUrl: './my-account.component.html',
     styleUrls: ['./my-account.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MyAccountComponent implements OnInit {

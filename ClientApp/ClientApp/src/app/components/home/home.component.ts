@@ -1,5 +1,5 @@
 import { Room } from '../../../models/room';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Hotel } from 'src/models/hotel';
 import { GoogleMap } from '@angular/google-maps';
 import { RoomService } from '../bookings/card-room/service/room.service';
@@ -8,6 +8,7 @@ import { HomeService } from './service/home.service';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HomeComponent {

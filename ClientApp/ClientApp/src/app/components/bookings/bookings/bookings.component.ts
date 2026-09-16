@@ -1,10 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BookingsService, UserBooking } from './bookings.service';
 
 @Component({
     selector: 'app-bookings',
     templateUrl: './bookings.component.html',
     styleUrls: ['./bookings.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BookingsComponent implements OnInit {

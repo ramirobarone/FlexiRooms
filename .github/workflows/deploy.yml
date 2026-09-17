@@ -61,7 +61,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.ssh_pass }}
+          password: JazminBarone!1811
           envs: MP_PUBLIC_KEY,MP_TOKEN
           script: |
             docker pull ramirobarone/flexirooms:latest

@@ -58,9 +58,9 @@ jobs:
           MP_PUBLIC_KEY: ${{ secrets.MERCADOPAGO_PUBLICKEY }}
           MP_TOKEN: ${{ secrets.MERCADOPAGO_TOKEN }}
         with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
+          host: 149.50.150.67
+          port: 5283
+          username: root
           password: JazminBarone!1811
           envs: MP_PUBLIC_KEY,MP_TOKEN
           script: |

@@ -5,11 +5,16 @@
       <h1 class="h2 mb-1">Mis reservas</h1>
       <p class="text-muted mb-0">Consulta los datos y el acceso de cada reserva.</p>
     </div>
-    @if (!isLoading && !hasError) {
-      <span class="booking-count">
-        {{ bookings.length }} {{ bookings.length === 1 ? 'reserva' : 'reservas' }}
-      </span>
-    }
+    <div class="d-flex align-items-center gap-2">
+      <a class="btn btn-outline-secondary btn-sm text-nowrap" routerLink="/reclamos">
+        <i class="bi bi-clipboard2-check me-1" aria-hidden="true"></i>Mis reclamos
+      </a>
+      @if (!isLoading && !hasError) {
+        <span class="booking-count">
+          {{ bookings.length }} {{ bookings.length === 1 ? 'reserva' : 'reservas' }}
+        </span>
+      }
+    </div>
   </div>
 
   @if (isLoading) {
@@ -64,16 +69,19 @@
                 <td><span class="time-range">{{ booking.startTime }}</span></td>
                 <td><span class="time-range">{{ booking.endTime }}</span></td>
                 <td class="text-end">
-                  <div class="d-flex flex-wrap justify-content-end gap-2">
-                    <button class="btn btn-sm btn-outline-primary text-nowrap" type="button" (click)="showDoorCode(booking)">
-                      <i class="bi bi-key me-1" aria-hidden="true"></i>Ver código
+                  <div class="d-flex flex-nowrap justify-content-end gap-1 access-actions">
+                    <button class="btn btn-sm btn-outline-primary" type="button" title="Ver código" aria-label="Ver código" (click)="showDoorCode(booking)">
+                      <i class="bi bi-key" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showInstructions(booking)">
-                      <i class="bi bi-info-circle me-1" aria-hidden="true"></i>Instrucciones de uso
+                    <button class="btn btn-sm btn-outline-secondary" type="button" title="Instrucciones de uso" aria-label="Instrucciones de uso" (click)="showInstructions(booking)">
+                      <i class="bi bi-info-circle" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="showTerms(booking)">
-                      <i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Términos y condiciones
+                    <button class="btn btn-sm btn-outline-secondary" type="button" title="Términos y condiciones" aria-label="Términos y condiciones" (click)="showTerms(booking)">
+                      <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                     </button>
+                    <a class="btn btn-sm btn-outline-warning" title="Crear reclamo" aria-label="Crear reclamo" [routerLink]="['/reclamos/nuevo', booking.id]">
+                      <i class="bi bi-tools" aria-hidden="true"></i>
+                    </a>
                   </div>
                 </td>
               </tr>

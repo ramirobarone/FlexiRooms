@@ -1,0 +1,50 @@
+.issues-page {
+	max-width: 1180px;
+}
+
+.section-label {
+	color: #176b59;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: uppercase;
+}
+
+.issues-table,
+.state-panel {
+	background: #fff;
+	border: 1px solid #dee2e6;
+	border-radius: 8px;
+}
+
+.state-panel {
+	align-items: center;
+	color: #6c757d;
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+	min-height: 180px;
+	padding: 2rem;
+}
+
+.table thead th {
+	background: #f4f6f5;
+	border-bottom-width: 1px;
+	color: #495057;
+	font-size: 0.78rem;
+	font-weight: 700;
+	padding: 0.9rem 1rem;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.table tbody td {
+	padding: 1rem;
+}
+
+.issue-thumbnail {
+	border-radius: 4px;
+	height: 48px;
+	object-fit: cover;
+	width: 48px;
+}

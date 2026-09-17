@@ -28,6 +28,8 @@ import { AdminBookingsComponent } from './components/hotels/admin-bookings/admin
 import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.component';
 import { MyAccountComponent } from './components/Account/my-account/my-account.component';
 import { ContactComponent } from './components/home/contact/contact.component';
+import { CreateIssueComponent } from './components/bookings/create-issue/create-issue.component';
+import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { ContactComponent } from './components/home/contact/contact.component';
     AdminBookingsComponent,
     AdminRoomComponent,
     MyAccountComponent,
-    ContactComponent
+    ContactComponent,
+    CreateIssueComponent,
+    MyIssuesComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +72,8 @@ import { ContactComponent } from './components/home/contact/contact.component';
       { path: 'miCuenta', component: MyAccountComponent, pathMatch: 'full' },
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: 'MisReservas', component: BookingsComponent, pathMatch: 'full' },
+      { path: 'reclamos/nuevo/:bookingId', component: CreateIssueComponent, pathMatch: 'full' },
+      { path: 'reclamos', component: MyIssuesComponent, pathMatch: 'full' },
       { path: 'steps/:id', component: StepsCheckoutComponent },
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' },
       { path: 'contacto', component: ContactComponent, pathMatch: 'full' }

@@ -6,6 +6,7 @@ using Application.Services.HotelServices;
 using Application.Services.Reserves;
 using Application.Services.Booking;
 using Application.Services.Rooms;
+using Application.Services.Issues;
 using Infrastructure.Models;
 
 namespace ClientApp.Extensions
@@ -28,6 +29,7 @@ namespace ClientApp.Extensions
             app.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             app.Services.AddScoped<IAccountService, AccountService>();
             app.Services.AddScoped<IPayment, Paymentt>();
+            app.Services.AddScoped<IIssueService, IssueService>();
 
         }
     }

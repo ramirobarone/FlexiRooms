@@ -80,6 +80,18 @@
 	letter-spacing: 0.35rem;
 }
 
+.access-actions .btn {
+	line-height: 1;
+	padding: 0.35rem 0.5rem;
+}
+
+.issue-thumbnail {
+	border-radius: 4px;
+	height: 48px;
+	object-fit: cover;
+	width: 48px;
+}
+
 @media (max-width: 575.98px) {
 	.pagination-wrap {
 		align-items: flex-start;

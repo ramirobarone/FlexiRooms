@@ -111,4 +111,8 @@ export class BookingsComponent implements OnInit {
 
     return classes[status?.toLowerCase()] ?? 'text-bg-secondary';
   }
+
+  whatsAppLink(whatsAppNumber: string): string {
+    return `https://wa.me/${whatsAppNumber}`;
+  }
 }

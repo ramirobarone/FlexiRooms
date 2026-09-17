@@ -13,6 +13,7 @@ export interface UserBooking {
   paymentStatus: string;
   terminosYCondiciones?: string;
   instruccionesDeUso?: string;
+  hotelWhatsAppNumber?: string;
 }
 
 @Injectable({ providedIn: 'root' })

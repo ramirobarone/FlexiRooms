@@ -55,8 +55,8 @@ jobs:
       - name: Deploy image to server over SSH
         uses: appleboy/ssh-action@v1.2.2
         env:
-          MP_PUBLIC_KEY: ${{ vars.mercadopago_publickey }}
-          MP_TOKEN: ${{ vars.mercadopago_token }}
+          MP_PUBLIC_KEY: ${{ secrets.MERCADOPAGO_PUBLICKEY }}
+          MP_TOKEN: ${{ secrets.MERCADOPAGO_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}

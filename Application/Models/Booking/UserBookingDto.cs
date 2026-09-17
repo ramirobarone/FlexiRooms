@@ -9,5 +9,6 @@ namespace Application.Models.Booking
         string EndTime,
         string PaymentStatus,
         string? TerminosYCondiciones,
-        string? InstruccionesDeUso);
+        string? InstruccionesDeUso,
+        string? HotelWhatsAppNumber);
 }

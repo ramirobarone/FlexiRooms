@@ -114,6 +114,9 @@ namespace Application.Services.Reserves
                 DateTime start = booking.DateReserved.Date.Add(parsedStartTime);
                 DateTime end = start.AddHours(durationHours);
                 HotelInfo? hotelInfo = room?.Hotels is not null ? hotelInfoByHotelId.GetValueOrDefault(room.Hotels.Id) : null;
+                string? hotelWhatsAppNumber = room?.Hotels is not null
+                    ? $"549{room.Hotels.CodeArea}{room.Hotels.PhoneNumber}"
+                    : null;
 
                 return new UserBookingDto(
                     booking.Id,
@@ -124,7 +127,8 @@ namespace Application.Services.Reserves
                     end.ToString("HH:mm"),
                     paymentStatusByBookingId.GetValueOrDefault(booking.Id, "unknown"),
                     hotelInfo?.TerminosYCondiciones,
-                    hotelInfo?.InstruccionesDeUso);
+                    hotelInfo?.InstruccionesDeUso,
+                    hotelWhatsAppNumber);
             });
         }
 

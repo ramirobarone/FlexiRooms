@@ -1,0 +1,54 @@
+<main class="issue-page container py-4 py-lg-5">
+  <div class="mb-4">
+    <p class="section-label mb-1">Soporte</p>
+    <h1 class="h2 mb-1">Crear reclamo</h1>
+    @if (bookingId) {
+      <p class="text-muted mb-0">Reserva #{{ bookingId }}</p>
+    } @else {
+      <p class="text-muted mb-0">Contanos qué sucedió y te vamos a ayudar.</p>
+    }
+  </div>
+
+  @if (submitSuccess) {
+    <div class="alert alert-success">
+      <p class="mb-3">Tu reclamo fue enviado correctamente.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-sm btn-outline-success" type="button" (click)="goToMyIssues()">
+          <i class="bi bi-clipboard2-check me-1" aria-hidden="true"></i>Ver mis reclamos
+        </button>
+        <button class="btn btn-sm btn-success" type="button" (click)="goBack()">Volver a mis reservas</button>
+      </div>
+    </div>
+  } @else {
+    <form class="issue-form" (ngSubmit)="submit()">
+      <div class="mb-3">
+        <label class="form-label" for="issueType">Tipo de reclamo</label>
+        <select class="form-select" id="issueType" name="issueType" [(ngModel)]="tipoDeReclamo" [disabled]="isLoadingTypes">
+          @for (type of issueTypes; track type.id) {
+            <option [ngValue]="type.id">{{ type.issue }}</option>
+          }
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="issueText">Descripción</label>
+        <textarea class="form-control" id="issueText" name="issueText" rows="5" [(ngModel)]="texto" placeholder="Contanos qué sucedió..."></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="issueImage">Imagen (opcional)</label>
+        <input class="form-control" type="file" id="issueImage" accept=".jpg,.jpeg,.png,.webp" (change)="onImageSelected($event)">
+      </div>
+      @if (submitError) {
+        <div class="alert alert-danger">{{ submitError }}</div>
+      }
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="goBack()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+          }
+          Enviar reclamo
+        </button>
+      </div>
+    </form>
+  }
+</main>

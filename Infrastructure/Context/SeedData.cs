@@ -149,6 +149,13 @@ namespace Infrastructure.Context
                 new { Id = 8, Name = "assets/rooms/suite-nahuel.jpg", RoomId = 8 },
                 new { Id = 9, Name = "assets/rooms/colonial-single.jpg", RoomId = 9 },
                 new { Id = 10, Name = "assets/rooms/tradicion-nortena.jpg", RoomId = 10 });
+
+            modelBuilder.Entity<IssueType>().HasData(
+                new IssueType { Id = 1, Issue = "Limpieza" },
+                new IssueType { Id = 2, Issue = "Mantenimiento" },
+                new IssueType { Id = 3, Issue = "Ruido" },
+                new IssueType { Id = 4, Issue = "Problema con el acceso" },
+                new IssueType { Id = 5, Issue = "Otro" });
         }
     }
 }

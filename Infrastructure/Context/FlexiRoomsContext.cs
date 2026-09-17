@@ -33,6 +33,8 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     public DbSet<HotelPicture> HotelPicture { get; set; }
     public DbSet<UserProfileImage> UserProfileImages { get; set; }
     public DbSet<HotelInfo> HotelInfos { get; set; }
+    public DbSet<Issue> Issues { get; set; }
+    public DbSet<IssueType> IssuesTypes { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //optionsBuilder.UseNpgsql("Host=localhost;Database=hotelis;Username=hotelis;Password=Hotelis2024;");
@@ -87,6 +89,18 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .HasOne(hotelInfo => hotelInfo.Hotel)
             .WithMany()
             .HasForeignKey(hotelInfo => hotelInfo.HotelId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Issue>()
+            .HasOne(issue => issue.IssueType)
+            .WithMany()
+            .HasForeignKey(issue => issue.TipoDeReclamo)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Issue>()
+            .HasOne(issue => issue.ApplicationUser)
+            .WithMany()
+            .HasForeignKey(issue => issue.ApplicationUserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 

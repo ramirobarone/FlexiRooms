@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 
 import { BookingsComponent } from './bookings.component';
@@ -25,6 +26,7 @@ describe('BookingsComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [ BookingsComponent ],
+      imports: [ RouterTestingModule ],
       providers: [
         { provide: BookingsService, useValue: bookingsService }
       ]

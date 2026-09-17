@@ -52,23 +52,6 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Materialize SSH private key
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p .ssh
-          printf '%b\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > .ssh/deploy_key
-          chmod 600 .ssh/deploy_key
-
-          if ! grep -Eq '^-----BEGIN (OPENSSH|RSA|EC|DSA) PRIVATE KEY-----$' .ssh/deploy_key; then
-            echo "::error::SSH_PRIVATE_KEY must contain the complete private key, including its BEGIN/END lines."
-            exit 1
-          fi
-
-          echo "SSH key received: $(wc -l < .ssh/deploy_key) lines, $(wc -c < .ssh/deploy_key) bytes"
-          ssh-keygen -lf .ssh/deploy_key
-
       - name: Deploy image to server over SSH
         uses: appleboy/ssh-action@v1.2.2
         env:
@@ -78,7 +61,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
-          key_path: .ssh/deploy_key
+          password: ${{ secrets.ssh_pass }}
           envs: MP_PUBLIC_KEY,MP_TOKEN
           script: |
             docker pull ramirobarone/flexirooms:latest

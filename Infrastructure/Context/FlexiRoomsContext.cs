@@ -102,6 +102,18 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(issue => issue.ApplicationUserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Bookings>()
+            .HasOne(booking => booking.Room)
+            .WithMany()
+            .HasForeignKey(booking => booking.IdRoom)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Issue>()
+            .HasOne(issue => issue.Booking)
+            .WithMany()
+            .HasForeignKey(issue => issue.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

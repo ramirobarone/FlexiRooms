@@ -59,10 +59,15 @@ export class CreateIssueComponent implements OnInit {
       return;
     }
 
+    if (!this.bookingId || this.bookingId <= 0) {
+      this.submitError = 'La reserva indicada no es válida.';
+      return;
+    }
+
     this.isSubmitting = true;
     this.submitError = '';
 
-    this.issuesService.createIssue(this.tipoDeReclamo, this.texto.trim(), this.imageFile).subscribe({
+    this.issuesService.createIssue(this.bookingId, this.tipoDeReclamo, this.texto.trim(), this.imageFile).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.submitSuccess = true;

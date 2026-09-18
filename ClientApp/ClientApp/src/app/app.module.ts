@@ -30,6 +30,7 @@ import { MyAccountComponent } from './components/Account/my-account/my-account.c
 import { ContactComponent } from './components/home/contact/contact.component';
 import { CreateIssueComponent } from './components/bookings/create-issue/create-issue.component';
 import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.component';
+import { AdminIssuesComponent } from './components/hotels/admin-issues/admin-issues.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.com
     MyAccountComponent,
     ContactComponent,
     CreateIssueComponent,
-    MyIssuesComponent
+    MyIssuesComponent,
+    AdminIssuesComponent
   ],
   imports: [
     BrowserModule,

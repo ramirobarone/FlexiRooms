@@ -8,5 +8,5 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     standalone: false
 })
 export class ControlRoomComponent {
-  activeTab: 'summary' | 'hotels' | 'rooms' | 'bookings' = 'summary';
+  activeTab: 'summary' | 'hotels' | 'rooms' | 'bookings' | 'issues' = 'summary';
 }

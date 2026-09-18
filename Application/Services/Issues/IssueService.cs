@@ -8,6 +8,7 @@ namespace Application.Services.Issues;
 
 public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 {
+    private static readonly HashSet<string> AllowedStatuses = new(StringComparer.OrdinalIgnoreCase) { "Resuelto", "En Proceso", "Anulado" };
     private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".jpg", ".jpeg", ".png", ".webp"
@@ -15,10 +16,14 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 
     private const int MaxFileSizeBytes = 5 * 1024 * 1024;
 
-    public async Task<IssueDto> CreateIssueAsync(string applicationUserId, int tipoDeReclamo, string texto, IssueUploadFile? image, CancellationToken cancellationToken = default)
+    public async Task<IssueDto> CreateIssueAsync(string applicationUserId, int bookingId, int tipoDeReclamo, string texto, IssueUploadFile? image, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(applicationUserId))
             throw new ArgumentException("User id is invalid.", nameof(applicationUserId));
+
+        ApplicationUser? user = await flexiRoomsContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == applicationUserId, cancellationToken);
+        if (bookingId <= 0 || user is null || !await flexiRoomsContext.Bookings.AnyAsync(x => x.Id == bookingId && x.UserGuid == user.UserGuid, cancellationToken))
+            throw new ArgumentException("La reserva indicada no pertenece al usuario.", nameof(bookingId));
 
         if (string.IsNullOrWhiteSpace(texto))
             throw new ArgumentException("El texto del reclamo es obligatorio.", nameof(texto));
@@ -33,6 +38,7 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
             Texto = texto,
             Estado = "Pendiente",
             ApplicationUserId = applicationUserId,
+            BookingId = bookingId,
             CreatedAtUtc = DateTime.UtcNow
         };
 
@@ -76,6 +82,37 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
         return issues.Select(x => (IssueDto)x).ToList();
     }
 
+    public async Task<IReadOnlyCollection<IssueDto>> GetHotelIssuesAsync(string applicationUserId, bool isSuperAdmin, CancellationToken cancellationToken = default)
+    {
+        HashSet<int> hotelIds = await GetAccessibleHotelIdsAsync(applicationUserId, isSuperAdmin, cancellationToken);
+        List<Issue> issues = await flexiRoomsContext.Issues
+            .Include(x => x.IssueType)
+            .Include(x => x.Booking).ThenInclude(x => x!.Room).ThenInclude(x => x!.Hotels)
+            .Where(x => x.Booking != null && x.Booking.Room != null && x.Booking.Room.Hotels != null && hotelIds.Contains(x.Booking.Room.Hotels.Id))
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .ToListAsync(cancellationToken);
+        return issues.Select(x => (IssueDto)x).ToList();
+    }
+
+    public async Task<IssueDto> UpdateHotelIssueStatusAsync(string applicationUserId, bool isSuperAdmin, int issueId, string status, CancellationToken cancellationToken = default)
+    {
+        string normalizedStatus = status?.Trim() ?? string.Empty;
+        if (issueId <= 0 || !AllowedStatuses.Contains(normalizedStatus))
+            throw new ArgumentException("El estado o reclamo indicado no es válido.");
+
+        HashSet<int> hotelIds = await GetAccessibleHotelIdsAsync(applicationUserId, isSuperAdmin, cancellationToken);
+        Issue? issue = await flexiRoomsContext.Issues
+            .Include(x => x.IssueType)
+            .Include(x => x.Booking).ThenInclude(x => x!.Room).ThenInclude(x => x!.Hotels)
+            .FirstOrDefaultAsync(x => x.Id == issueId, cancellationToken);
+        if (issue?.Booking?.Room?.Hotels is null || !hotelIds.Contains(issue.Booking.Room.Hotels.Id))
+            throw new UnauthorizedAccessException();
+
+        issue.Estado = normalizedStatus;
+        await flexiRoomsContext.SaveChangesAsync(cancellationToken);
+        return issue;
+    }
+
     public async Task<IReadOnlyCollection<IssueTypeDto>> GetIssueTypesAsync(CancellationToken cancellationToken = default)
     {
         List<IssueType> issueTypes = await flexiRoomsContext.IssuesTypes
@@ -83,6 +120,22 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
             .ToListAsync(cancellationToken);
 
         return issueTypes.Select(x => (IssueTypeDto)x).ToList();
+    }
+
+    private async Task<HashSet<int>> GetAccessibleHotelIdsAsync(string applicationUserId, bool isSuperAdmin, CancellationToken cancellationToken)
+    {
+        if (isSuperAdmin)
+            return (await flexiRoomsContext.Hotels.Select(x => x.Id).ToListAsync(cancellationToken)).ToHashSet();
+
+        ApplicationUser? user = await flexiRoomsContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == applicationUserId, cancellationToken);
+        if (user is null)
+            return [];
+
+        HashSet<int> hotelIds = user.ManagedHotelId.HasValue ? [user.ManagedHotelId.Value] : [];
+        hotelIds.UnionWith((user.OwnedHotelIds ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(value => int.TryParse(value.Trim(), out int hotelId) ? hotelId : 0).Where(hotelId => hotelId > 0));
+        hotelIds.UnionWith(await flexiRoomsContext.Hotels.Where(x => x.IdentityNumber == applicationUserId).Select(x => x.Id).ToListAsync(cancellationToken));
+        return hotelIds;
     }
 
     private static void ValidateFile(IssueUploadFile file)

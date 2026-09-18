@@ -10,6 +10,7 @@ export interface IssueType {
 
 export interface Issue {
   id: number;
+  bookingId?: number;
   tipoDeReclamo: number;
   tipoDeReclamoNombre: string;
   texto: string;
@@ -36,8 +37,17 @@ export class IssuesService {
     return this.http.get<Issue[]>(`${this.baseUrl}GetMyIssues`);
   }
 
-  createIssue(tipoDeReclamo: number, texto: string, imagen?: File): Observable<Issue> {
+  getHotelIssues(): Observable<Issue[]> {
+    return this.http.get<Issue[]>(`${this.baseUrl}GetHotelIssues`);
+  }
+
+  updateHotelIssueStatus(id: number, estado: string): Observable<Issue> {
+    return this.http.patch<Issue>(`${this.baseUrl}UpdateHotelIssueStatus?id=${id}`, { estado });
+  }
+
+  createIssue(bookingId: number, tipoDeReclamo: number, texto: string, imagen?: File): Observable<Issue> {
     const formData = new FormData();
+    formData.append('bookingId', bookingId.toString());
     formData.append('tipoDeReclamo', tipoDeReclamo.toString());
     formData.append('texto', texto);
     if (imagen) {

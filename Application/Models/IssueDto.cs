@@ -2,9 +2,10 @@ using Infrastructure.Models;
 
 namespace Application.Models
 {
-    public class IssueDto(int Id, int TipoDeReclamo, string TipoDeReclamoNombre, string Texto, string? Imagen, string Estado, DateTime CreatedAtUtc)
+    public class IssueDto(int Id, int? BookingId, int TipoDeReclamo, string TipoDeReclamoNombre, string Texto, string? Imagen, string Estado, DateTime CreatedAtUtc)
     {
         public int Id { get; } = Id;
+        public int? BookingId { get; } = BookingId;
         public int TipoDeReclamo { get; } = TipoDeReclamo;
         public string TipoDeReclamoNombre { get; } = TipoDeReclamoNombre;
         public string Texto { get; } = Texto;
@@ -14,7 +15,7 @@ namespace Application.Models
 
         public static implicit operator IssueDto(Issue issue)
         {
-            return new IssueDto(issue.Id, issue.TipoDeReclamo, issue.IssueType?.Issue ?? string.Empty, issue.Texto, issue.Imagen, issue.Estado, issue.CreatedAtUtc);
+            return new IssueDto(issue.Id, issue.BookingId, issue.TipoDeReclamo, issue.IssueType?.Issue ?? string.Empty, issue.Texto, issue.Imagen, issue.Estado, issue.CreatedAtUtc);
         }
     }
 }

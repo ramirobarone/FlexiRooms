@@ -31,7 +31,7 @@ public class IssuesController(IIssueService issueService, ILogger<IssuesControll
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> CreateIssue([FromForm] int tipoDeReclamo, [FromForm] string texto, [FromForm] IFormFile? imagen, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateIssue([FromForm] int bookingId, [FromForm] int tipoDeReclamo, [FromForm] string texto, [FromForm] IFormFile? imagen, CancellationToken cancellationToken)
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userId))
@@ -50,7 +50,7 @@ public class IssuesController(IIssueService issueService, ILogger<IssuesControll
 
         try
         {
-            IssueDto created = await issueService.CreateIssueAsync(userId, tipoDeReclamo, texto, mappedImage, cancellationToken);
+            IssueDto created = await issueService.CreateIssueAsync(userId, bookingId, tipoDeReclamo, texto, mappedImage, cancellationToken);
             logger.LogInformation("Created issue {IssueId} for user {UserId}", created.Id, userId);
             return Ok(created);
         }
@@ -60,4 +60,39 @@ public class IssuesController(IIssueService issueService, ILogger<IssuesControll
             return BadRequest(ex.Message);
         }
     }
+
+    [Authorize(Policy = "HotelManagement")]
+    [HttpGet, Route(nameof(GetHotelIssues))]
+    public async Task<IActionResult> GetHotelIssues(CancellationToken cancellationToken)
+    {
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        return Ok(await issueService.GetHotelIssuesAsync(userId, User.IsInRole("SuperAdmin"), cancellationToken));
+    }
+
+    [Authorize(Policy = "HotelManagement")]
+    [HttpPatch, Route(nameof(UpdateHotelIssueStatus))]
+    public async Task<IActionResult> UpdateHotelIssueStatus(int id, [FromBody] UpdateIssueStatusRequest request, CancellationToken cancellationToken)
+    {
+        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        try
+        {
+            return Ok(await issueService.UpdateHotelIssueStatusAsync(userId, User.IsInRole("SuperAdmin"), id, request.Estado, cancellationToken));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    public sealed record UpdateIssueStatusRequest(string Estado);
 }

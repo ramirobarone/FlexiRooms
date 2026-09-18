@@ -11,9 +11,11 @@ namespace Infrastructure.Models
         public string? Imagen { get; set; }
         public string Estado { get; set; } = "Pendiente";
         public required string ApplicationUserId { get; set; }
+        public int? BookingId { get; set; }
         public DateTime CreatedAtUtc { get; set; }
 
         public IssueType IssueType { get; set; } = null!;
         public ApplicationUser ApplicationUser { get; set; } = null!;
+        public Bookings? Booking { get; set; }
     }
 }

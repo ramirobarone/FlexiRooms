@@ -10,6 +10,7 @@
         <button class="btn" [ngClass]="activeTab === 'hotels' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'hotels'">Hoteles</button>
         <button class="btn" [ngClass]="activeTab === 'rooms' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'rooms'">Habitaciones</button>
         <button class="btn" [ngClass]="activeTab === 'bookings' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'bookings'">Reservas</button>
+        <button class="btn" [ngClass]="activeTab === 'issues' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'issues'">Reclamos</button>
       </div>
     </div>
 
@@ -40,6 +41,14 @@
               </div>
             </div>
           </div>
+          <div class="col-md-4">
+            <div class="card bg-warning h-100" (click)="activeTab = 'issues'" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">Reclamos</h5>
+                <p class="card-text mb-0">Consulta y actualiza reclamos de tu hotel.</p>
+              </div>
+            </div>
+          </div>
         </div>
       }
       @case ('hotels') {
@@ -50,6 +59,9 @@
       }
       @case ('bookings') {
         <app-admin-bookings></app-admin-bookings>
+      }
+      @case ('issues') {
+        <app-admin-issues></app-admin-issues>
       }
     }
   </div>

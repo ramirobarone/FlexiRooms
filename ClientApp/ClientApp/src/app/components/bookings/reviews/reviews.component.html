@@ -1,0 +1,45 @@
+<section class="reviews-container">
+  <div class="reviews-panel rounded-surface">
+    <h1 class="h4 mb-3">Dejanos tu reseña</h1>
+
+    @if (!submitSuccess) {
+      <div class="form-group mb-3">
+        <label class="form-label" for="value">Valoración general (1 a 5)</label>
+        <select id="value" class="form-select" [(ngModel)]="value" [disabled]="isSubmitting">
+          <option [ngValue]="1">1</option>
+          <option [ngValue]="2">2</option>
+          <option [ngValue]="3">3</option>
+          <option [ngValue]="4">4</option>
+          <option [ngValue]="5">5</option>
+        </select>
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label" for="reviewText">Tu reseña</label>
+        <textarea id="reviewText" class="form-control" rows="4" [(ngModel)]="reviewText" [disabled]="isSubmitting"
+          placeholder="Contanos tu experiencia"></textarea>
+      </div>
+
+      <div class="reviews-actions">
+        <button class="btn btn-success" type="button" (click)="submit()" [disabled]="isSubmitting">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" *ngIf="isSubmitting"></span>
+          {{ isSubmitting ? 'Enviando...' : 'Enviar reseña' }}
+        </button>
+        <a class="btn btn-outline-secondary" routerLink="/MisReservas">Volver</a>
+      </div>
+
+      <div class="alert alert-danger reviews-alert" role="alert" *ngIf="submitError">
+        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+        {{ submitError }}
+      </div>
+    }
+
+    @if (submitSuccess) {
+      <div class="alert alert-success" role="alert">
+        <i class="bi bi-check2-circle me-2" aria-hidden="true"></i>
+        ¡Gracias por tu reseña!
+      </div>
+      <a class="btn btn-outline-secondary" routerLink="/MisReservas">Volver a mis reservas</a>
+    }
+  </div>
+</section>

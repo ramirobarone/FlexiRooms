@@ -13,6 +13,7 @@ namespace Infrastructure.Models
         public string? MetaDescription { get; set; }
         public string? Email { get; set; }
         public string? IdentityNumber { get; set; }
+        public decimal? ReviewScore { get; set; }
         public Address? AddressHotel { get; set; }
         public virtual ICollection<HotelPicture>? HotelPictures{ get; set; }
 

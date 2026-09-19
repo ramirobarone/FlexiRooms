@@ -37,6 +37,7 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     public DbSet<IssueType> IssuesTypes { get; set; }
     public DbSet<HotelMaintenance> HotelMaintenances { get; set; }
     public DbSet<MaintenanceType> MaintenanceTypes { get; set; }
+    public DbSet<Review> Reviews { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //optionsBuilder.UseNpgsql("Host=localhost;Database=hotelis;Username=hotelis;Password=Hotelis2024;");
@@ -127,6 +128,18 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(maintenance => maintenance.HotelId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Review>()
+            .HasOne(review => review.User)
+            .WithMany()
+            .HasForeignKey(review => review.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Review>()
+            .HasOne(review => review.Hotel)
+            .WithMany()
+            .HasForeignKey(review => review.HotelId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

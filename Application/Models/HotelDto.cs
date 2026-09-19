@@ -14,6 +14,7 @@ namespace Application.Models
         public int CodeArea { get; set; }
         public int PhoneNumber { get; set; }
         public string? IdentityNumber { get; set; }
+        public decimal? ReviewScore { get; set; }
         public int ProvinceId { get; set; }
         public int CityId { get; set; }
         public Address? AddressHotel { get; set; }
@@ -32,6 +33,7 @@ namespace Application.Models
                 Name = hotel.Name,
                 PhoneNumber = hotel.PhoneNumber,
                 IdentityNumber = hotel.IdentityNumber,
+                ReviewScore = hotel.ReviewScore,
                 Pictures = hotel?.HotelPictures?.ConvertToHotelPictureDto() ?? Enumerable.Empty<HotelPictureDto>(),
 
                 //AddressHotel = new Models.Address()
@@ -60,6 +62,7 @@ namespace Application.Models
                 Name = hotel.Name ?? string.Empty,
                 PhoneNumber = hotel.PhoneNumber,
                 IdentityNumber = hotel.IdentityNumber,
+                ReviewScore = hotel.ReviewScore,
                 AddressHotel = new Address()
                 {
                     Id = hotel.AddressHotel?.Id ?? 0,

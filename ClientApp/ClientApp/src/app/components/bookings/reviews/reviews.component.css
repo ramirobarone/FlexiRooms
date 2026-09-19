@@ -1,0 +1,22 @@
+.reviews-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.reviews-panel {
+  width: min(100%, 540px);
+  padding: 2rem;
+}
+
+.reviews-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.reviews-alert {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}

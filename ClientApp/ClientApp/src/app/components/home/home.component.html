@@ -14,6 +14,7 @@
       <app-card-hotel name="{{ item.name }}"
         description="{{ item.description}}"
         idHotel="{{item.id}}"
+        [reviewScore]="item.reviewScore ?? 0"
       [images]="item.pictures"></app-card-hotel>
     </span>
   }

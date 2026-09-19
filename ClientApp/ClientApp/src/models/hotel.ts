@@ -13,6 +13,7 @@ export interface Hotel {
   postalCode: string;
   latitud: string;
   longitud: string;
+  reviewScore?: number;
   pictures: hotelPicture[]
 
 }

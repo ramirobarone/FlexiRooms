@@ -27,8 +27,23 @@ export class CardHotelComponent {
   stateHotel: boolean = true;
   @Input()
   idHotel: string = '';
+  @Input()
+  reviewScore: number = 0;
 
   showCopiedMessage: boolean = false;
+
+  get fullStars(): number[] {
+    return Array(Math.floor(this.reviewScore)).fill(0);
+  }
+
+  get hasHalfStar(): boolean {
+    return this.reviewScore % 1 >= 0.5;
+  }
+
+  get emptyStars(): number[] {
+    const filled = Math.floor(this.reviewScore) + (this.hasHalfStar ? 1 : 0);
+    return Array(5 - filled).fill(0);
+  }
 
   constructor(private router: Router) {
 

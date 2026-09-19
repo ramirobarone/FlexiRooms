@@ -27,6 +27,7 @@ import { AdminHotelsComponent } from './components/hotels/admin-hotels/admin-hot
 import { AdminBookingsComponent } from './components/hotels/admin-bookings/admin-bookings.component';
 import { AdminRoomComponent } from './components/hotels/admin-room/admin-room.component';
 import { MyAccountComponent } from './components/Account/my-account/my-account.component';
+import { ReviewsComponent } from './components/bookings/reviews/reviews.component';
 import { ContactComponent } from './components/home/contact/contact.component';
 import { CreateIssueComponent } from './components/bookings/create-issue/create-issue.component';
 import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.component';
@@ -74,6 +75,7 @@ import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance
       { path: 'login', component: LoginComponent, pathMatch: 'full' },
       { path: 'accountCreate', component: AccountCreateComponent, pathMatch: 'full' },
       { path: 'miCuenta', component: MyAccountComponent, pathMatch: 'full' },
+      { path: 'resenas/:bookingId', component: ReviewsComponent, pathMatch: 'full' },
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: 'MisReservas', component: BookingsComponent, pathMatch: 'full' },
       { path: 'reclamos/nuevo/:bookingId', component: CreateIssueComponent, pathMatch: 'full' },

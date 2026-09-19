@@ -38,6 +38,17 @@
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
+.hotel-review-score {
+    color: #ffc107;
+    font-size: 1.2rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    align-self: center;
+}
+
+.hotel-review-score i {
+    margin-right: 0.2rem;
+}
+
 .hotel-card-overlay .marginButtonRooms {
     align-self: flex-end;
     margin: 0;

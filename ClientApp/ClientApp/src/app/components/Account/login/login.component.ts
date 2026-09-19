@@ -20,7 +20,7 @@ export class LoginComponent {
               private renderer: Renderer2,
               private localStorageService: LocalStorageService) {
   }
-  userDto: UserDto = { email: 'ramiro_barone@hotmail.com', password: '' };
+  userDto: UserDto = { email: '', password: '' };
   isLoading = false;
   errorMessage = '';
 

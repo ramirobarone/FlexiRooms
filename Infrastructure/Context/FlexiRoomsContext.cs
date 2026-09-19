@@ -99,9 +99,9 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Issue>()
-            .HasOne(issue => issue.IssueType)
+            .HasOne(issue => issue.MaintenanceType)
             .WithMany()
-            .HasForeignKey(issue => issue.TipoDeReclamo)
+            .HasForeignKey(issue => issue.MaintenanceTypeId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Issue>()

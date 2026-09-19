@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FlexiRoomsContext))]
-    [Migration("20260829222530_FK_Hotel_user")]
-    partial class FK_Hotel_user
+    [Migration("20260919202814_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,21 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("HotelMaintenanceMaintenanceType", b =>
+                {
+                    b.Property<int>("HotelMaintenancesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaintenanceTypesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("HotelMaintenancesId", "MaintenanceTypesId");
+
+                    b.HasIndex("MaintenanceTypesId");
+
+                    b.ToTable("HotelMaintenanceMaintenanceTypes", (string)null);
+                });
+
             modelBuilder.Entity("Infrastructure.Models.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -32,6 +47,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("IdCity")
                         .HasColumnType("integer");
@@ -48,64 +66,15 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PostalCode")
                         .HasColumnType("text");
 
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Street")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Address");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IdCity = 1,
-                            Latitud = "-34.6037",
-                            Longitud = "-58.3816",
-                            Number = "1234",
-                            PostalCode = "C1043",
-                            Street = "Av. Corrientes"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IdCity = 23,
-                            Latitud = "-32.9442",
-                            Longitud = "-60.6505",
-                            Number = "890",
-                            PostalCode = "S2000",
-                            Street = "Bv. Oroño"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IdCity = 15,
-                            Latitud = "-32.8895",
-                            Longitud = "-68.8458",
-                            Number = "456",
-                            PostalCode = "M5500",
-                            Street = "Av. San Martín"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IdCity = 18,
-                            Latitud = "-41.1335",
-                            Longitud = "-71.3103",
-                            Number = "11500",
-                            PostalCode = "R8400",
-                            Street = "Av. Bustillo"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IdCity = 19,
-                            Latitud = "-24.7829",
-                            Longitud = "-65.4232",
-                            Number = "786",
-                            PostalCode = "A4400",
-                            Street = "Caseros"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Models.ApplicationUser", b =>
@@ -193,6 +162,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("UserProfileImageUserId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -201,6 +173,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("UserProfileImageUserId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -214,6 +188,9 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CheckInTimeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CostId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateReserved")
@@ -234,6 +211,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CheckInTimeId");
+
+                    b.HasIndex("IdRoom");
 
                     b.HasIndex("UserId");
 
@@ -457,59 +436,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Hour")
                         .HasColumnType("integer");
 
+                    b.Property<int>("RoomId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Costs");
+                    b.HasIndex("RoomId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CostPerTime = 45000m,
-                            Hour = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CostPerTime = 78000m,
-                            Hour = 4
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CostPerTime = 120000m,
-                            Hour = 8
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CostPerTime = 165000m,
-                            Hour = 12
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CostPerTime = 52000m,
-                            Hour = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CostPerTime = 86000m,
-                            Hour = 4
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CostPerTime = 134000m,
-                            Hour = 8
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CostPerTime = 182000m,
-                            Hour = 12
-                        });
+                    b.ToTable("Costs");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.Country", b =>
@@ -594,63 +528,72 @@ namespace Infrastructure.Migrations
                     b.HasIndex("IdentityNumber");
 
                     b.ToTable("Hotels");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AddressHotelId = 1,
-                            CodeArea = 11,
-                            Description = "Hotel urbano en el centro porteño.",
-                            Email = "reservas@hotelobelisco.com",
-                            MetaDescription = "Ideal para negocios y escapadas en Buenos Aires.",
-                            Name = "Hotel Obelisco",
-                            PhoneNumber = 43219876
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AddressHotelId = 2,
-                            CodeArea = 341,
-                            Description = "Hotel moderno con vista al río Paraná.",
-                            Email = "hola@rosarioriverside.com",
-                            MetaDescription = "Alojamiento premium en Rosario.",
-                            Name = "Rosario Riverside",
-                            PhoneNumber = 5588776
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AddressHotelId = 3,
-                            CodeArea = 261,
-                            Description = "Suites boutique cerca de bodegas y montaña.",
-                            Email = "info@andessuites.com",
-                            MetaDescription = "Descanso y vino en Mendoza.",
-                            Name = "Andes Suites Mendoza",
-                            PhoneNumber = 4477551
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AddressHotelId = 4,
-                            CodeArea = 294,
-                            Description = "Hotel de montaña con vista al lago.",
-                            Email = "contacto@patagoniaview.com",
-                            MetaDescription = "Experiencia patagónica en Bariloche.",
-                            Name = "Patagonia View Bariloche",
-                            PhoneNumber = 4522334
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AddressHotelId = 5,
-                            CodeArea = 387,
-                            Description = "Hotel cálido en el casco histórico salteño.",
-                            Email = "reservas@saltacolonial.com",
-                            MetaDescription = "Tradición y confort en Salta.",
-                            Name = "Salta Colonial",
-                            PhoneNumber = 4123456
-                        });
+            modelBuilder.Entity("Infrastructure.Models.HotelInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("InstruccionesDeUso")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TerminosYCondiciones")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("HotelInfos");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.HotelMaintenance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NameMaintenance")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TelephoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UpdateBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("HotelMaintenances");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.HotelPicture", b =>
@@ -672,38 +615,187 @@ namespace Infrastructure.Migrations
                     b.HasIndex("HotelId");
 
                     b.ToTable("HotelPicture");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.Issue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MaintenanceTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("MaintenanceTypeId");
+
+                    b.ToTable("Issues");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.IssueType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Issue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IssuesTypes");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            HotelId = 1,
-                            Path = "assets/hotels/obelisco.jpg"
+                            Issue = "Limpieza"
                         },
                         new
                         {
                             Id = 2,
-                            HotelId = 2,
-                            Path = "assets/hotels/rosario-riverside.jpg"
+                            Issue = "Mantenimiento"
                         },
                         new
                         {
                             Id = 3,
-                            HotelId = 3,
-                            Path = "assets/hotels/andes-suites.jpg"
+                            Issue = "Agua"
                         },
                         new
                         {
                             Id = 4,
-                            HotelId = 4,
-                            Path = "assets/hotels/patagonia-view.jpg"
+                            Issue = "Electricidad"
                         },
                         new
                         {
                             Id = 5,
-                            HotelId = 5,
-                            Path = "assets/hotels/salta-colonial.jpg"
+                            Issue = "Servicios"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Issue = "Ruido"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Issue = "Problema con el acceso"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Issue = "Otro"
                         });
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.MaintenanceType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MaintenanceTypes");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.PaymentTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CurrencyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Installments")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MercadoPagoPaymentId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentMethodId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StatusDetail")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("IdempotencyKey")
+                        .IsUnique();
+
+                    b.HasIndex("MercadoPagoPaymentId")
+                        .IsUnique();
+
+                    b.ToTable("PaymentTransactions");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.PreBooking", b =>
@@ -914,9 +1006,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("BedNumbers")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CostId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -928,113 +1017,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CostId");
-
                     b.HasIndex("HotelsId");
 
                     b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AvialableNow = true,
-                            BedNumbers = 1,
-                            CostId = 1,
-                            Description = "Habitación individual con escritorio.",
-                            HotelsId = 1,
-                            Name = "Single Business"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AvialableNow = true,
-                            BedNumbers = 2,
-                            CostId = 2,
-                            Description = "Habitación doble con desayuno incluido.",
-                            HotelsId = 1,
-                            Name = "Doble Ejecutiva"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AvialableNow = true,
-                            BedNumbers = 2,
-                            CostId = 6,
-                            Description = "Suite con vista al río.",
-                            HotelsId = 2,
-                            Name = "Suite Paraná"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AvialableNow = false,
-                            BedNumbers = 3,
-                            CostId = 7,
-                            Description = "Ideal para familias y estadías cortas.",
-                            HotelsId = 2,
-                            Name = "Familiar Rosario"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AvialableNow = true,
-                            BedNumbers = 2,
-                            CostId = 6,
-                            Description = "Habitación premium con ambientación mendocina.",
-                            HotelsId = 3,
-                            Name = "Suite Malbec"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AvialableNow = true,
-                            BedNumbers = 4,
-                            CostId = 8,
-                            Description = "Amplia habitación para grupos pequeños.",
-                            HotelsId = 3,
-                            Name = "Familiar Cordillera"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AvialableNow = true,
-                            BedNumbers = 2,
-                            CostId = 7,
-                            Description = "Vista al lago y detalles patagónicos.",
-                            HotelsId = 4,
-                            Name = "Lago Superior"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AvialableNow = true,
-                            BedNumbers = 3,
-                            CostId = 8,
-                            Description = "Suite con living y balcón.",
-                            HotelsId = 4,
-                            Name = "Suite Nahuel"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AvialableNow = true,
-                            BedNumbers = 1,
-                            CostId = 1,
-                            Description = "Opción práctica para viajeros solos.",
-                            HotelsId = 5,
-                            Name = "Colonial Single"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AvialableNow = true,
-                            BedNumbers = 2,
-                            CostId = 5,
-                            Description = "Decoración regional y patio interno.",
-                            HotelsId = 5,
-                            Name = "Tradición Norteña"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Models.RoomPicture", b =>
@@ -1056,68 +1041,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("RoomPictures");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "assets/rooms/single-business.jpg",
-                            RoomId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "assets/rooms/doble-ejecutiva.jpg",
-                            RoomId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "assets/rooms/suite-parana.jpg",
-                            RoomId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "assets/rooms/familiar-rosario.jpg",
-                            RoomId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "assets/rooms/suite-malbec.jpg",
-                            RoomId = 5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "assets/rooms/familiar-cordillera.jpg",
-                            RoomId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "assets/rooms/lago-superior.jpg",
-                            RoomId = 7
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "assets/rooms/suite-nahuel.jpg",
-                            RoomId = 8
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "assets/rooms/colonial-single.jpg",
-                            RoomId = 9
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "assets/rooms/tradicion-nortena.jpg",
-                            RoomId = 10
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Models.TimesAvailable", b =>
@@ -1135,48 +1058,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TimesAvialable");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Time = "08:00"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Time = "10:00"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Time = "12:00"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Time = "14:00"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Time = "16:00"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Time = "18:00"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Time = "20:00"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Time = "22:00"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Models.User", b =>
@@ -1238,6 +1119,31 @@ namespace Infrastructure.Migrations
                     b.HasIndex("AddressId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.UserProfileImage", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserProfileImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1372,6 +1278,30 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HotelMaintenanceMaintenanceType", b =>
+                {
+                    b.HasOne("Infrastructure.Models.HotelMaintenance", null)
+                        .WithMany()
+                        .HasForeignKey("HotelMaintenancesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Models.MaintenanceType", null)
+                        .WithMany()
+                        .HasForeignKey("MaintenanceTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Infrastructure.Models.UserProfileImage", "UserProfileImage")
+                        .WithMany()
+                        .HasForeignKey("UserProfileImageUserId");
+
+                    b.Navigation("UserProfileImage");
+                });
+
             modelBuilder.Entity("Infrastructure.Models.Bookings", b =>
                 {
                     b.HasOne("Infrastructure.Models.TimesAvailable", "CheckInTime")
@@ -1380,11 +1310,19 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Infrastructure.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("IdRoom")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Infrastructure.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("CheckInTime");
+
+                    b.Navigation("Room");
 
                     b.Navigation("User");
                 });
@@ -1396,6 +1334,15 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ProvinceId");
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.Cost", b =>
+                {
+                    b.HasOne("Infrastructure.Models.Room", null)
+                        .WithMany("Costs")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Infrastructure.Models.Hotel", b =>
@@ -1414,11 +1361,77 @@ namespace Infrastructure.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Infrastructure.Models.HotelInfo", b =>
+                {
+                    b.HasOne("Infrastructure.Models.Hotel", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.HotelMaintenance", b =>
+                {
+                    b.HasOne("Infrastructure.Models.Hotel", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
             modelBuilder.Entity("Infrastructure.Models.HotelPicture", b =>
                 {
                     b.HasOne("Infrastructure.Models.Hotel", null)
                         .WithMany("HotelPictures")
                         .HasForeignKey("HotelId");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.Issue", b =>
+                {
+                    b.HasOne("Infrastructure.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Models.Bookings", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Infrastructure.Models.MaintenanceType", "MaintenanceType")
+                        .WithMany()
+                        .HasForeignKey("MaintenanceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("MaintenanceType");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.PaymentTransaction", b =>
+                {
+                    b.HasOne("Infrastructure.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("PaymentTransactions")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Models.Bookings", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.PreBooking", b =>
@@ -1441,15 +1454,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Models.Room", b =>
                 {
-                    b.HasOne("Infrastructure.Models.Cost", "Cost")
-                        .WithMany()
-                        .HasForeignKey("CostId");
-
                     b.HasOne("Infrastructure.Models.Hotel", "Hotels")
                         .WithMany()
                         .HasForeignKey("HotelsId");
-
-                    b.Navigation("Cost");
 
                     b.Navigation("Hotels");
                 });
@@ -1468,6 +1475,17 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.UserProfileImage", b =>
+                {
+                    b.HasOne("Infrastructure.Models.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("Infrastructure.Models.UserProfileImage", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1521,6 +1539,11 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Infrastructure.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("PaymentTransactions");
+                });
+
             modelBuilder.Entity("Infrastructure.Models.Hotel", b =>
                 {
                     b.Navigation("HotelPictures");
@@ -1528,6 +1551,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Models.Room", b =>
                 {
+                    b.Navigation("Costs");
+
                     b.Navigation("RoomPictures");
                 });
 #pragma warning restore 612, 618

@@ -1,8 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
-namespace Infrastructure.Models
+namespace ClasificatorMaintenance.Database
 {
-    public class Issue
+    internal class Issue
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -10,12 +13,7 @@ namespace Infrastructure.Models
         public required string Text { get; set; }
         public string? Image { get; set; }
         public string Status { get; set; } = "Pending";
-        public required string ApplicationUserId { get; set; }
         public int? BookingId { get; set; }
         public DateTime CreatedAtUtc { get; set; }
-
-        public MaintenanceType MaintenanceType { get; set; } = null!;
-        public ApplicationUser ApplicationUser { get; set; } = null!;
-        public Bookings? Booking { get; set; }
     }
 }

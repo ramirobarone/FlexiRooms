@@ -34,9 +34,9 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 
         Issue issue = new()
         {
-            TipoDeReclamo = tipoDeReclamo,
-            Texto = texto,
-            Estado = "Pendiente",
+            MaintenanceTypeId = tipoDeReclamo,
+            Text = texto,
+            Status = "Pendiente",
             ApplicationUserId = applicationUserId,
             BookingId = bookingId,
             CreatedAtUtc = DateTime.UtcNow
@@ -55,14 +55,14 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 
             await File.WriteAllBytesAsync(physicalPath, image.Content, cancellationToken);
 
-            issue.Imagen = $"/issues/{newFileName}";
+            issue.Image = $"/issues/{newFileName}";
         }
 
         flexiRoomsContext.Issues.Add(issue);
         await flexiRoomsContext.SaveChangesAsync(cancellationToken);
 
         Issue created = await flexiRoomsContext.Issues
-            .Include(x => x.IssueType)
+            .Include(x => x.MaintenanceType)
             .FirstAsync(x => x.Id == issue.Id, cancellationToken);
 
         return created;
@@ -74,7 +74,7 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
             throw new ArgumentException("User id is invalid.", nameof(applicationUserId));
 
         List<Issue> issues = await flexiRoomsContext.Issues
-            .Include(x => x.IssueType)
+            .Include(x => x.MaintenanceType)
             .Where(x => x.ApplicationUserId == applicationUserId)
             .OrderByDescending(x => x.CreatedAtUtc)
             .ToListAsync(cancellationToken);
@@ -86,7 +86,7 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
     {
         HashSet<int> hotelIds = await GetAccessibleHotelIdsAsync(applicationUserId, isSuperAdmin, cancellationToken);
         List<Issue> issues = await flexiRoomsContext.Issues
-            .Include(x => x.IssueType)
+            .Include(x => x.MaintenanceType)
             .Include(x => x.Booking).ThenInclude(x => x!.Room).ThenInclude(x => x!.Hotels)
             .Where(x => x.Booking != null && x.Booking.Room != null && x.Booking.Room.Hotels != null && hotelIds.Contains(x.Booking.Room.Hotels.Id))
             .OrderByDescending(x => x.CreatedAtUtc)
@@ -102,13 +102,13 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 
         HashSet<int> hotelIds = await GetAccessibleHotelIdsAsync(applicationUserId, isSuperAdmin, cancellationToken);
         Issue? issue = await flexiRoomsContext.Issues
-            .Include(x => x.IssueType)
+            .Include(x => x.MaintenanceType)
             .Include(x => x.Booking).ThenInclude(x => x!.Room).ThenInclude(x => x!.Hotels)
             .FirstOrDefaultAsync(x => x.Id == issueId, cancellationToken);
         if (issue?.Booking?.Room?.Hotels is null || !hotelIds.Contains(issue.Booking.Room.Hotels.Id))
             throw new UnauthorizedAccessException();
 
-        issue.Estado = normalizedStatus;
+        issue.Status = normalizedStatus;
         await flexiRoomsContext.SaveChangesAsync(cancellationToken);
         return issue;
     }

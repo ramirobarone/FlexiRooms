@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FlexiRoomsContext))]
-    partial class RoomContainerContextModelSnapshot : ModelSnapshot
+    partial class FlexiRoomsContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -632,19 +632,19 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
-                    b.Property<string>("Imagen")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Texto")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("TipoDeReclamo")
+                    b.Property<int>("MaintenanceTypeId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -652,7 +652,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("TipoDeReclamo");
+                    b.HasIndex("MaintenanceTypeId");
 
                     b.ToTable("Issues");
                 });
@@ -1400,9 +1400,9 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Infrastructure.Models.IssueType", "IssueType")
+                    b.HasOne("Infrastructure.Models.MaintenanceType", "MaintenanceType")
                         .WithMany()
-                        .HasForeignKey("TipoDeReclamo")
+                        .HasForeignKey("MaintenanceTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1410,7 +1410,7 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Booking");
 
-                    b.Navigation("IssueType");
+                    b.Navigation("MaintenanceType");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.PaymentTransaction", b =>

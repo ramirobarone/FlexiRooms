@@ -15,7 +15,7 @@ namespace Application.Models
 
         public static implicit operator IssueDto(Issue issue)
         {
-            return new IssueDto(issue.Id, issue.BookingId, issue.TipoDeReclamo, issue.IssueType?.Issue ?? string.Empty, issue.Texto, issue.Imagen, issue.Estado, issue.CreatedAtUtc);
+            return new IssueDto(issue.Id, issue.BookingId, issue.MaintenanceTypeId, issue.MaintenanceType?.Description ?? string.Empty, issue.Text, issue.Image, issue.Status, issue.CreatedAtUtc);
         }
     }
 }

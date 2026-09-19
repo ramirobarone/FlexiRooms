@@ -7,6 +7,7 @@ using Application.Services.Reserves;
 using Application.Services.Booking;
 using Application.Services.Rooms;
 using Application.Services.Issues;
+using Application.Services.Maintenance;
 using Infrastructure.Models;
 
 namespace ClientApp.Extensions
@@ -30,6 +31,7 @@ namespace ClientApp.Extensions
             app.Services.AddScoped<IAccountService, AccountService>();
             app.Services.AddScoped<IPayment, Paymentt>();
             app.Services.AddScoped<IIssueService, IssueService>();
+            app.Services.AddScoped<IHotelMaintenanceService, HotelMaintenanceService>();
 
         }
     }

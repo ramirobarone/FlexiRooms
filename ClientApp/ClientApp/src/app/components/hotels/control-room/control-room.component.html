@@ -11,6 +11,7 @@
         <button class="btn" [ngClass]="activeTab === 'rooms' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'rooms'">Habitaciones</button>
         <button class="btn" [ngClass]="activeTab === 'bookings' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'bookings'">Reservas</button>
         <button class="btn" [ngClass]="activeTab === 'issues' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'issues'">Reclamos</button>
+        <button class="btn" [ngClass]="activeTab === 'maintenance' ? 'btn-dark' : 'btn-outline-dark'" (click)="activeTab = 'maintenance'">Mantenimiento</button>
       </div>
     </div>
 
@@ -49,6 +50,14 @@
               </div>
             </div>
           </div>
+          <div class="col-md-4">
+            <div class="card bg-info text-white h-100" (click)="activeTab = 'maintenance'" style="cursor: pointer;">
+              <div class="card-body">
+                <h5 class="card-title">Mantenimiento</h5>
+                <p class="card-text mb-0">Configura el personal responsable de cada tipo de solicitud.</p>
+              </div>
+            </div>
+          </div>
         </div>
       }
       @case ('hotels') {
@@ -62,6 +71,9 @@
       }
       @case ('issues') {
         <app-admin-issues></app-admin-issues>
+      }
+      @case ('maintenance') {
+        <app-admin-maintenance></app-admin-maintenance>
       }
     }
   </div>

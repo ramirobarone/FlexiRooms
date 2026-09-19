@@ -72,90 +72,15 @@ namespace Infrastructure.Context
                 new { Id = 29, Name = "Villa Carlos Paz", ProvinceId = 5 },
                 new { Id = 30, Name = "El Calafate", ProvinceId = 19 });
 
-            modelBuilder.Entity<TimesAvailable>().HasData(
-                new { Id = 1, Time = "08:00" },
-                new { Id = 2, Time = "10:00" },
-                new { Id = 3, Time = "12:00" },
-                new { Id = 4, Time = "14:00" },
-                new { Id = 5, Time = "16:00" },
-                new { Id = 6, Time = "18:00" },
-                new { Id = 7, Time = "20:00" },
-                new { Id = 8, Time = "22:00" });
-
-            modelBuilder.Entity<Address>().HasData(
-                new Address { Id = 1, Street = "Av. Corrientes", Number = "1234", PostalCode = "C1043", Latitud = "-34.6037", Longitud = "-58.3816", IdCity = 1 },
-                new Address { Id = 2, Street = "Bv. Oroño", Number = "890", PostalCode = "S2000", Latitud = "-32.9442", Longitud = "-60.6505", IdCity = 23 },
-                new Address { Id = 3, Street = "Av. San Martín", Number = "456", PostalCode = "M5500", Latitud = "-32.8895", Longitud = "-68.8458", IdCity = 15 },
-                new Address { Id = 4, Street = "Av. Bustillo", Number = "11500", PostalCode = "R8400", Latitud = "-41.1335", Longitud = "-71.3103", IdCity = 18 },
-                new Address { Id = 5, Street = "Caseros", Number = "786", PostalCode = "A4400", Latitud = "-24.7829", Longitud = "-65.4232", IdCity = 19 });
-
-            modelBuilder.Entity<Hotel>().HasData(
-                new { Id = 1, CodeArea = 11, PhoneNumber = 43219876, Name = "Hotel Obelisco", Description = "Hotel urbano en el centro porteño.", MetaDescription = "Ideal para negocios y escapadas en Buenos Aires.", Email = "reservas@hotelobelisco.com", AddressHotelId = 1 },
-                new { Id = 2, CodeArea = 341, PhoneNumber = 5588776, Name = "Rosario Riverside", Description = "Hotel moderno con vista al río Paraná.", MetaDescription = "Alojamiento premium en Rosario.", Email = "hola@rosarioriverside.com", AddressHotelId = 2 },
-                new { Id = 3, CodeArea = 261, PhoneNumber = 4477551, Name = "Andes Suites Mendoza", Description = "Suites boutique cerca de bodegas y montaña.", MetaDescription = "Descanso y vino en Mendoza.", Email = "info@andessuites.com", AddressHotelId = 3 },
-                new { Id = 4, CodeArea = 294, PhoneNumber = 4522334, Name = "Patagonia View Bariloche", Description = "Hotel de montaña con vista al lago.", MetaDescription = "Experiencia patagónica en Bariloche.", Email = "contacto@patagoniaview.com", AddressHotelId = 4 },
-                new { Id = 5, CodeArea = 387, PhoneNumber = 4123456, Name = "Salta Colonial", Description = "Hotel cálido en el casco histórico salteño.", MetaDescription = "Tradición y confort en Salta.", Email = "reservas@saltacolonial.com", AddressHotelId = 5 });
-
-            modelBuilder.Entity<HotelPicture>().HasData(
-                new { Id = 1, Path = "assets/hotels/obelisco.jpg", HotelId = 1 },
-                new { Id = 2, Path = "assets/hotels/rosario-riverside.jpg", HotelId = 2 },
-                new { Id = 3, Path = "assets/hotels/andes-suites.jpg", HotelId = 3 },
-                new { Id = 4, Path = "assets/hotels/patagonia-view.jpg", HotelId = 4 },
-                new { Id = 5, Path = "assets/hotels/salta-colonial.jpg", HotelId = 5 });
-
-            modelBuilder.Entity<Room>().HasData(
-                new { Id = 1, BedNumbers = 1, AvialableNow = true, Name = "Single Business", Description = "Habitación individual con escritorio.", HotelsId = 1 },
-                new { Id = 2, BedNumbers = 2, AvialableNow = true, Name = "Doble Ejecutiva", Description = "Habitación doble con desayuno incluido.", HotelsId = 1 },
-                new { Id = 3, BedNumbers = 2, AvialableNow = true, Name = "Suite Paraná", Description = "Suite con vista al río.", HotelsId = 2 },
-                new { Id = 4, BedNumbers = 3, AvialableNow = false, Name = "Familiar Rosario", Description = "Ideal para familias y estadías cortas.", HotelsId = 2 },
-                new { Id = 5, BedNumbers = 2, AvialableNow = true, Name = "Suite Malbec", Description = "Habitación premium con ambientación mendocina.", HotelsId = 3 },
-                new { Id = 6, BedNumbers = 4, AvialableNow = true, Name = "Familiar Cordillera", Description = "Amplia habitación para grupos pequeños.", HotelsId = 3 },
-                new { Id = 7, BedNumbers = 2, AvialableNow = true, Name = "Lago Superior", Description = "Vista al lago y detalles patagónicos.", HotelsId = 4 },
-                new { Id = 8, BedNumbers = 3, AvialableNow = true, Name = "Suite Nahuel", Description = "Suite con living y balcón.", HotelsId = 4 },
-                new { Id = 9, BedNumbers = 1, AvialableNow = true, Name = "Colonial Single", Description = "Opción práctica para viajeros solos.", HotelsId = 5 },
-                new { Id = 10, BedNumbers = 2, AvialableNow = true, Name = "Tradición Norteña", Description = "Decoración regional y patio interno.", HotelsId = 5 });
-
-            // cada habitación ofrece más de una combinación de duración/precio
-            modelBuilder.Entity<Cost>().HasData(
-                new Cost { Id = 1, Hour = 2, CostPerTime = 45000m, RoomId = 1 },
-                new Cost { Id = 2, Hour = 4, CostPerTime = 78000m, RoomId = 1 },
-                new Cost { Id = 3, Hour = 4, CostPerTime = 78000m, RoomId = 2 },
-                new Cost { Id = 4, Hour = 8, CostPerTime = 120000m, RoomId = 2 },
-                new Cost { Id = 5, Hour = 4, CostPerTime = 86000m, RoomId = 3 },
-                new Cost { Id = 6, Hour = 8, CostPerTime = 134000m, RoomId = 3 },
-                new Cost { Id = 7, Hour = 8, CostPerTime = 134000m, RoomId = 4 },
-                new Cost { Id = 8, Hour = 12, CostPerTime = 182000m, RoomId = 4 },
-                new Cost { Id = 9, Hour = 4, CostPerTime = 86000m, RoomId = 5 },
-                new Cost { Id = 10, Hour = 8, CostPerTime = 134000m, RoomId = 5 },
-                new Cost { Id = 11, Hour = 8, CostPerTime = 134000m, RoomId = 6 },
-                new Cost { Id = 12, Hour = 12, CostPerTime = 182000m, RoomId = 6 },
-                new Cost { Id = 13, Hour = 8, CostPerTime = 134000m, RoomId = 7 },
-                new Cost { Id = 14, Hour = 12, CostPerTime = 182000m, RoomId = 7 },
-                new Cost { Id = 15, Hour = 8, CostPerTime = 134000m, RoomId = 8 },
-                new Cost { Id = 16, Hour = 12, CostPerTime = 182000m, RoomId = 8 },
-                new Cost { Id = 17, Hour = 2, CostPerTime = 45000m, RoomId = 9 },
-                new Cost { Id = 18, Hour = 4, CostPerTime = 78000m, RoomId = 9 },
-                new Cost { Id = 19, Hour = 2, CostPerTime = 52000m, RoomId = 10 },
-                new Cost { Id = 20, Hour = 4, CostPerTime = 86000m, RoomId = 10 });
-
-            modelBuilder.Entity<RoomPicture>().HasData(
-                new { Id = 1, Name = "assets/rooms/single-business.jpg", RoomId = 1 },
-                new { Id = 2, Name = "assets/rooms/doble-ejecutiva.jpg", RoomId = 2 },
-                new { Id = 3, Name = "assets/rooms/suite-parana.jpg", RoomId = 3 },
-                new { Id = 4, Name = "assets/rooms/familiar-rosario.jpg", RoomId = 4 },
-                new { Id = 5, Name = "assets/rooms/suite-malbec.jpg", RoomId = 5 },
-                new { Id = 6, Name = "assets/rooms/familiar-cordillera.jpg", RoomId = 6 },
-                new { Id = 7, Name = "assets/rooms/lago-superior.jpg", RoomId = 7 },
-                new { Id = 8, Name = "assets/rooms/suite-nahuel.jpg", RoomId = 8 },
-                new { Id = 9, Name = "assets/rooms/colonial-single.jpg", RoomId = 9 },
-                new { Id = 10, Name = "assets/rooms/tradicion-nortena.jpg", RoomId = 10 });
-
             modelBuilder.Entity<IssueType>().HasData(
                 new IssueType { Id = 1, Issue = "Limpieza" },
                 new IssueType { Id = 2, Issue = "Mantenimiento" },
-                new IssueType { Id = 3, Issue = "Ruido" },
-                new IssueType { Id = 4, Issue = "Problema con el acceso" },
-                new IssueType { Id = 5, Issue = "Otro" });
+                new IssueType { Id = 3, Issue = "Agua" },
+                new IssueType { Id = 4, Issue = "Electricidad" },
+                new IssueType { Id = 5, Issue = "Servicios" },
+                new IssueType { Id = 6, Issue = "Ruido" },
+                new IssueType { Id = 7, Issue = "Problema con el acceso" },
+                new IssueType { Id = 8, Issue = "Otro" });
         }
     }
 }

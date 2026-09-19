@@ -31,6 +31,7 @@ import { ContactComponent } from './components/home/contact/contact.component';
 import { CreateIssueComponent } from './components/bookings/create-issue/create-issue.component';
 import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.component';
 import { AdminIssuesComponent } from './components/hotels/admin-issues/admin-issues.component';
+import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance/admin-maintenance.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { AdminIssuesComponent } from './components/hotels/admin-issues/admin-iss
     ContactComponent,
     CreateIssueComponent,
     MyIssuesComponent,
-    AdminIssuesComponent
+    AdminIssuesComponent,
+    AdminMaintenanceComponent
   ],
   imports: [
     BrowserModule,

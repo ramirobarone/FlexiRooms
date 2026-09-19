@@ -35,6 +35,8 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     public DbSet<HotelInfo> HotelInfos { get; set; }
     public DbSet<Issue> Issues { get; set; }
     public DbSet<IssueType> IssuesTypes { get; set; }
+    public DbSet<HotelMaintenance> HotelMaintenances { get; set; }
+    public DbSet<MaintenanceType> MaintenanceTypes { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //optionsBuilder.UseNpgsql("Host=localhost;Database=hotelis;Username=hotelis;Password=Hotelis2024;");
@@ -85,6 +87,11 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<HotelMaintenance>()
+            .HasMany(x => x.MaintenanceTypes)
+            .WithMany(x => x.HotelMaintenances)
+            .UsingEntity(x => x.ToTable("HotelMaintenanceMaintenanceTypes"));
+
         modelBuilder.Entity<HotelInfo>()
             .HasOne(hotelInfo => hotelInfo.Hotel)
             .WithMany()
@@ -114,6 +121,12 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(issue => issue.BookingId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<HotelMaintenance>()
+            .HasOne(maintenance => maintenance.Hotel)
+            .WithMany()
+            .HasForeignKey(maintenance => maintenance.HotelId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -1,0 +1,120 @@
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span>Personal de mantenimiento</span>
+        <button class="btn btn-sm btn-light" type="button" (click)="newMaintenance()">Nuevo Responsable</button>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label font-weight-bold">Seleccionar Hotel</label>
+          <select class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
+            <option [ngValue]="0" disabled>-- Seleccione un Hotel --</option>
+            @for (hotel of hotels; track hotel) {
+              <option [ngValue]="hotel.id">{{ hotel.name }}</option>
+            }
+          </select>
+        </div>
+
+        @if (isLoading) {
+          <div class="text-muted">Cargando responsables de mantenimiento...</div>
+        } @else if (hasError) {
+          <div class="alert alert-danger mb-0" role="alert">No se pudieron cargar los responsables de mantenimiento.</div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Tipos de solicitud</th>
+                  <th>Teléfono</th>
+                  <th>Activo</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (maintenance of maintenances; track maintenance.id) {
+                  <tr>
+                    <td><strong>{{ maintenance.nameMaintenance }}</strong></td>
+                    <td>
+                      @for (type of maintenance.maintenanceTypes; track type.id) {
+                        <span class="badge bg-secondary me-1">{{ type.description }}</span>
+                      }
+                    </td>
+                    <td>{{ maintenance.telephoneNumber }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="maintenance.active ? 'bg-success' : 'bg-secondary'">
+                        {{ maintenance.active ? 'Sí' : 'No' }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editMaintenance(maintenance)"><i class="bi bi-pencil"></i></button>
+                      <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteMaintenance(maintenance.id)"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>
+                }
+                @if (maintenances.length === 0) {
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-3">
+                      No hay responsables de mantenimiento registrados para este hotel.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">
+        {{ isEditing ? 'Editar Responsable' : 'Nuevo Responsable' }}
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="saveMaintenance()">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="nameMaintenance" required [(ngModel)]="selectedMaintenance.nameMaintenance">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipos de solicitud de mantenimiento</label>
+            <div class="border rounded p-2">
+              @for (type of maintenanceTypes; track type.id) {
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [id]="'maintenanceType-' + type.id"
+                    [checked]="isMaintenanceTypeSelected(type.id)"
+                    (change)="toggleMaintenanceType(type.id, $any($event.target).checked)">
+                  <label class="form-check-label" [for]="'maintenanceType-' + type.id">{{ type.description }}</label>
+                </div>
+              }
+              @if (maintenanceTypes.length === 0) {
+                <div class="text-muted small mb-0">No hay tipos de mantenimiento disponibles.</div>
+              }
+            </div>
+            @if (selectedMaintenance.maintenanceTypeIds.length === 0) {
+              <div class="form-text text-danger">Seleccione al menos un tipo de solicitud.</div>
+            }
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Teléfono de contacto</label>
+            <input type="text" class="form-control" name="telephoneNumber" required [(ngModel)]="selectedMaintenance.telephoneNumber">
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="maintenanceActive" name="active" [(ngModel)]="selectedMaintenance.active">
+            <label class="form-check-label" for="maintenanceActive">Activo</label>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-outline-secondary" type="button" (click)="newMaintenance()">Cancelar</button>
+            <button class="btn btn-primary" type="submit" [disabled]="!selectedHotelId || selectedMaintenance.maintenanceTypeIds.length === 0">{{ isEditing ? 'Guardar cambios' : 'Crear' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

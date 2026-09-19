@@ -16,7 +16,7 @@ export class AccountCreateComponent implements OnInit {
   constructor(private serviceAccount: AccountService, private router:Router) { }
 
 
-  userCreateDto: UserCreateDto = { email: 'ramiro_barone@hotmail.com', password: 'ramiro0908', name: 'ramiro', codeArea: '351', phoneNumber: '7572518', identityNumber: '30331219', lastName: 'barone' };
+  userCreateDto: UserCreateDto = { email: '', password: '', name: '', codeArea: '', phoneNumber: '', identityNumber: '', lastName: '' };
 
   ngOnInit(): void {
   }

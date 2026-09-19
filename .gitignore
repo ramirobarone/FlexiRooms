@@ -402,3 +402,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 ClientApp/ClientApp/.angular/cache/
+/ClientApp/wwwroot/hotel-images/7
+/ClientApp/wwwroot/rooms/11

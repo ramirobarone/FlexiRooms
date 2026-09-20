@@ -113,7 +113,11 @@ namespace Application.Services.Booking
 
             logger.LogInformation("Payment result mapped. PaymentId {PaymentId}, status {Status}.", result.id, result.status);
 
-            Bookings? booking = result.status == "approved"
+            bool isApproved = string.Equals(result.status, "approved", StringComparison.OrdinalIgnoreCase);
+            bool isPending = string.Equals(result.status, "in_process", StringComparison.OrdinalIgnoreCase)
+                             || string.Equals(result.status, "pending", StringComparison.OrdinalIgnoreCase);
+
+            Bookings? booking = isApproved
                 ? await bookingService.Create(checkout.RoomDto)
                 : null;
 
@@ -123,7 +127,11 @@ namespace Application.Services.Booking
             }
             else
             {
-                logger.LogWarning("Payment {PaymentId} was not approved. No booking will be created.", result.id);
+                logger.LogWarning(
+                    "Booking was not created for payment {PaymentId}. Current status {Status}, detail {StatusDetail}.",
+                    result.id,
+                    result.status,
+                    result.status_detail);
             }
 
             await paymentRepository.CreateAsync(new PaymentTransaction
@@ -146,12 +154,23 @@ namespace Application.Services.Booking
                 result.id,
                 booking?.Id);
 
-            if (result.status != "approved")
-                throw new InvalidOperationException("El pago no fue aprobado.");
+            if (isApproved)
+            {
+                logger.LogInformation("Mercado Pago payment completed successfully for payment {PaymentId}.", result.id);
+                return result;
+            }
 
-            logger.LogInformation("Mercado Pago payment completed successfully for payment {PaymentId}.", result.id);
+            if (isPending)
+            {
+                logger.LogInformation(
+                    "Payment {PaymentId} is pending with status {Status} and detail {StatusDetail}. Final confirmation must be handled asynchronously.",
+                    result.id,
+                    result.status,
+                    result.status_detail);
+                return result;
+            }
 
-            return result;
+            throw new InvalidOperationException($"El pago no fue aprobado. Estado: {result.status}, detalle: {result.status_detail}");
         }
     }
 }

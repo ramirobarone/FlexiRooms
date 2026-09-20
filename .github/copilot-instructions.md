@@ -13,3 +13,6 @@
 ## Unit Testing
 - Unit tests must be written for all new features and components.
 - Refactor existing code to improve test coverage where necessary.
+
+## Image Storage
+- When storing uploaded room images in Docker, use the persistent hotel-images volume and place room images under `wwwroot/hotel-images/rooms` so they survive container restarts.

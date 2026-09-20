@@ -48,7 +48,7 @@ public class RoomImageService(FlexiRoomsContext flexiRoomsContext,
         }
 
         string normalizedRoomName = NormalizeRoomName(room.Name, room.Id);
-        string imagesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "rooms", roomId.ToString(CultureInfo.InvariantCulture));
+        string imagesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "hotel-images", "rooms", roomId.ToString(CultureInfo.InvariantCulture));
         Directory.CreateDirectory(imagesDirectory);
         logger.LogInformation("Target directory for room {RoomId} images: {Directory}", roomId, imagesDirectory);
 
@@ -76,7 +76,7 @@ public class RoomImageService(FlexiRoomsContext flexiRoomsContext,
             logger.LogInformation("Writing image {FileName} as {NewFileName} to {PhysicalPath}", file.FileName, newFileName, physicalPath);
             await File.WriteAllBytesAsync(physicalPath, file.Content, cancellationToken);
 
-            string relativePath = $"/rooms/{roomId}/{newFileName}";
+            string relativePath = $"/hotel-images/rooms/{roomId}/{newFileName}";
             RoomPicture roomPicture = new()
             {
                 Name = relativePath

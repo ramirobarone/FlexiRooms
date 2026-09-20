@@ -36,9 +36,7 @@ services:
       - "7291:8080"
     volumes:
       - hotel-images:/app/wwwroot/hotel-images
-      - room-images:/app/wwwroot/rooms
 
 volumes:
   postgres-data:
   hotel-images:
-  room-images:

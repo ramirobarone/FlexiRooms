@@ -44,6 +44,7 @@ export class CardRoomComponent implements OnInit {
   costs: Cost[] = [];
   cost: Cost = { id: 0, idRoom: 0, costPerHour: 0, hour: 0 };
   selectedCostId: any;
+  minDate: string = new Date().toISOString().split('T')[0];
 
 
   @Output() nextToBillingData: EventEmitter<any> = new EventEmitter();

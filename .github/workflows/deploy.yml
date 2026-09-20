@@ -65,8 +65,10 @@ jobs:
           envs: MP_PUBLIC_KEY,MP_TOKEN
           script: |
             echo "Deploying image to server..."
-            echo "MERCADOPAGO_PUBLICKEY: ${{secrets.MERCADOPAGO_PUBLICKEY}}"
-            echo "MERCADOPAGO_TOKEN: ${{secrets.MERCADOPAGO_TOKEN}}"
+            echo "Length: ${#MP_PUBLIC_KEY}"
+            echo "Preview: ${MP_PUBLIC_KEY:0:4}****"
+            echo "Length: ${#MP_TOKEN}"
+            echo "Preview: ${MP_TOKEN:0:4}****"
             docker pull ramirobarone/flexirooms:latest
             docker stop flexirooms_api || true
             docker rm flexirooms_api || true

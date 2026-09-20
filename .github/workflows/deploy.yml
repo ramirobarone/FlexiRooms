@@ -64,6 +64,9 @@ jobs:
           password: JazminBarone!1811
           envs: MP_PUBLIC_KEY,MP_TOKEN
           script: |
+            echo "Deploying image to server..."
+            echo "MERCADOPAGO_PUBLICKEY: ${{secrets.MERCADOPAGO_PUBLICKEY}}"
+            echo "MERCADOPAGO_TOKEN: ${{secrets.MERCADOPAGO_TOKEN}}"
             docker pull ramirobarone/flexirooms:latest
             docker stop flexirooms_api || true
             docker rm flexirooms_api || true

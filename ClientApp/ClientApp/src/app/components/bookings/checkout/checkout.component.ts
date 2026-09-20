@@ -11,11 +11,11 @@ declare global {
 }
 
 @Component({
-    selector: 'app-checkout',
-    templateUrl: './checkout.component.html',
-    styleUrls: ['./checkout.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+  selector: 'app-checkout',
+  templateUrl: './checkout.component.html',
+  styleUrls: ['./checkout.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class CheckoutComponent implements AfterViewInit, OnDestroy {
   isLoading = true;
@@ -56,11 +56,21 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.checkoutService.processPayment(booking, payment).subscribe({
         next: response => {
-          this.successMessage = 'El pago fue aprobado y la reserva fue confirmada.';
-          const navigation = response.status === 'approved'
-            ? this.router.navigate(['/MisReservas'])
-            : Promise.resolve(false);
-          navigation.then(() => resolve()).catch(reject);
+
+          console.log('Payment response:', response);
+
+          if (response.status === 'approved') {
+            this.router.navigate(['/MisReservas']).then(() => resolve()).catch(reject);
+            this.successMessage = 'El pago fue aprobado y la reserva fue confirmada.';
+            return;
+          } else if (response.status === 'in_process') {
+            this.errorMessage = `El pago está pendiente. Resultado: ${response.status}`;
+            this.router.navigate(['/MisReservas']).then(() => resolve()).catch(reject);
+            this.errorMessage = `El pago no fue aprobado. Resultado: ${response.status}`;
+            return;
+          }
+
+          resolve();
         },
         error: error => {
           this.errorMessage = error.error?.message || 'No se pudo procesar el pago. Verifique los datos e intente nuevamente.';

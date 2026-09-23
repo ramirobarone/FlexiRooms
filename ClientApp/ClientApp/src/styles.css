@@ -1,6 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Provide sufficient contrast against white background */
+
+:root {
+  --primary-color: #073B73;
+  --primary-color-light: #079BE5;
+  --primary-color-violeta: #962188;
+  --btn-primary-color: #dc3b73;
+  --primary-naranja-oscuro: #ff755a;
+  --primary-naranja-claro: #ffb750;
+  --primary-amarillo: #f9f871;
+}
+
 a {
   color: #0366d6;
 }
@@ -8,11 +19,37 @@ a {
 code {
   color: #e01a76;
 }
+.btn-outline-success{
+  color: var(--primary-color-light) !important;
+  border-color: var(--primary-color-light) !important;
+}
+.btn-outline-success:hover {
+  background-color: var(--primary-color-light) !important;
+  color: white !important;
+  border-color: var(--primary-color-light) !important;
+}
+.btn-success{
+  background-color: var(--primary-color-light) !important;
+  color: white !important;
+  /* border-color: var(--primary-color) !important; */
+}
+.btn-success:hover {
+  border-radius: 20px !important;
+  color: var(--primary-color-light) !important;
+  background-color: white !important;
+  /* border-color: var(--primary-color) !important; */
+}
 
 .btn-primary {
-  color: #1b6ec2;
+  color: var(--primary-color-light);
   background-color: white;
-  border-color: #1861ac;
+  border-color: var(--primary-color-light);
+}
+.btn-primary:hover {
+  background-color: var(--primary-color-light) !important;
+  color: white !important;
+  border-color: var(--primary-color-light) !important;
+  border-radius: 20px !important;
 }
 html, body {
   height: 100%;
@@ -27,6 +64,39 @@ html, body {
 .rounded-surface {
   border: 1px solid #dee2e6;
   border-radius: var(--component-radius);
+}
+
+/* Smooth cross-fade + slide transition between routes (Angular Router view transitions) */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: route-fade-out 0.25s ease-in both;
+  }
+
+  ::view-transition-new(root) {
+    animation: route-fade-in 0.25s ease-out both;
+  }
+}
+
+@keyframes route-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes route-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 body {

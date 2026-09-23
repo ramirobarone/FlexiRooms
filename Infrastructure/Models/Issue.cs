@@ -6,7 +6,7 @@ namespace Infrastructure.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int MaintenanceTypeId { get; set; }
+        public int? MaintenanceTypeId { get; set; }
         public required string Text { get; set; }
         public string? Image { get; set; }
         public string Status { get; set; } = "Pending";
@@ -14,7 +14,7 @@ namespace Infrastructure.Models
         public int? BookingId { get; set; }
         public DateTime CreatedAtUtc { get; set; }
 
-        public MaintenanceType MaintenanceType { get; set; } = null!;
+        public MaintenanceType? MaintenanceType { get; set; }
         public ApplicationUser ApplicationUser { get; set; } = null!;
         public Bookings? Booking { get; set; }
     }

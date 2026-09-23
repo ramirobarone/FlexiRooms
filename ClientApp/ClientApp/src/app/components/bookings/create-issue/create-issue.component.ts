@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IssuesService, IssueType } from '../../../../services/IssuesService/issues.service';
+import { IssuesService } from '../../../../services/IssuesService/issues.service';
 
 @Component({
     selector: 'app-create-issue',
@@ -11,13 +11,10 @@ import { IssuesService, IssueType } from '../../../../services/IssuesService/iss
 })
 export class CreateIssueComponent implements OnInit {
   bookingId: number | null = null;
-  issueTypes: IssueType[] = [];
-  isLoadingTypes = true;
   isSubmitting = false;
   submitError = '';
   submitSuccess = false;
 
-  tipoDeReclamo = 0;
   texto = '';
   imageFile?: File;
 
@@ -30,22 +27,6 @@ export class CreateIssueComponent implements OnInit {
   ngOnInit(): void {
     const bookingIdParam = this.route.snapshot.paramMap.get('bookingId');
     this.bookingId = bookingIdParam ? Number(bookingIdParam) : null;
-    this.loadIssueTypes();
-  }
-
-  loadIssueTypes(): void {
-    this.isLoadingTypes = true;
-    this.issuesService.getIssueTypes().subscribe({
-      next: (types) => {
-        this.issueTypes = types ?? [];
-        this.tipoDeReclamo = this.issueTypes[0]?.id ?? 0;
-        this.isLoadingTypes = false;
-      },
-      error: () => {
-        this.issueTypes = [];
-        this.isLoadingTypes = false;
-      }
-    });
   }
 
   onImageSelected(event: Event): void {
@@ -54,8 +35,8 @@ export class CreateIssueComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.tipoDeReclamo || !this.texto.trim()) {
-      this.submitError = 'Completá el tipo de reclamo y la descripción.';
+    if (!this.texto.trim()) {
+      this.submitError = 'Completá la descripción del reclamo.';
       return;
     }
 
@@ -67,7 +48,7 @@ export class CreateIssueComponent implements OnInit {
     this.isSubmitting = true;
     this.submitError = '';
 
-    this.issuesService.createIssue(this.bookingId, this.tipoDeReclamo, this.texto.trim(), this.imageFile).subscribe({
+    this.issuesService.createIssue(this.bookingId, this.texto.trim(), this.imageFile).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.submitSuccess = true;

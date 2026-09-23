@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { RouterModule, provideRouter, withViewTransitions } from '@angular/router';
 import { authInterceptor } from './ServicesShared/auth.interceptor';
 
 import { AppComponent } from './app.component';
@@ -68,7 +68,11 @@ import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot([
+    RouterModule
+  ],
+  providers: [
+    provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
+    provideRouter([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'room/:id', component: CardRoomComponent, pathMatch: 'full' },
       { path: 'reserve/:id', component: ReservedComponent, pathMatch: 'full' },
@@ -83,10 +87,7 @@ import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance
       { path: 'steps/:id', component: StepsCheckoutComponent },
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' },
       { path: 'contacto', component: ContactComponent, pathMatch: 'full' }
-    ])
-  ],
-  providers: [
-    provideHttpClient(withXhr(), withInterceptors([authInterceptor]))
+    ], withViewTransitions())
   ],
   bootstrap: [AppComponent]
 })

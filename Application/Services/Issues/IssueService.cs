@@ -16,7 +16,7 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
 
     private const int MaxFileSizeBytes = 5 * 1024 * 1024;
 
-    public async Task<IssueDto> CreateIssueAsync(string applicationUserId, int bookingId, int tipoDeReclamo, string texto, IssueUploadFile? image, CancellationToken cancellationToken = default)
+    public async Task<IssueDto> CreateIssueAsync(string applicationUserId, int bookingId, string texto, IssueUploadFile? image, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(applicationUserId))
             throw new ArgumentException("User id is invalid.", nameof(applicationUserId));
@@ -28,13 +28,8 @@ public class IssueService(FlexiRoomsContext flexiRoomsContext) : IIssueService
         if (string.IsNullOrWhiteSpace(texto))
             throw new ArgumentException("El texto del reclamo es obligatorio.", nameof(texto));
 
-        bool issueTypeExists = await flexiRoomsContext.IssuesTypes.AnyAsync(x => x.Id == tipoDeReclamo, cancellationToken);
-        if (!issueTypeExists)
-            throw new ArgumentException("El tipo de reclamo indicado no existe.", nameof(tipoDeReclamo));
-
         Issue issue = new()
         {
-            MaintenanceTypeId = tipoDeReclamo,
             Text = texto,
             Status = "Pendiente",
             ApplicationUserId = applicationUserId,

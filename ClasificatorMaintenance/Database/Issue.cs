@@ -9,7 +9,7 @@ namespace ClasificatorMaintenance.Database
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int MaintenanceTypeId { get; set; }
+        public int? MaintenanceTypeId { get; set; }
         public required string Text { get; set; }
         public string? Image { get; set; }
         public string Status { get; set; } = "Pending";

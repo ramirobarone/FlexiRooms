@@ -11,8 +11,8 @@ export interface IssueType {
 export interface Issue {
   id: number;
   bookingId?: number;
-  tipoDeReclamo: number;
-  tipoDeReclamoNombre: string;
+  tipoDeReclamo?: number;
+  tipoDeReclamoNombre?: string;
   texto: string;
   imagen?: string;
   estado: string;
@@ -45,10 +45,9 @@ export class IssuesService {
     return this.http.patch<Issue>(`${this.baseUrl}UpdateHotelIssueStatus?id=${id}`, { estado });
   }
 
-  createIssue(bookingId: number, tipoDeReclamo: number, texto: string, imagen?: File): Observable<Issue> {
+  createIssue(bookingId: number, texto: string, imagen?: File): Observable<Issue> {
     const formData = new FormData();
     formData.append('bookingId', bookingId.toString());
-    formData.append('tipoDeReclamo', tipoDeReclamo.toString());
     formData.append('texto', texto);
     if (imagen) {
       formData.append('imagen', imagen);

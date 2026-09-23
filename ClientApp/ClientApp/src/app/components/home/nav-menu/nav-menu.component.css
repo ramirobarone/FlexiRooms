@@ -4,11 +4,29 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+.navbar {
+  background: var(--primary-color-light) !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-toggler-icon,
+.navbar .logout-button,
+.navbar .user-name {
+  color: white !important;
+}
+
+.navbar .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
+}
+
 .application-logo {
   display: block;
-  width: 72px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 4px;
 }
 
 html {

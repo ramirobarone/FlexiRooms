@@ -31,7 +31,7 @@ public class IssuesController(IIssueService issueService, ILogger<IssuesControll
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> CreateIssue([FromForm] int bookingId, [FromForm] int tipoDeReclamo, [FromForm] string texto, [FromForm] IFormFile? imagen, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateIssue([FromForm] int bookingId, [FromForm] string texto, [FromForm] IFormFile? imagen, CancellationToken cancellationToken)
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userId))
@@ -50,7 +50,7 @@ public class IssuesController(IIssueService issueService, ILogger<IssuesControll
 
         try
         {
-            IssueDto created = await issueService.CreateIssueAsync(userId, bookingId, tipoDeReclamo, texto, mappedImage, cancellationToken);
+            IssueDto created = await issueService.CreateIssueAsync(userId, bookingId, texto, mappedImage, cancellationToken);
             logger.LogInformation("Created issue {IssueId} for user {UserId}", created.Id, userId);
             return Ok(created);
         }

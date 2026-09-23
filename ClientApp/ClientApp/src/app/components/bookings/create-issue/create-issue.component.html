@@ -22,14 +22,6 @@
   } @else {
     <form class="issue-form" (ngSubmit)="submit()">
       <div class="mb-3">
-        <label class="form-label" for="issueType">Tipo de reclamo</label>
-        <select class="form-select" id="issueType" name="issueType" [(ngModel)]="tipoDeReclamo" [disabled]="isLoadingTypes">
-          @for (type of issueTypes; track type.id) {
-            <option [ngValue]="type.id">{{ type.issue }}</option>
-          }
-        </select>
-      </div>
-      <div class="mb-3">
         <label class="form-label" for="issueText">Descripción</label>
         <textarea class="form-control" id="issueText" name="issueText" rows="5" [(ngModel)]="texto" placeholder="Contanos qué sucedió..."></textarea>
       </div>

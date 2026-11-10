@@ -1,0 +1,164 @@
+.onboarding {
+  max-width: 760px;
+}
+
+.section-label {
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.onboarding-hero {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.onboarding-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: 0.4rem;
+}
+
+.onboarding-subtitle {
+  max-width: 34rem;
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+
+/* Steps: where am I, what's next */
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.onboarding-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+}
+
+.onboarding-steps li[aria-current='step'] {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.step-dot {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: inset 0 0 0 1px var(--separator-strong);
+}
+
+li[aria-current='step'] .step-dot {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+}
+
+li.is-done .step-dot {
+  background: var(--success);
+  color: #fff;
+  box-shadow: none;
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.step-text small {
+  font-size: 0.75rem;
+}
+
+.onboarding-card {
+  padding: 2rem;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.onboarding-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 1.5rem;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin-inline: 0;
+  min-width: 0;
+}
+
+.form-section-title {
+  float: none;
+  width: auto;
+  margin-bottom: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.onboarding-review-note {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.onboarding-review-note .bi {
+  color: var(--success);
+  font-size: 1.1rem;
+}
+
+.onboarding-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--separator);
+}
+
+@media (max-width: 575.98px) {
+  .onboarding-card {
+    padding: 1.25rem;
+  }
+
+  .onboarding-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .onboarding-actions .btn {
+    width: 100%;
+  }
+}

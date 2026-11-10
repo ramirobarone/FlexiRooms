@@ -54,7 +54,135 @@
   box-shadow: inset 0 0 0 1px var(--separator);
 }
 
+/* ---------------------------------------------------------- Revisión */
+
+.review-banner {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+}
+
+.review-banner > .bi {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.review-banner--pending {
+  background: rgba(245, 165, 36, 0.12);
+  color: #6b4600;
+}
+
+.review-banner--rejected {
+  background: rgba(229, 72, 77, 0.1);
+  color: #9b2226;
+}
+
+.review-title {
+  margin: 0;
+  font-weight: 650;
+}
+
+.review-text {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------------- Cobros */
+
+.payment-notice {
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+/* Quiet call to action in the table: tells the state and leads to the fix */
+.payments-pending {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: rgba(245, 165, 36, 0.16);
+  color: #8a5a00;
+  font-size: 0.72rem;
+  font-weight: 650;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+
+.payments-pending:hover {
+  background: rgba(245, 165, 36, 0.28);
+}
+
+.payments-pending:active {
+  transform: scale(0.95);
+  transition-duration: var(--dur-press);
+}
+
+.payments-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.payments-card--connected {
+  align-items: center;
+  background: rgba(31, 157, 85, 0.08);
+  border-color: rgba(31, 157, 85, 0.2);
+}
+
+.payments-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.payments-icon--pending {
+  background: rgba(245, 165, 36, 0.18);
+  color: #8a5a00;
+}
+
+.payments-title {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+
+.payments-detail {
+  margin: 0.1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.payments-disconnect {
+  color: var(--danger);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.payments-disconnect:hover {
+  color: var(--danger);
+  text-decoration: underline;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .payments-pending:active {
+    transform: none;
+  }
+
   .drag-drop-area.dragover {
     transform: none;
   }

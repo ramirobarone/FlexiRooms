@@ -34,6 +34,9 @@ import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.com
 import { AdminIssuesComponent } from './components/hotels/admin-issues/admin-issues.component';
 import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance/admin-maintenance.component';
 import { ModalDialogDirective } from './components/Shared/modal/modal-dialog.directive';
+import { ConfirmDialogComponent } from './components/Shared/confirm-dialog/confirm-dialog.component';
+import { OwnerOnboardingComponent } from './components/hotels/owner-onboarding/owner-onboarding.component';
+import { AdminApprovalsComponent } from './components/hotels/admin-approvals/admin-approvals.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +67,10 @@ import { ModalDialogDirective } from './components/Shared/modal/modal-dialog.dir
     MyIssuesComponent,
     AdminIssuesComponent,
     AdminMaintenanceComponent,
-    ModalDialogDirective
+    ModalDialogDirective,
+    ConfirmDialogComponent,
+    OwnerOnboardingComponent,
+    AdminApprovalsComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +94,8 @@ import { ModalDialogDirective } from './components/Shared/modal/modal-dialog.dir
       { path: 'reclamos', component: MyIssuesComponent, pathMatch: 'full' },
       { path: 'steps/:id', component: StepsCheckoutComponent },
       { path: 'admin', component: ControlRoomComponent, pathMatch: 'full' },
-      { path: 'contacto', component: ContactComponent, pathMatch: 'full' }
+      { path: 'contacto', component: ContactComponent, pathMatch: 'full' },
+      { path: 'sumar-hotel', component: OwnerOnboardingComponent, pathMatch: 'full' }
     ], withViewTransitions())
   ],
   bootstrap: [AppComponent]

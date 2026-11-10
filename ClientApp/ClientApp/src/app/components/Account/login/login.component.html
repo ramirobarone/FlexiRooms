@@ -24,7 +24,7 @@
         }
         {{ isLoading ? 'Ingresando…' : 'Ingresar' }}
       </button>
-      <a class="btn btn-outline-success" [routerLink]="['/accountCreate']" [class.disabled]="isLoading">Crear cuenta</a>
+      <a class="btn btn-outline-success" [routerLink]="['/accountCreate']" queryParamsHandling="preserve" [class.disabled]="isLoading">Crear cuenta</a>
     </div>
 
     <div aria-live="assertive">

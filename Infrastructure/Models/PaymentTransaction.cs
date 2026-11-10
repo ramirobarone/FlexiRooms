@@ -18,6 +18,12 @@ namespace Infrastructure.Models
         public int? BookingId { get; set; }
         public required string ApplicationUserId { get; set; }
 
+        /// <summary>Hotel whose Mercado Pago account collected the payment (null for legacy payments).</summary>
+        public int? HotelId { get; set; }
+
+        /// <summary>Platform commission retained via application_fee.</summary>
+        public decimal? ApplicationFee { get; set; }
+
         public Bookings Booking { get; set; } = null!;
         public ApplicationUser ApplicationUser { get; set; } = null!;
     }

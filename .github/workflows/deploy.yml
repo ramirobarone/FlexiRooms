@@ -57,12 +57,19 @@ jobs:
         env:
           MP_PUBLIC_KEY: ${{ secrets.MERCADOPAGO_PUBLICKEY }}
           MP_TOKEN: ${{ secrets.MERCADOPAGO_TOKEN }}
+          # Marketplace (one Mercado Pago account per hotel)
+          MP_CLIENT_ID: ${{ secrets.MERCADOPAGO_CLIENT_ID }}
+          MP_CLIENT_SECRET: ${{ secrets.MERCADOPAGO_CLIENT_SECRET }}
+          MP_TOKEN_ENCRYPTION_KEY: ${{ secrets.MERCADOPAGO_TOKEN_ENCRYPTION_KEY }}
+          MP_OAUTH_REDIRECT_URI: ${{ vars.MERCADOPAGO_OAUTH_REDIRECT_URI }}
+          MP_NOTIFICATION_URL: ${{ vars.MERCADOPAGO_NOTIFICATION_URL }}
+          MP_FEE_PERCENT: ${{ vars.MERCADOPAGO_FEE_PERCENT }}
         with:
           host: 149.50.150.67
           port: 5283
           username: root
           password: JazminBarone!1811
-          envs: MP_PUBLIC_KEY,MP_TOKEN
+          envs: MP_PUBLIC_KEY,MP_TOKEN,MP_CLIENT_ID,MP_CLIENT_SECRET,MP_TOKEN_ENCRYPTION_KEY,MP_OAUTH_REDIRECT_URI,MP_NOTIFICATION_URL,MP_FEE_PERCENT
           script: |
             echo "Deploying image to server..."
             echo "Length: ${#MP_PUBLIC_KEY}"
@@ -76,4 +83,10 @@ jobs:
               -v flexirooms_uploads:/app/wwwroot/hotel-images \
               -e MercadoPago__PublicKey="$MP_PUBLIC_KEY" \
               -e MercadoPago__Token="$MP_TOKEN" \
+              -e MercadoPago__ClientId="$MP_CLIENT_ID" \
+              -e MercadoPago__ClientSecret="$MP_CLIENT_SECRET" \
+              -e MercadoPago__TokenEncryptionKey="$MP_TOKEN_ENCRYPTION_KEY" \
+              -e MercadoPago__OAuthRedirectUri="$MP_OAUTH_REDIRECT_URI" \
+              -e MercadoPago__NotificationUrl="$MP_NOTIFICATION_URL" \
+              -e MercadoPago__MarketplaceFeePercent="${MP_FEE_PERCENT:-0}" \
               --restart always ramirobarone/flexirooms:latest

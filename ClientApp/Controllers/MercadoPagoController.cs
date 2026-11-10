@@ -18,6 +18,7 @@ namespace ClientApp.Controllers
         PaymentClient paymentClient,
         FlexiRoomsContext flexiRoomsContext,
         IServiceGeneric<Bookings> bookingService,
+        IMercadoPagoAccountService mercadoPagoAccounts,
         UserManager<ApplicationUser> userManager,
         ILogger<MercadoPagoController> logger) : ControllerBase
     {
@@ -42,31 +43,55 @@ namespace ClientApp.Controllers
                 Request.Headers.ToDictionary(header => header.Key, header => header.Value.ToString()),
                 body);
 
-            var jsonPayment = System.Text.Json.JsonSerializer.Deserialize<WebHookPaymentCreatedDto>(body);
+            WebHookPaymentCreatedDto? jsonPayment = null;
+            try
+            {
+                jsonPayment = System.Text.Json.JsonSerializer.Deserialize<WebHookPaymentCreatedDto>(
+                    body, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (System.Text.Json.JsonException exception)
+            {
+                logger.LogWarning(exception, "MercadoPago webhook con cuerpo inválido.");
+            }
 
-            if (jsonPayment.Data.Id == "0")
+            string? paymentIdText = jsonPayment?.Data?.Id ?? TryGetPaymentId(Request, body)?.ToString(CultureInfo.InvariantCulture);
+            if (string.IsNullOrWhiteSpace(paymentIdText) || paymentIdText == "0" || !long.TryParse(paymentIdText, out long paymentId))
             {
                 logger.LogWarning("MercadoPago webhook sin payment id. No se ejecutará conciliación.");
                 return Ok();
             }
 
-            MercadoPago.Resource.Payment.Payment payment;
-            try
-            {
-                payment = await paymentClient.GetAsync(Convert.ToInt64(jsonPayment.Data.Id));
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "No se pudo obtener el pago {PaymentId} desde Mercado Pago.", jsonPayment.Data.Id);
-                return Ok();
-            }
-
             PaymentTransaction? paymentTransaction = await flexiRoomsContext.PaymentTransactions
-                .FirstOrDefaultAsync(transaction => transaction.MercadoPagoPaymentId == jsonPayment.Data.Id.ToString(CultureInfo.InvariantCulture), cancellationToken);
+                .FirstOrDefaultAsync(transaction => transaction.MercadoPagoPaymentId == paymentIdText, cancellationToken);
 
             if (paymentTransaction is null)
             {
-                logger.LogWarning("No existe PaymentTransaction para MercadoPagoPaymentId {PaymentId}.", jsonPayment.Data.Id);
+                logger.LogWarning("No existe PaymentTransaction para MercadoPagoPaymentId {PaymentId}.", paymentIdText);
+                return Ok();
+            }
+
+            // Marketplace: the payment lives in the hotel's (seller's) account, so it must be
+            // read with that account's token. Legacy payments fall back to the platform token.
+            SellerCredentials? seller = null;
+            if (paymentTransaction.HotelId.HasValue)
+            {
+                seller = await mercadoPagoAccounts.GetCredentialsForHotelAsync(paymentTransaction.HotelId.Value, cancellationToken);
+            }
+            else if (long.TryParse(jsonPayment?.User_id, out long collectorId))
+            {
+                seller = await mercadoPagoAccounts.GetCredentialsForCollectorAsync(collectorId, cancellationToken);
+            }
+
+            var requestOptions = seller is null ? null : new MercadoPago.Client.RequestOptions { AccessToken = seller.AccessToken };
+
+            MercadoPago.Resource.Payment.Payment payment;
+            try
+            {
+                payment = await paymentClient.GetAsync(paymentId, requestOptions, cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "No se pudo obtener el pago {PaymentId} desde Mercado Pago (hotel {HotelId}).", paymentIdText, paymentTransaction.HotelId);
                 return Ok();
             }
 
@@ -79,7 +104,7 @@ namespace ClientApp.Controllers
                 await flexiRoomsContext.SaveChangesAsync(cancellationToken);
                 logger.LogInformation(
                     "Webhook conciliado sin creación de reserva. PaymentId {PaymentId}, status {Status}, detail {StatusDetail}.",
-                    jsonPayment.Data.Id,
+                    paymentIdText,
                     payment.Status,
                     payment.StatusDetail);
                 return Ok();
@@ -93,7 +118,7 @@ namespace ClientApp.Controllers
                     await flexiRoomsContext.SaveChangesAsync(cancellationToken);
                     logger.LogInformation(
                         "Webhook idempotente. PaymentId {PaymentId} ya tiene BookingId {BookingId}.",
-                        jsonPayment.Data.Id,
+                        paymentIdText,
                         paymentTransaction.BookingId.Value);
                     return Ok();
                 }
@@ -104,7 +129,7 @@ namespace ClientApp.Controllers
                 await flexiRoomsContext.SaveChangesAsync(cancellationToken);
                 logger.LogError(
                     "No se pudo interpretar ExternalReference para PaymentId {PaymentId}. ExternalReference: {ExternalReference}",
-                    jsonPayment.Data.Id,
+                    paymentIdText,
                     payment.ExternalReference);
                 return Ok();
             }
@@ -116,7 +141,7 @@ namespace ClientApp.Controllers
                 logger.LogError(
                     "No se encontró usuario {UserId} para finalizar pago {PaymentId}.",
                     paymentTransaction.ApplicationUserId,
-                    jsonPayment.Data.Id);
+                    paymentIdText);
                 return Ok();
             }
 
@@ -133,7 +158,7 @@ namespace ClientApp.Controllers
                 await flexiRoomsContext.SaveChangesAsync(cancellationToken);
                 logger.LogInformation(
                     "Webhook vinculó pago {PaymentId} con reserva existente {BookingId}.",
-                    jsonPayment.Data.Id,
+                    paymentIdText,
                     existingBooking.Id);
                 return Ok();
             }
@@ -156,14 +181,14 @@ namespace ClientApp.Controllers
                 logger.LogInformation(
                     "Webhook creó reserva {BookingId} para pago aprobado {PaymentId}.",
                     createdBooking.Id,
-                    jsonPayment.Data.Id);
+                    paymentIdText);
             }
             catch (Exception exception)
             {
                 await flexiRoomsContext.SaveChangesAsync(cancellationToken);
                 logger.LogError(exception,
                     "Error al crear/vincular reserva desde webhook. PaymentId {PaymentId}, RoomId {RoomId}, Date {DateReserved}, CheckInTimeId {CheckInTimeId}.",
-                    jsonPayment.Data.Id,
+                    paymentIdText,
                     roomId,
                     dateReservedUtc,
                     checkInTimeId);

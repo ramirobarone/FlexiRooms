@@ -86,14 +86,15 @@
 	padding: 0.9rem 1rem;
 }
 
-.door-code-modal {
-	display: block;
+/* Surface, motion and sheet behaviour come from the global .app-modal rules */
+.booking-dialog {
+	width: min(480px, calc(100vw - 2rem));
 }
 
-.modal-content {
+.booking-dialog .modal-content {
 	border: 0;
-	border-radius: var(--radius-xl);
-	box-shadow: var(--shadow-lg);
+	border-radius: 0;
+	box-shadow: none;
 }
 
 /* The key information is the most obvious thing on screen */

@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmService } from '../../Shared/confirm-dialog/confirm.service';
+import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
+import { HotelPaymentAccountStatus, MercadoPagoAccountService } from '../../../../services/MercadoPagoAccountService/mercado-pago-account.service';
+
+type PaymentNotice = { kind: 'success' | 'warning' | 'danger'; text: string };
 import { Hotel } from '../../../../models/hotel';
 import { Province } from '../../../../models/Province';
 import { City } from '../../../../models/City';
@@ -29,18 +35,135 @@ export class AdminHotelsComponent implements OnInit {
   isLoadingImages = false;
   imagesErrorMessage = '';
 
+  // Mercado Pago Marketplace: each hotel collects with its own account
+  paymentAccounts = new Map<number, HotelPaymentAccountStatus>();
+  marketplaceConfigured = true;
+  connectingHotelId: number | null = null;
+  paymentNotice: PaymentNotice | null = null;
+  private pendingReturnHotelId: number | null = null;
+
+  private readonly confirmService = inject(ConfirmService);
+  private readonly mercadoPagoAccounts = inject(MercadoPagoAccountService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly localStorage = inject(LocalStorageService);
+
   constructor(private hotelService: HotelService, private geographyService: GeographyService) { }
 
   ngOnInit(): void {
+    this.readMercadoPagoReturn();
     this.loadHotels();
     this.loadProvinces();
+    this.loadPaymentAccounts();
   }
 
   loadHotels(): void {
     this.hotelService.getMyHotels().subscribe({
-      next: (response) => this.hotels = response ?? [],
+      next: (response) => {
+        this.hotels = response ?? [];
+        // Back from Mercado Pago: reopen the hotel that was being configured.
+        const returned = this.hotels.find(hotel => hotel.id === this.pendingReturnHotelId);
+        if (returned) {
+          this.editHotel(returned);
+        }
+        this.pendingReturnHotelId = null;
+      },
       error: () => this.hotels = []
     });
+  }
+
+  // ------------------------------------------------------------ Mercado Pago
+
+  paymentStatus(hotelId: number): HotelPaymentAccountStatus | undefined {
+    return this.paymentAccounts.get(hotelId);
+  }
+
+  loadPaymentAccounts(): void {
+    this.mercadoPagoAccounts.getMyAccounts().subscribe({
+      next: (response) => {
+        this.marketplaceConfigured = response?.marketplaceConfigured ?? false;
+        this.paymentAccounts = new Map((response?.hotels ?? []).map(status => [status.hotelId, status]));
+      },
+      error: () => this.paymentAccounts = new Map()
+    });
+  }
+
+  /** Leaves the app for Mercado Pago's authorization page; it redirects back to /admin. */
+  connectPayments(hotel: Hotel): void {
+    this.connectingHotelId = hotel.id;
+    this.paymentNotice = null;
+
+    this.mercadoPagoAccounts.connect(hotel.id).subscribe({
+      next: ({ authorizationUrl }) => window.location.assign(authorizationUrl),
+      error: (error) => {
+        this.connectingHotelId = null;
+        this.paymentNotice = {
+          kind: 'danger',
+          text: error?.status === 503
+            ? 'Mercado Pago todavía no está configurado en el servidor.'
+            : 'No pudimos iniciar la conexión con Mercado Pago. Volvé a intentarlo.'
+        };
+      }
+    });
+  }
+
+  async disconnectPayments(hotel: Hotel): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: `¿Desconectar Mercado Pago de "${hotel.name}"?`,
+      message: 'Los huéspedes no van a poder pagar online las reservas de este hotel hasta que lo vuelvas a conectar.',
+      confirmText: 'Desconectar',
+      destructive: true
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.mercadoPagoAccounts.disconnect(hotel.id).subscribe({
+      next: () => {
+        this.paymentNotice = { kind: 'warning', text: `"${hotel.name}" ya no recibe pagos online.` };
+        this.loadPaymentAccounts();
+      },
+      error: () => this.paymentNotice = { kind: 'danger', text: 'No pudimos desconectar la cuenta. Volvé a intentarlo.' }
+    });
+  }
+
+  dismissPaymentNotice(): void {
+    this.paymentNotice = null;
+  }
+
+  private readMercadoPagoReturn(): void {
+    const params = this.route.snapshot.queryParamMap;
+
+    // Just registered through "Sumá tu hotel": open it and point to the next step.
+    const newHotelId = Number(params.get('nuevo'));
+    if (Number.isFinite(newHotelId) && newHotelId > 0) {
+      this.pendingReturnHotelId = newHotelId;
+      this.paymentNotice = {
+        kind: 'success',
+        text: '¡Tu hotel quedó registrado! Lo estamos revisando para publicarlo. Mientras tanto, conectá Mercado Pago y cargá tus habitaciones.'
+      };
+      this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+      return;
+    }
+
+    const result = params.get('mp');
+    if (!result) {
+      return;
+    }
+
+    const hotelId = Number(params.get('hotelId'));
+    this.pendingReturnHotelId = Number.isFinite(hotelId) && hotelId > 0 ? hotelId : null;
+
+    const notices: Record<string, PaymentNotice> = {
+      connected: { kind: 'success', text: 'Listo: el hotel ya cobra las reservas con su propia cuenta de Mercado Pago.' },
+      cancelled: { kind: 'warning', text: 'Se canceló la conexión con Mercado Pago. Podés volver a intentarlo cuando quieras.' },
+      forbidden: { kind: 'danger', text: 'No tenés permisos para configurar los cobros de ese hotel.' },
+      error: { kind: 'danger', text: 'No pudimos conectar la cuenta de Mercado Pago. Volvé a intentarlo.' }
+    };
+    this.paymentNotice = notices[result] ?? notices['error'];
+
+    // Clean the URL so a reload doesn't repeat the message.
+    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
   }
 
   loadProvinces(): void {
@@ -82,22 +205,55 @@ export class AdminHotelsComponent implements OnInit {
   }
 
   saveHotel(): void {
-    const request = this.isEditing
-      ? this.hotelService.updateHotel(this.selectedHotel)
-      : this.hotelService.createHotel(this.selectedHotel);
+    if (this.isEditing) {
+      const wasRejected = this.selectedHotel.approvalStatus === 'Rejected';
+      this.hotelService.updateHotel(this.selectedHotel).subscribe({
+        next: () => {
+          if (wasRejected) {
+            this.paymentNotice = { kind: 'success', text: 'Guardamos los cambios y enviamos el hotel otra vez a revisión.' };
+          }
+          this.newHotel();
+          this.loadHotels();
+        }
+      });
+      return;
+    }
 
-    request.subscribe({
-      next: () => {
+    this.hotelService.createHotel(this.selectedHotel).subscribe({
+      next: (response) => {
+        // Creating a hotel makes the user its Owner: keep the refreshed token.
+        if (response?.login) {
+          this.localStorage.saveLogin(response.login);
+          dispatchEvent(new Event('refrescar'));
+        }
+        if (response?.approvalStatus === 'Pending') {
+          this.paymentNotice = { kind: 'success', text: 'Hotel registrado. Lo vamos a revisar antes de publicarlo.' };
+        }
         this.newHotel();
         this.loadHotels();
+        this.loadPaymentAccounts();
       }
     });
   }
 
-  deleteHotel(id: number): void {
+  approvalLabel(hotel: Hotel): string | null {
+    switch (hotel.approvalStatus) {
+      case 'Pending': return 'En revisión';
+      case 'Rejected': return 'Rechazado';
+      default: return null;
+    }
+  }
+
+  async deleteHotel(id: number): Promise<void> {
     // Destructive and irreversible: confirm, naming exactly what will be lost.
     const name = this.hotels.find(hotel => hotel.id === id)?.name ?? 'este hotel';
-    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) {
+    const confirmed = await this.confirmService.confirm({
+      title: `¿Eliminar "${name}"?`,
+      message: 'Esta acción no se puede deshacer.',
+      confirmText: 'Eliminar',
+      destructive: true
+    });
+    if (!confirmed) {
       return;
     }
 

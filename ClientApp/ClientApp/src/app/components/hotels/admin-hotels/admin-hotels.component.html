@@ -1,3 +1,14 @@
+<div aria-live="polite">
+  @if (paymentNotice) {
+    <div class="alert payment-notice d-flex align-items-center gap-2 mb-4" [ngClass]="'alert-' + paymentNotice.kind" role="status">
+      <i class="bi" aria-hidden="true"
+        [ngClass]="paymentNotice.kind === 'success' ? 'bi-check-circle-fill' : paymentNotice.kind === 'warning' ? 'bi-info-circle-fill' : 'bi-exclamation-triangle-fill'"></i>
+      <span class="flex-grow-1">{{ paymentNotice.text }}</span>
+      <button type="button" class="btn-close" aria-label="Cerrar aviso" (click)="dismissPaymentNotice()"></button>
+    </div>
+  }
+</div>
+
 <div class="row g-4">
   <div class="col-lg-7">
     <div class="card shadow-sm">
@@ -12,15 +23,33 @@
               <th scope="col">Nombre</th>
               <th scope="col">Email</th>
               <th scope="col">Teléfono</th>
+              <th scope="col">Cobros</th>
               <th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
             </tr>
           </thead>
           <tbody>
             @for (hotel of hotels; track hotel) {
               <tr [class.table-active]="isEditing && selectedHotel.id === hotel.id">
-                <td class="fw-semibold">{{ hotel.name }}</td>
+                <td>
+                  <span class="fw-semibold">{{ hotel.name }}</span>
+                  @if (approvalLabel(hotel); as label) {
+                    <span class="badge ms-1" [ngClass]="hotel.approvalStatus === 'Rejected' ? 'text-bg-danger' : 'text-bg-warning'">{{ label }}</span>
+                  }
+                </td>
                 <td>{{ hotel.email }}</td>
                 <td>{{ hotel.phoneNumber }}</td>
+                <td class="text-nowrap">
+                  @if (paymentStatus(hotel.id)?.connected) {
+                    <span class="badge bg-success" title="Los pagos van a la cuenta de Mercado Pago del hotel">
+                      <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Mercado Pago
+                    </span>
+                  } @else {
+                    <button type="button" class="payments-pending" (click)="editHotel(hotel)"
+                      [attr.aria-label]="'Configurar cobros de ' + hotel.name">
+                      <i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>Sin cobros
+                    </button>
+                  }
+                </td>
                 <td class="text-end text-nowrap">
                   <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" [attr.aria-label]="'Editar ' + hotel.name" (click)="editHotel(hotel)"><i class="bi bi-pencil" aria-hidden="true"></i></button>
                   <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" [attr.aria-label]="'Subir imágenes de ' + hotel.name" (click)="openUploadPopup(hotel)"><i class="bi bi-upload" aria-hidden="true"></i></button>
@@ -30,7 +59,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="4" class="text-center text-muted py-4">
+                <td colspan="5" class="text-center text-muted py-4">
                   <i class="bi bi-building d-block fs-3 mb-1" aria-hidden="true"></i>
                   Todavía no hay hoteles. Creá el primero con "Nuevo hotel".
                 </td>
@@ -51,6 +80,66 @@
         }
       </div>
       <div class="card-body">
+        @if (isEditing && selectedHotel.approvalStatus === 'Pending') {
+          <div class="review-banner review-banner--pending mb-3" role="status">
+            <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+            <div>
+              <p class="review-title">En revisión</p>
+              <p class="review-text">Todavía no aparece en las búsquedas ni recibe pagos. Te avisamos al publicarlo.</p>
+            </div>
+          </div>
+        }
+        @if (isEditing && selectedHotel.approvalStatus === 'Rejected') {
+          <div class="review-banner review-banner--rejected mb-3" role="alert">
+            <i class="bi bi-x-octagon" aria-hidden="true"></i>
+            <div>
+              <p class="review-title">No pudimos publicarlo</p>
+              @if (selectedHotel.rejectionReason) {
+                <p class="review-text">Motivo: {{ selectedHotel.rejectionReason }}</p>
+              }
+              <p class="review-text">Corregí los datos y tocá "Guardar cambios": lo enviamos otra vez a revisión.</p>
+            </div>
+          </div>
+        }
+        @if (isEditing) {
+          <p class="form-section-title">Cobros</p>
+          @if (paymentStatus(selectedHotel.id); as payments) {
+            @if (payments.connected) {
+              <div class="payments-card payments-card--connected mb-3">
+                <span class="payments-icon" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+                <div class="flex-grow-1 min-w-0">
+                  <p class="payments-title">Cobra con Mercado Pago</p>
+                  <p class="payments-detail">
+                    Cuenta #{{ payments.mercadoPagoUserId }}
+                    · {{ payments.liveMode ? 'Producción' : 'Prueba' }}
+                    @if (payments.connectedAtUtc) { · desde {{ payments.connectedAtUtc | date:'mediumDate' }} }
+                  </p>
+                </div>
+                <button type="button" class="btn btn-sm btn-link payments-disconnect" (click)="disconnectPayments(selectedHotel)">Desconectar</button>
+              </div>
+            } @else {
+              <div class="payments-card mb-3">
+                <span class="payments-icon payments-icon--pending" aria-hidden="true"><i class="bi bi-wallet2"></i></span>
+                <div class="flex-grow-1 min-w-0">
+                  <p class="payments-title">Todavía no recibe pagos online</p>
+                  <p class="payments-detail">Conectá la cuenta de Mercado Pago del hotel: el dinero de cada reserva se acredita directamente en ella.</p>
+                  <button type="button" class="btn btn-sm btn-primary mt-2" (click)="connectPayments(selectedHotel)"
+                    [disabled]="!marketplaceConfigured || connectingHotelId === selectedHotel.id">
+                    @if (connectingHotelId === selectedHotel.id) {
+                      <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Abriendo Mercado Pago…
+                    } @else {
+                      <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Conectar Mercado Pago
+                    }
+                  </button>
+                  @if (!marketplaceConfigured) {
+                    <p class="form-text mb-0 mt-2">El servidor todavía no tiene configurado Mercado Pago Marketplace.</p>
+                  }
+                </div>
+              </div>
+            }
+          }
+        }
+
         <p class="form-section-title">General</p>
         <div class="mb-3">
           <label class="form-label" for="hotel-name">Nombre</label>

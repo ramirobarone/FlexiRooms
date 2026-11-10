@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ConfirmService } from '../../Shared/confirm-dialog/confirm.service';
 import { Room } from '../../../../models/room';
 import { Hotel } from '../../../../models/hotel';
 import { roomPictures } from '../../../../models/roomImages';
@@ -30,6 +31,7 @@ export class AdminRoomComponent implements OnInit {
   isLoadingImages = false;
   imagesErrorMessage = '';
   isDragOver = false;
+  private readonly confirmService = inject(ConfirmService);
 
   constructor(
     private roomService: RoomService,
@@ -128,10 +130,22 @@ export class AdminRoomComponent implements OnInit {
     }
   }
 
-  deleteRoom(id: number): void {
-    if (confirm('¿Está seguro de eliminar esta habitación?')) {
+  async deleteRoom(id: number): Promise<void> {
+    const name = this.rooms.find(room => room.id === id)?.name ?? 'esta habitación';
+    const confirmed = await this.confirmService.confirm({
+      title: `¿Eliminar "${name}"?`,
+      message: 'Esta acción no se puede deshacer.',
+      confirmText: 'Eliminar',
+      destructive: true
+    });
+    if (confirmed) {
       this.roomService.deleteRoom(id).subscribe({
-        next: () => this.loadRooms()
+        next: () => {
+          if (this.isEditing && this.selectedRoom.id === id) {
+            this.newRoom();
+          }
+          this.loadRooms();
+        }
       });
     }
   }
@@ -234,11 +248,19 @@ export class AdminRoomComponent implements OnInit {
     });
   }
 
-  deleteRoomImage(imageId: number): void {
-    if (!this.selectedRoomForImages) return;
+  async deleteRoomImage(imageId: number): Promise<void> {
+    const room = this.selectedRoomForImages;
+    if (!room) return;
 
-    if (confirm('¿Está seguro de eliminar esta imagen?')) {
-      this.roomImageService.deleteRoomImage(this.selectedRoomForImages.id, imageId).subscribe({
+    const confirmed = await this.confirmService.confirm({
+      title: '¿Eliminar esta imagen?',
+      message: `Se quitará de la galería de "${room.name}".`,
+      confirmText: 'Eliminar',
+      destructive: true
+    });
+
+    if (confirmed) {
+      this.roomImageService.deleteRoomImage(room.id, imageId).subscribe({
         next: () => {
           if (this.selectedRoomForImages) {
             this.loadRoomImages(this.selectedRoomForImages.id);

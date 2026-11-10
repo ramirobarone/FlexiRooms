@@ -38,7 +38,11 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
 
     this.checkoutService.getPaymentConfiguration(booking.IdRoom).subscribe({
       next: configuration => this.loadSdk().then(() => this.renderBrick(configuration.publicKey, configuration.amount, booking)),
-      error: () => this.showError('No se pudo iniciar el medio de pago.')
+      // 409 = the hotel has no Mercado Pago account connected yet: say so plainly.
+      error: error => this.showError(
+        error?.status === 409 && error.error?.message
+          ? `${error.error.message} Podés contactar al hotel para reservar.`
+          : 'No se pudo iniciar el medio de pago.')
     });
   }
 

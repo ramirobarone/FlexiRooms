@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ConfirmService } from '../../Shared/confirm-dialog/confirm.service';
 import { AdminBookingsService } from '../../../admin/services/admin-bookings.service';
 import { AdminBooking } from '../../../admin/models/admin-booking.model';
 
@@ -12,6 +13,7 @@ import { AdminBooking } from '../../../admin/models/admin-booking.model';
 export class AdminBookingsComponent implements OnInit {
   bookings: AdminBooking[] = [];
   selectedBooking?: AdminBooking;
+  private readonly confirmService = inject(ConfirmService);
 
   constructor(private adminBookingsService: AdminBookingsService) {}
 
@@ -32,9 +34,15 @@ export class AdminBookingsComponent implements OnInit {
     });
   }
 
-  deleteBooking(id: number): void {
+  async deleteBooking(id: number): Promise<void> {
     // Destructive and irreversible: confirm before deleting.
-    if (!confirm(`¿Eliminar la reserva #${id}? Esta acción no se puede deshacer.`)) {
+    const confirmed = await this.confirmService.confirm({
+      title: `¿Eliminar la reserva #${id}?`,
+      message: 'Esta acción no se puede deshacer.',
+      confirmText: 'Eliminar',
+      destructive: true
+    });
+    if (!confirmed) {
       return;
     }
 

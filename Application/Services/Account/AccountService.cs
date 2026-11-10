@@ -41,6 +41,42 @@ namespace Application.Services.Account
                 user.UserGuid);
         }
 
+        public async Task<UserLoginDto> GrantHotelOwnershipAsync(string userId, int hotelId)
+        {
+            ApplicationUser user = await userManager.FindByIdAsync(userId)
+                ?? throw new UnauthorizedAccessException("The user does not exist.");
+
+            if (!await userManager.IsInRoleAsync(user, "Owner"))
+            {
+                IdentityResult roleResult = await userManager.AddToRoleAsync(user, "Owner");
+                if (!roleResult.Succeeded)
+                {
+                    throw new InvalidOperationException("No se pudo asignar el rol de dueño.");
+                }
+            }
+
+            // IssueService reads OwnedHotelIds to decide which hotels' issues an owner sees.
+            HashSet<string> owned = (user.OwnedHotelIds ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet();
+            if (owned.Add(hotelId.ToString(System.Globalization.CultureInfo.InvariantCulture)))
+            {
+                user.OwnedHotelIds = string.Join(',', owned);
+                await userManager.UpdateAsync(user);
+            }
+
+            IList<string> roles = await userManager.GetRolesAsync(user);
+            string token = await jwtTokenService.CreateTokenAsync(user);
+            string fullName = $"{user.Name} {user.LastName}".Trim();
+
+            return new UserLoginDto(
+                string.IsNullOrWhiteSpace(fullName) ? user.Email ?? string.Empty : fullName,
+                token,
+                0,
+                roles.Contains("Owner") ? "Owner" : roles.FirstOrDefault() ?? "User",
+                user.UserGuid);
+        }
+
         public async Task<bool> CreateAccount(UserCreateDto userCreateDto)
         {
             ArgumentNullException.ThrowIfNull(userCreateDto);

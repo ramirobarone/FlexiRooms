@@ -1,0 +1,81 @@
+<div class="card shadow-sm">
+  <div class="card-header bg-dark text-white">
+    <h2 class="h6 mb-0">Hoteles por aprobar</h2>
+    <button class="btn btn-sm btn-outline-light" type="button" title="Actualizar" aria-label="Actualizar lista" [disabled]="isLoading" (click)="load()">
+      <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div aria-live="polite">
+    @if (notice) {
+      <div class="alert m-3 mb-0 d-flex align-items-center gap-2" [ngClass]="'alert-' + notice.kind" role="status">
+        <span class="flex-grow-1">{{ notice.text }}</span>
+        <button type="button" class="btn-close" aria-label="Cerrar aviso" (click)="notice = null"></button>
+      </div>
+    }
+  </div>
+
+  @if (isLoading) {
+    <div class="card-body text-muted approvals-state" role="status">
+      <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando…
+    </div>
+  } @else if (hasError) {
+    <div class="card-body">
+      <div class="alert alert-danger mb-0 d-flex justify-content-between align-items-center" role="alert">
+        <span>No pudimos cargar la lista.</span>
+        <button class="btn btn-sm btn-outline-danger" type="button" (click)="load()">Reintentar</button>
+      </div>
+    </div>
+  } @else if (pending.length === 0) {
+    <div class="card-body text-muted approvals-state">
+      <i class="bi bi-check2-all d-block fs-2 mb-1" aria-hidden="true"></i>
+      No hay hoteles esperando aprobación.
+    </div>
+  } @else {
+    <ul class="approvals-list" aria-label="Hoteles pendientes">
+      @for (hotel of pending; track hotel.id) {
+        <li class="approval-item">
+          <div class="approval-main">
+            <div class="approval-head">
+              <h3 class="approval-name">{{ hotel.name }}</h3>
+              @if (hotel.submittedAtUtc) {
+                <span class="text-muted small">Enviado {{ hotel.submittedAtUtc | date:'short' }}</span>
+              }
+            </div>
+            @if (hotel.description) {
+              <p class="approval-description">{{ hotel.description }}</p>
+            }
+            <dl class="approval-meta">
+              <div><dt>Dueño</dt><dd>{{ hotel.ownerName || '—' }} @if (hotel.ownerEmail) { · <a [href]="'mailto:' + hotel.ownerEmail">{{ hotel.ownerEmail }}</a> }</dd></div>
+              <div><dt>Contacto</dt><dd>{{ hotel.email || '—' }} · {{ hotel.codeArea ? '(' + hotel.codeArea + ') ' : '' }}{{ hotel.phoneNumber || '—' }}</dd></div>
+              <div><dt>Dirección</dt><dd>{{ hotel.street || '—' }} {{ hotel.streetNumber }}</dd></div>
+            </dl>
+          </div>
+
+          @if (rejectingId === hotel.id) {
+            <div class="approval-reject">
+              <label class="form-label" [for]="'reason-' + hotel.id">Motivo del rechazo</label>
+              <textarea class="form-control" rows="2" [id]="'reason-' + hotel.id" [(ngModel)]="rejectReason"
+                placeholder="Ej.: faltan fotos o la dirección no es válida" autofocus></textarea>
+              <div class="form-text">El dueño lo ve en su panel y puede corregir y reenviar.</div>
+              <div class="approval-actions">
+                <button class="btn btn-sm btn-outline-secondary" type="button" (click)="cancelReject()">Cancelar</button>
+                <button class="btn btn-sm btn-outline-danger" type="button" [disabled]="!rejectReason.trim() || busyId === hotel.id" (click)="confirmReject(hotel)">
+                  Rechazar
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="approval-actions">
+              <button class="btn btn-sm btn-outline-secondary" type="button" [disabled]="busyId === hotel.id" (click)="startReject(hotel)">Rechazar…</button>
+              <button class="btn btn-sm btn-primary" type="button" [disabled]="busyId === hotel.id" (click)="approve(hotel)">
+                @if (busyId === hotel.id) { <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> }
+                <i class="bi bi-check2 me-1" aria-hidden="true"></i>Aprobar y publicar
+              </button>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

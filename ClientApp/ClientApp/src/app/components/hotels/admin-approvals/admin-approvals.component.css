@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.approvals-state {
+  padding-block: 2.5rem;
+  text-align: center;
+}
+
+.approvals-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.approval-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--separator);
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.approval-item:last-child {
+  border-bottom: 0;
+}
+
+.approval-main {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+.approval-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+.approval-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.approval-description {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.approval-meta {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.approval-meta div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.approval-meta dt {
+  min-width: 5.5rem;
+  color: var(--text-tertiary);
+  font-weight: 550;
+}
+
+.approval-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.approval-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.approval-reject {
+  flex: 1 1 20rem;
+}
+
+.approval-reject .approval-actions {
+  margin-top: 0.6rem;
+}

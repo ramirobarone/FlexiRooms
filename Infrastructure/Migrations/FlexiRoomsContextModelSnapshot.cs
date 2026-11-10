@@ -497,6 +497,9 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("AddressHotelId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CodeArea")
                         .HasColumnType("integer");
 
@@ -518,12 +521,27 @@ namespace Infrastructure.Migrations
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("integer");
 
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<decimal?>("ReviewScore")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ReviewedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReviewedByUserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AddressHotelId");
+
+                    b.HasIndex("ApprovalStatus");
 
                     b.HasIndex("IdentityNumber");
 
@@ -594,6 +612,58 @@ namespace Infrastructure.Migrations
                     b.HasIndex("HotelId");
 
                     b.ToTable("HotelMaintenances");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.HotelPaymentAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessTokenEncrypted")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("AccessTokenExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ConnectedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ConnectedByUserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("LiveMode")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("MercadoPagoUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("RefreshTokenEncrypted")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId")
+                        .IsUnique();
+
+                    b.HasIndex("MercadoPagoUserId");
+
+                    b.ToTable("HotelPaymentAccounts");
                 });
 
             modelBuilder.Entity("Infrastructure.Models.HotelPicture", b =>
@@ -747,6 +817,9 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<decimal?>("ApplicationFee")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -760,6 +833,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CurrencyId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("HotelId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("IdempotencyKey")
                         .IsRequired()
@@ -788,6 +864,8 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BookingId");
+
+                    b.HasIndex("HotelId");
 
                     b.HasIndex("IdempotencyKey")
                         .IsUnique();
@@ -1417,6 +1495,17 @@ namespace Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Infrastructure.Models.HotelMaintenance", b =>
+                {
+                    b.HasOne("Infrastructure.Models.Hotel", "Hotel")
+                        .WithMany()
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("Infrastructure.Models.HotelPaymentAccount", b =>
                 {
                     b.HasOne("Infrastructure.Models.Hotel", "Hotel")
                         .WithMany()

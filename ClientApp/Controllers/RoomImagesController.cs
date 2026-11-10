@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Models;
+using ClientApp.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace ClientApp.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class RoomImagesController(IRoomImageService roomImageService,
+                                  HotelAccessGuard hotelAccess,
                                   ILogger<RoomImagesController> logger) : ControllerBase
 {
     [HttpPost("{roomId:int}/upload")]
@@ -28,6 +30,9 @@ public class RoomImagesController(IRoomImageService roomImageService,
             logger.LogWarning("No files provided in room image upload request for room {RoomId}", roomId);
             return BadRequest("At least one image is required.");
         }
+
+        if ((await hotelAccess.ForRoomAsync(User, roomId, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
 
         List<RoomImageUploadFile> mappedFiles = new(files.Count);
 
@@ -100,6 +105,9 @@ public class RoomImagesController(IRoomImageService roomImageService,
             logger.LogWarning("Invalid parameters received in DeleteRoomImage: RoomId: {RoomId}, ImageId: {ImageId}", roomId, imageId);
             return BadRequest("Room id and image id must be greater than zero.");
         }
+
+        if ((await hotelAccess.ForRoomAsync(User, roomId, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
 
         try
         {

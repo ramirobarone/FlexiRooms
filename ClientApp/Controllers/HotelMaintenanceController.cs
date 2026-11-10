@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.Interfaces;
 using Application.Models;
+using ClientApp.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +10,17 @@ namespace ClientApp.Controllers;
 [Authorize(Policy = "HotelManagement")]
 [ApiController]
 [Route("api/[controller]")]
-public class HotelMaintenanceController(IHotelMaintenanceService maintenanceService, ILogger<HotelMaintenanceController> logger) : ControllerBase
+public class HotelMaintenanceController(
+    IHotelMaintenanceService maintenanceService,
+    HotelAccessGuard hotelAccess,
+    ILogger<HotelMaintenanceController> logger) : ControllerBase
 {
     [HttpGet(nameof(GetByHotel))]
     public async Task<IActionResult> GetByHotel([FromQuery] int hotelId, CancellationToken cancellationToken)
     {
+        if ((await hotelAccess.ForHotelAsync(User, hotelId, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
+
         try
         {
             IReadOnlyCollection<HotelMaintenanceDto> maintenances = await maintenanceService.GetByHotelIdAsync(hotelId, cancellationToken);
@@ -29,6 +36,9 @@ public class HotelMaintenanceController(IHotelMaintenanceService maintenanceServ
     [HttpGet(nameof(GetById))]
     public async Task<IActionResult> GetById([FromQuery] int id, CancellationToken cancellationToken)
     {
+        if ((await hotelAccess.ForMaintenanceAsync(User, id, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
+
         try
         {
             HotelMaintenanceDto maintenance = await maintenanceService.GetByIdAsync(id, cancellationToken);
@@ -60,6 +70,9 @@ public class HotelMaintenanceController(IHotelMaintenanceService maintenanceServ
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
 
+        if ((await hotelAccess.ForHotelAsync(User, request.HotelId, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
+
         try
         {
             HotelMaintenanceDto created = await maintenanceService.CreateAsync(request, userId, cancellationToken);
@@ -79,6 +92,13 @@ public class HotelMaintenanceController(IHotelMaintenanceService maintenanceServ
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userId))
             return Unauthorized();
+
+        // Must manage the current hotel of the record AND the hotel it would be moved to.
+        if ((await hotelAccess.ForMaintenanceAsync(User, request.Id, cancellationToken)).ToDeniedResult(this) is { } deniedCurrent)
+            return deniedCurrent;
+
+        if ((await hotelAccess.ForHotelAsync(User, request.HotelId, cancellationToken)).ToDeniedResult(this) is { } deniedTarget)
+            return deniedTarget;
 
         try
         {
@@ -101,6 +121,9 @@ public class HotelMaintenanceController(IHotelMaintenanceService maintenanceServ
     [HttpDelete(nameof(Delete))]
     public async Task<IActionResult> Delete([FromQuery] int id, CancellationToken cancellationToken)
     {
+        if ((await hotelAccess.ForMaintenanceAsync(User, id, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
+
         try
         {
             await maintenanceService.DeleteAsync(id, cancellationToken);

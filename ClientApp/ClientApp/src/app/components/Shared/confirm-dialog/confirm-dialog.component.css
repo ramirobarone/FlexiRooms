@@ -1,0 +1,88 @@
+/* Compact alert: narrower than content dialogs, centered text, equal-weight buttons */
+.confirm-dialog {
+  width: min(340px, calc(100vw - 2rem));
+}
+
+.confirm-body {
+  padding: 1.5rem 1.5rem 1.1rem;
+  text-align: center;
+}
+
+.confirm-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  background: rgba(229, 72, 77, 0.12);
+  color: var(--danger);
+  font-size: 1.3rem;
+}
+
+.confirm-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.confirm-message {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.925rem;
+}
+
+.confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.confirm-actions .btn {
+  padding-block: 0.6rem;
+  font-weight: 600;
+}
+
+/* .btn.x specificity so Bootstrap's :focus-visible/:active don't repaint them */
+.confirm-actions .btn.confirm-cancel,
+.confirm-actions .btn.confirm-cancel:focus-visible {
+  background: var(--surface-sunken);
+  border-color: transparent;
+  color: var(--text);
+}
+
+.confirm-actions .btn.confirm-cancel:hover,
+.confirm-actions .btn.confirm-cancel:active {
+  background: #dcdce1;
+  color: var(--text);
+}
+
+.confirm-actions .btn.confirm-destructive,
+.confirm-actions .btn.confirm-destructive:focus-visible {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.confirm-actions .btn.confirm-destructive:hover,
+.confirm-actions .btn.confirm-destructive:active {
+  background: #cf3a3f;
+  border-color: #cf3a3f;
+  color: #fff;
+}
+
+/* As a bottom sheet the buttons stack, action on top, within thumb reach */
+@media (max-width: 575.98px) {
+  .confirm-actions {
+    grid-template-columns: 1fr;
+    padding-bottom: 1.5rem;
+  }
+
+  .confirm-actions .btn:last-child {
+    order: -1;
+  }
+}

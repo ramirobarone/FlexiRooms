@@ -20,11 +20,17 @@ namespace Application.Models
         public Address? AddressHotel { get; set; }
         public IEnumerable<HotelPictureDto>? Pictures { get; set; }
 
+        /// <summary>Read-only for clients: set by the server (create) and by SuperAdmin review.</summary>
+        public HotelApprovalStatus ApprovalStatus { get; set; }
+        public string? RejectionReason { get; set; }
+
         public static implicit operator HotelDto(Hotel hotel)
         {
 
             return new Models.HotelDto()
             {
+                ApprovalStatus = hotel.ApprovalStatus,
+                RejectionReason = hotel.RejectionReason,
                 Id = hotel.Id,
                 CodeArea = hotel.CodeArea,
                 Description = hotel.Description,
@@ -55,6 +61,7 @@ namespace Application.Models
             return new Hotel()
             {
                 Id = hotel.Id,
+                ApprovalStatus = hotel.ApprovalStatus,
                 CodeArea = hotel.CodeArea,
                 Description = hotel.Description ?? string.Empty,
                 Email = hotel.Email ?? string.Empty,

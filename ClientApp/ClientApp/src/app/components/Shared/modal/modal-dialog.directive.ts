@@ -86,7 +86,13 @@ export class ModalDialogDirective implements OnChanges, AfterViewInit, OnDestroy
 
   private sync(): void {
     if (this.open && this.state === 'closed') {
-      this.show();
+      // Wait for this change-detection pass to finish so content projected
+      // under an @if exists before we measure it and move focus into it.
+      queueMicrotask(() => {
+        if (this.open && this.state === 'closed') {
+          this.show();
+        }
+      });
     } else if (!this.open && this.state === 'open') {
       // Parent closed it (e.g. after a successful upload): animate, no emit.
       this.animateOut(0, () => this.finishClose(false));

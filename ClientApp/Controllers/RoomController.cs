@@ -2,14 +2,21 @@
 using Application.Models;
 using Application.Models.Booking.Available;
 using Application.Services.Rooms;
+using ClientApp.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientApp.Controllers
 {
+    /// <summary>
+    /// Reads are public (search and checkout need them); writes require managing the room's hotel.
+    /// </summary>
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class RoomController(IServiceGeneric<RoomDto> serviceRoom, ILogger<RoomController> logger) : ControllerBase
+    public class RoomController(IServiceGeneric<RoomDto> serviceRoom, HotelAccessGuard hotelAccess, ILogger<RoomController> logger) : ControllerBase
     {
+        [AllowAnonymous]
         [HttpGet]
         [Route(nameof(GetRoomById))]
         [ProducesResponseType(typeof(IEnumerable<RoomDto>), StatusCodes.Status200OK)]
@@ -36,6 +43,7 @@ namespace ClientApp.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpGet(nameof(GetRoom))]
         [ProducesResponseType(typeof(RoomDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -74,6 +82,10 @@ namespace ClientApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Note: on create, RoomDto.Id carries the target HOTEL id (see ServiceRoom.Create).
+            if ((await hotelAccess.ForHotelAsync(User, roomDto.Id)).ToDeniedResult(this) is { } denied)
+                return denied;
+
             RoomDto createdRoom = await serviceRoom.Create(roomDto);
             logger.LogInformation("Created room with id {RoomId}", createdRoom.Id);
             return CreatedAtAction(nameof(GetRoom), new { id = createdRoom.Id }, createdRoom);
@@ -91,6 +103,10 @@ namespace ClientApp.Controllers
                 logger.LogWarning("Invalid model received in UpdateRoom for room id {RoomId}", roomDto.Id);
                 return BadRequest(ModelState);
             }
+
+            // ServiceRoom.Update keeps the room's current hotel, so checking the room is enough.
+            if ((await hotelAccess.ForRoomAsync(User, roomDto.Id)).ToDeniedResult(this) is { } denied)
+                return denied;
 
             await serviceRoom.Update(roomDto);
             logger.LogInformation("Updated room id {RoomId}", roomDto.Id);
@@ -110,11 +126,15 @@ namespace ClientApp.Controllers
                 return BadRequest();
             }
 
+            if ((await hotelAccess.ForRoomAsync(User, id)).ToDeniedResult(this) is { } denied)
+                return denied;
+
             await serviceRoom.Delete(id);
             logger.LogInformation("Deleted room id {RoomId}", id);
             return Accepted();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ScheduleDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

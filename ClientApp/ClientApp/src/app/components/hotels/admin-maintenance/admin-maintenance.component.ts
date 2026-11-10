@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { ConfirmService } from '../../Shared/confirm-dialog/confirm.service';
 import { Hotel } from '../../../../models/hotel';
 import { HotelService } from '../../../../services/HotelService/hotel.service';
 import {
@@ -22,6 +23,7 @@ export class AdminMaintenanceComponent implements OnInit {
   maintenances: HotelMaintenance[] = [];
   selectedMaintenance: CreateHotelMaintenance & { id?: number } = this.createEmptyMaintenance();
   isEditing = false;
+  private readonly confirmService = inject(ConfirmService);
   isLoading = false;
   hasError = false;
 
@@ -131,10 +133,22 @@ export class AdminMaintenanceComponent implements OnInit {
     });
   }
 
-  deleteMaintenance(id: number): void {
-    if (confirm('¿Está seguro de eliminar este responsable de mantenimiento?')) {
+  async deleteMaintenance(id: number): Promise<void> {
+    const name = this.maintenances.find(m => m.id === id)?.nameMaintenance ?? 'este responsable';
+    const confirmed = await this.confirmService.confirm({
+      title: `¿Eliminar a ${name}?`,
+      message: 'Dejará de recibir las solicitudes de mantenimiento de este hotel.',
+      confirmText: 'Eliminar',
+      destructive: true
+    });
+    if (confirmed) {
       this.hotelMaintenanceService.delete(id).subscribe({
-        next: () => this.loadMaintenances()
+        next: () => {
+          if (this.isEditing && this.selectedMaintenance.id === id) {
+            this.newMaintenance();
+          }
+          this.loadMaintenances();
+        }
       });
     }
   }

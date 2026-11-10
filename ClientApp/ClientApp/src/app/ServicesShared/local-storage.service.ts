@@ -110,6 +110,10 @@ export class LocalStorageService {
     return this.getRoles().includes('admin');
   }
 
+  isSuperAdmin(): boolean {
+    return this.getRoles().includes('superadmin');
+  }
+
   isUser(): boolean {
     return this.getRoles().includes('user');
   }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Hotel } from 'src/models/hotel';
+import { CreateHotelResponse, Hotel, PendingHotel } from 'src/models/hotel';
 import { hotelPicture } from 'src/models/hotelPicture';
 import { EnvironmentsService } from '../../app/ServicesShared/environments.service';
 
@@ -25,9 +25,23 @@ getMyHotels(): Observable<Hotel[]> {
     return this.http.get<Hotel>(this.baseurl + 'getHotel?idHotel=' + id);
   }
 
-  createHotel(hotel: Hotel): Observable<unknown> {
-    console.log('Creating hotel:', hotel);
-    return this.http.post(this.baseurl + 'createHotel', hotel);
+  /** The creator becomes the owner; non-SuperAdmin hotels start Pending until approved. */
+  createHotel(hotel: Hotel): Observable<CreateHotelResponse> {
+    return this.http.post<CreateHotelResponse>(this.baseurl + 'createHotel', hotel);
+  }
+
+  // ---------------------------------------------------------- SuperAdmin review
+
+  getPendingHotels(): Observable<PendingHotel[]> {
+    return this.http.get<PendingHotel[]>(this.baseurl + 'getPendingHotels');
+  }
+
+  approveHotel(id: number): Observable<void> {
+    return this.http.post<void>(`${this.baseurl}${id}/approve`, {});
+  }
+
+  rejectHotel(id: number, reason: string): Observable<void> {
+    return this.http.post<void>(`${this.baseurl}${id}/reject`, { reason });
   }
 
   updateHotel(hotel: Hotel): Observable<unknown> {

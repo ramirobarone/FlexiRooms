@@ -9,6 +9,12 @@ namespace Application.Interfaces
 
         Task<bool> CreateAccount(UserCreateDto userCreateDto);
 
+        /// <summary>
+        /// Makes the user the owner of a hotel: adds the "Owner" role and the hotel to OwnedHotelIds.
+        /// Returns a fresh login (new JWT with the role) so the panel opens without logging in again.
+        /// </summary>
+        Task<UserLoginDto> GrantHotelOwnershipAsync(string userId, int hotelId);
+
         Task<UserInformationDto?> GetInformation(string userId);
 
         Task<UserInformationDto?> UpdateInformation(string userId, UpdateUserInformationDto userInformationDto);

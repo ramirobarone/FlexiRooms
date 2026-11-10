@@ -19,5 +19,15 @@ namespace Infrastructure.Models
 
         /// <summary>FK toward AspNetUsers.Id — the user who owns this hotel.</summary>
         public ApplicationUser? Owner { get; set; }
+
+        /// <summary>Only Approved hotels are listed publicly and accept payments.</summary>
+        public HotelApprovalStatus ApprovalStatus { get; set; }
+
+        /// <summary>Shown to the owner when the hotel is rejected.</summary>
+        public string? RejectionReason { get; set; }
+
+        public DateTime? SubmittedAtUtc { get; set; }
+        public DateTime? ReviewedAtUtc { get; set; }
+        public string? ReviewedByUserId { get; set; }
     }
 }

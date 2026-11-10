@@ -1,0 +1,142 @@
+<main class="onboarding container py-4 py-lg-5">
+  <header class="onboarding-hero">
+    <p class="section-label mb-1">Para hoteles</p>
+    <h1 class="onboarding-title">Sumá tu hotel a Flexi Rooms</h1>
+    <p class="onboarding-subtitle text-muted">Publicá tus habitaciones por horas y cobrá cada reserva directo en tu cuenta de Mercado Pago.</p>
+  </header>
+
+  <!-- Wayfinding: the whole path, with where the owner is now -->
+  <ol class="onboarding-steps" aria-label="Pasos para sumar tu hotel">
+    <li [class.is-done]="isLoggedIn" [attr.aria-current]="!isLoggedIn ? 'step' : null">
+      <span class="step-dot" aria-hidden="true">@if (isLoggedIn) { <i class="bi bi-check-lg"></i> } @else { 1 }</span>
+      <span class="step-text"><strong>Tu cuenta</strong><small>Creala o ingresá</small></span>
+    </li>
+    <li [attr.aria-current]="isLoggedIn ? 'step' : null">
+      <span class="step-dot" aria-hidden="true">2</span>
+      <span class="step-text"><strong>Tu hotel</strong><small>Datos y dirección</small></span>
+    </li>
+    <li>
+      <span class="step-dot" aria-hidden="true">3</span>
+      <span class="step-text"><strong>Cobros y revisión</strong><small>Conectás Mercado Pago y lo aprobamos</small></span>
+    </li>
+  </ol>
+
+  @if (!isLoggedIn) {
+    <section class="onboarding-card text-center" aria-labelledby="account-title">
+      <span class="onboarding-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
+      <h2 id="account-title" class="h4 mb-1">Primero, tu cuenta</h2>
+      <p class="text-muted mb-4">Con ella vas a administrar el hotel, sus habitaciones, reservas y cobros.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a class="btn btn-success" [routerLink]="['/accountCreate']" [queryParams]="{ returnUrl }">Crear cuenta</a>
+        <a class="btn btn-outline-success" [routerLink]="['/login']" [queryParams]="{ returnUrl }">Ya tengo cuenta</a>
+      </div>
+    </section>
+  } @else {
+    <form class="onboarding-card" #hotelForm="ngForm" (ngSubmit)="submit(hotelForm)" novalidate aria-labelledby="hotel-title">
+      <h2 id="hotel-title" class="h4 mb-1">Datos del hotel</h2>
+      <p class="text-muted mb-4">Podés completar o cambiar todo después desde el panel.</p>
+
+      <fieldset class="mb-2">
+        <legend class="form-section-title">General</legend>
+        <div class="mb-3">
+          <label class="form-label" for="ob-name">Nombre del hotel</label>
+          <input id="ob-name" name="name" class="form-control" required minlength="3" [(ngModel)]="hotel.name" #name="ngModel"
+            autocomplete="organization" [class.is-invalid]="(submitted || name.touched) && name.invalid" />
+          <div class="invalid-feedback">Ingresá el nombre (mínimo 3 caracteres).</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="ob-description">Descripción</label>
+          <textarea id="ob-description" name="description" class="form-control" rows="3" [(ngModel)]="hotel.description"
+            placeholder="¿Qué hace especial a tu hotel?"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-2">
+        <legend class="form-section-title">Contacto</legend>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="ob-email">Email</label>
+            <input id="ob-email" name="email" type="email" class="form-control" required email [(ngModel)]="hotel.email" #email="ngModel"
+              autocomplete="email" inputmode="email" [class.is-invalid]="(submitted || email.touched) && email.invalid" />
+            <div class="invalid-feedback">Ingresá un email válido.</div>
+          </div>
+          <div class="col-4 col-md-2">
+            <label class="form-label" for="ob-area">Área</label>
+            <input id="ob-area" name="codeArea" type="number" class="form-control" [(ngModel)]="hotel.codeArea" inputmode="numeric" />
+          </div>
+          <div class="col-8 col-md-4">
+            <label class="form-label" for="ob-phone">Teléfono</label>
+            <input id="ob-phone" name="phoneNumber" type="number" class="form-control" required [(ngModel)]="hotel.phoneNumber" #phone="ngModel"
+              inputmode="tel" [class.is-invalid]="(submitted || phone.touched) && (phone.invalid || !hotel.phoneNumber)" />
+            <div class="invalid-feedback">Ingresá un teléfono.</div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-2">
+        <legend class="form-section-title">Dirección</legend>
+        <div class="row g-3 mb-3">
+          <div class="col-md-8">
+            <label class="form-label" for="ob-street">Calle</label>
+            <input id="ob-street" name="street" class="form-control" required [(ngModel)]="hotel.addressHotel.street" #street="ngModel"
+              autocomplete="address-line1" [class.is-invalid]="(submitted || street.touched) && street.invalid" />
+            <div class="invalid-feedback">Ingresá la calle.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="ob-number">Número</label>
+            <input id="ob-number" name="number" class="form-control" [(ngModel)]="hotel.addressHotel.number" />
+          </div>
+          <div class="col-md-5">
+            <label class="form-label" for="ob-province">Provincia</label>
+            <select id="ob-province" name="province" class="form-select" [(ngModel)]="hotel.addressHotel.idProvince" (ngModelChange)="onProvinceChange()"
+              [class.is-invalid]="submitted && !hotel.addressHotel.idProvince">
+              <option [ngValue]="0">Seleccioná</option>
+              @for (province of provinces; track province.id) {
+                <option [ngValue]="province.id">{{ province.name }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Elegí la provincia.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="ob-city">Ciudad</label>
+            <select id="ob-city" name="city" class="form-select" [(ngModel)]="hotel.addressHotel.idCity" [disabled]="!cities.length"
+              [class.is-invalid]="submitted && !hotel.addressHotel.idCity">
+              <option [ngValue]="0">{{ cities.length ? 'Seleccioná' : 'Elegí provincia' }}</option>
+              @for (city of cities; track city.id) {
+                <option [ngValue]="city.id">{{ city.name }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Elegí la ciudad.</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="ob-postal">Código postal</label>
+            <input id="ob-postal" name="postalCode" class="form-control" [(ngModel)]="hotel.addressHotel.postalCode" autocomplete="postal-code" />
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="onboarding-review-note">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        <span>Revisamos cada hotel antes de publicarlo. Mientras tanto ya podés entrar al panel, cargar habitaciones y conectar Mercado Pago.</span>
+      </div>
+
+      <div aria-live="assertive">
+        @if (errorMessage) {
+          <div class="alert alert-danger mt-3 mb-0" role="alert">
+            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ errorMessage }}
+          </div>
+        }
+      </div>
+
+      <div class="onboarding-actions">
+        <button type="submit" class="btn btn-success" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Registrando…
+          } @else {
+            Registrar hotel<i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+          }
+        </button>
+      </div>
+    </form>
+  }
+</main>

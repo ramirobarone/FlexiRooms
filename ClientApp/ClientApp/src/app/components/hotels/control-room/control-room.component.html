@@ -12,6 +12,9 @@
         <button type="button" class="btn" [ngClass]="activeTab === 'bookings' ? 'btn-dark' : 'btn-outline-dark'" [attr.aria-pressed]="activeTab === 'bookings'" (click)="activeTab = 'bookings'">Reservas</button>
         <button type="button" class="btn" [ngClass]="activeTab === 'issues' ? 'btn-dark' : 'btn-outline-dark'" [attr.aria-pressed]="activeTab === 'issues'" (click)="activeTab = 'issues'">Reclamos</button>
         <button type="button" class="btn" [ngClass]="activeTab === 'maintenance' ? 'btn-dark' : 'btn-outline-dark'" [attr.aria-pressed]="activeTab === 'maintenance'" (click)="activeTab = 'maintenance'">Mantenimiento</button>
+        @if (isSuperAdmin) {
+          <button type="button" class="btn" [ngClass]="activeTab === 'approvals' ? 'btn-dark' : 'btn-outline-dark'" [attr.aria-pressed]="activeTab === 'approvals'" (click)="activeTab = 'approvals'">Aprobaciones</button>
+        }
       </div>
     </div>
 
@@ -50,6 +53,16 @@
               <i class="bi bi-chevron-right tile-chevron" aria-hidden="true"></i>
             </button>
           </div>
+          @if (isSuperAdmin) {
+            <div class="col-sm-6 col-lg-4">
+              <button type="button" class="summary-tile" (click)="activeTab = 'approvals'">
+                <span class="tile-icon tile-icon--indigo" aria-hidden="true"><i class="bi bi-patch-check"></i></span>
+                <span class="tile-title">Aprobaciones</span>
+                <span class="tile-text">Revisá y publicá los hoteles que se registraron.</span>
+                <i class="bi bi-chevron-right tile-chevron" aria-hidden="true"></i>
+              </button>
+            </div>
+          }
           <div class="col-sm-6 col-lg-4">
             <button type="button" class="summary-tile" (click)="activeTab = 'maintenance'">
               <span class="tile-icon tile-icon--teal" aria-hidden="true"><i class="bi bi-tools"></i></span>
@@ -74,6 +87,9 @@
       }
       @case ('maintenance') {
         <app-admin-maintenance></app-admin-maintenance>
+      }
+      @case ('approvals') {
+        <app-admin-approvals></app-admin-approvals>
       }
     }
   </div>

@@ -9,6 +9,7 @@ using Application.Services.Rooms;
 using Application.Services.Issues;
 using Application.Services.Maintenance;
 using Application.Services.Reviews;
+using Application.Services.Payments;
 using Infrastructure.Models;
 
 namespace ClientApp.Extensions
@@ -34,6 +35,16 @@ namespace ClientApp.Extensions
             app.Services.AddScoped<IIssueService, IssueService>();
             app.Services.AddScoped<IHotelMaintenanceService, HotelMaintenanceService>();
             app.Services.AddScoped<IReviewService, ReviewService>();
+
+            // "Owner of the hotel or SuperAdmin" rule for every admin endpoint
+            app.Services.AddScoped<ClientApp.Authorization.HotelAccessGuard>();
+
+            // Mercado Pago Marketplace (one seller account per hotel)
+            app.Services.AddOptions<MercadoPagoMarketplaceOptions>().BindConfiguration(MercadoPagoMarketplaceOptions.SectionName);
+            app.Services.AddHttpClient<IMercadoPagoAccountService, MercadoPagoAccountService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(20);
+            });
 
         }
     }

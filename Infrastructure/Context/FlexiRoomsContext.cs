@@ -28,6 +28,7 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
     //public DbSet<User> Users { get; set; }
     public DbSet<PreBooking> PreBooking { get; set; }
     public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+    public DbSet<HotelPaymentAccount> HotelPaymentAccounts { get; set; }
 
 
     public DbSet<HotelPicture> HotelPicture { get; set; }
@@ -87,6 +88,25 @@ public partial class FlexiRoomsContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(payment => payment.BookingId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PaymentTransaction>()
+            .HasIndex(payment => payment.HotelId);
+
+        // Public queries filter by status; the SuperAdmin queue lists Pending ones.
+        modelBuilder.Entity<Hotel>().HasIndex(hotel => hotel.ApprovalStatus);
+        modelBuilder.Entity<Hotel>().Property(hotel => hotel.RejectionReason).HasMaxLength(500);
+
+        // One Mercado Pago seller account per hotel; removed together with the hotel.
+        modelBuilder.Entity<HotelPaymentAccount>(account =>
+        {
+            account.HasIndex(a => a.HotelId).IsUnique();
+            account.HasIndex(a => a.MercadoPagoUserId);
+            account.Property(a => a.PublicKey).HasMaxLength(200);
+            account.HasOne(a => a.Hotel)
+                .WithMany()
+                .HasForeignKey(a => a.HotelId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         modelBuilder.Entity<HotelMaintenance>()
             .HasMany(x => x.MaintenanceTypes)

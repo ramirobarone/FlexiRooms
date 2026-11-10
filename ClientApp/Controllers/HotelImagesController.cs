@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Models;
+using ClientApp.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace ClientApp.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class HotelImagesController(IHotelImageService hotelImageService,
+                                   HotelAccessGuard hotelAccess,
                                    ILogger<HotelImagesController> logger) : ControllerBase
 {
     [HttpPost("{hotelId:int}/upload")]
@@ -16,6 +18,9 @@ public class HotelImagesController(IHotelImageService hotelImageService,
     {
         if (hotelId <= 0)
             return BadRequest("Hotel id is invalid.");
+
+        if ((await hotelAccess.ForHotelAsync(User, hotelId, cancellationToken)).ToDeniedResult(this) is { } denied)
+            return denied;
 
         if (files.Count == 0)
             return BadRequest("At least one image is required.");

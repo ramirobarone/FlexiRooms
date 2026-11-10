@@ -11,6 +11,8 @@ using MercadoPago.Resource.Payment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Application.Models.Options;
 using System.Linq;
 
 namespace Application.Services.Booking
@@ -21,6 +23,8 @@ namespace Application.Services.Booking
         IServiceGeneric<Bookings> bookingService,
         IRepository<PaymentTransaction> paymentRepository,
         UserManager<ApplicationUser> userManager,
+        IMercadoPagoAccountService mercadoPagoAccounts,
+        IOptions<MercadoPagoMarketplaceOptions> marketplaceOptions,
         ILogger<Paymentt> logger) : IPayment
     {
         public async Task<ResponsePayment> CreatePayment(CheckoutBooking checkout)
@@ -37,7 +41,8 @@ namespace Application.Services.Booking
             logger.LogInformation("Found user {UserId} for Mercado Pago payment.", user.Id);
 
             Room room = await roomRepository.GetByIdAsync(room => room.Id == checkout.RoomDto.IdRoom,
-                query => query.Include(room => room.Costs));
+                query => query.Include(room => room.Costs).Include(room => room.Hotels))
+                ?? throw new InvalidOperationException("No se encontró la habitación.");
 
             logger.LogInformation("Loaded room {RoomId} with {CostCount} configured cost(s).", room.Id, room.Costs?.Count ?? 0);
 
@@ -47,9 +52,29 @@ namespace Application.Services.Booking
 
             logger.LogInformation("Calculated payment amount {Amount} for room {RoomId}.", amount, room.Id);
 
+            // Marketplace: charge with the hotel's own Mercado Pago account so the money goes to the hotel.
+            int hotelId = room.Hotels?.Id
+                ?? throw new InvalidOperationException("La habitación no está asociada a un hotel.");
+
+            if (room.Hotels.ApprovalStatus != HotelApprovalStatus.Approved)
+                throw new InvalidOperationException("Este hotel todavía no está habilitado para reservas online.");
+
+            SellerCredentials seller = await mercadoPagoAccounts.GetCredentialsForHotelAsync(hotelId)
+                ?? throw new InvalidOperationException("Este hotel todavía no acepta pagos online.");
+
+            // The platform commission only applies when charging on behalf of a hotel.
+            decimal? applicationFee = seller.IsPlatformAccount ? null : mercadoPagoAccounts.CalculateApplicationFee(amount);
+
+            logger.LogInformation(
+                "Charging hotel {HotelId} account (platform fallback: {IsPlatform}), application fee {ApplicationFee}.",
+                hotelId, seller.IsPlatformAccount, applicationFee);
+
             var request = new PaymentCreateRequest
             {
                 TransactionAmount = amount,
+                ApplicationFee = applicationFee,
+                NotificationUrl = string.IsNullOrWhiteSpace(marketplaceOptions.Value.NotificationUrl) ? null : marketplaceOptions.Value.NotificationUrl,
+                Metadata = new Dictionary<string, object> { ["hotel_id"] = hotelId, ["room_id"] = room.Id },
                 Token = checkout.Payment.Token,
                 PaymentMethodId = checkout.Payment.PaymentMethodId,
                 Installments = checkout.Payment.Installments,
@@ -69,7 +94,7 @@ namespace Application.Services.Booking
             string idempotencyKey = Guid.NewGuid().ToString();
             logger.LogInformation("Using idempotency key {IdempotencyKey} for Mercado Pago request.", idempotencyKey);
 
-            var requestOptions = new RequestOptions();
+            var requestOptions = new RequestOptions { AccessToken = seller.AccessToken };
             requestOptions.CustomHeaders.Add("X-Idempotency-Key", idempotencyKey);
 
             Payment sdkResult;
@@ -146,7 +171,9 @@ namespace Application.Services.Booking
                 Amount = amount,
                 CreatedAtUtc = DateTime.UtcNow,
                 BookingId = booking?.Id,
-                ApplicationUserId = user.Id
+                ApplicationUserId = user.Id,
+                HotelId = hotelId,
+                ApplicationFee = applicationFee
             });
 
             logger.LogInformation(

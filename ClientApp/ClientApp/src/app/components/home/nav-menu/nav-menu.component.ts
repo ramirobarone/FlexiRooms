@@ -39,7 +39,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     this.userName = user?.fullName ?? '';
     this.isLoged = this.localStorageService.isLoggedIn();
     this.profileImageUrl = this.localStorageService.getProfileImage() || 'assets/exterior.jpg';
-    this.canAccessControlPanel = this.localStorageService.isOwner() || this.localStorageService.isAdmin();
+    this.canAccessControlPanel = this.localStorageService.isOwner() || this.localStorageService.isAdmin() || this.localStorageService.isSuperAdmin();
 
     if (!this.isLoged) {
       this.userName = '';

@@ -410,6 +410,68 @@ dialog[open]::backdrop {
   animation: scrim-in var(--dur-base) var(--ease-out) both;
 }
 
+/* Dialogs driven by the appModal directive (Shared/modal) */
+dialog.app-modal {
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* The scrim follows the sheet while it is dragged */
+dialog.app-modal::backdrop {
+  opacity: var(--backdrop-opacity, 1);
+}
+
+/* Phones: a bottom sheet anchored to the edge it rises from */
+@media (max-width: 575.98px) {
+  dialog.app-modal.is-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh;
+    margin: auto 0 0 !important;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: none !important; /* motion comes from the spring, not keyframes */
+    will-change: transform;
+  }
+
+  dialog.app-modal.is-sheet .modal-header {
+    touch-action: none; /* the header is the drag handle */
+    cursor: grab;
+  }
+
+  dialog.app-modal.is-sheet .modal-header:active {
+    cursor: grabbing;
+  }
+}
+
+.sheet-grabber {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 1.25rem;
+  margin-bottom: -0.5rem;
+  touch-action: none;
+  cursor: grab;
+}
+
+.sheet-grabber::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  width: 2.25rem;
+  height: 5px;
+  margin-left: -1.125rem;
+  border-radius: var(--radius-pill);
+  background: var(--separator-strong);
+}
+
 /* --------------------------------------------------------------------------
    Carousels — controls as small translucent buttons
    -------------------------------------------------------------------------- */

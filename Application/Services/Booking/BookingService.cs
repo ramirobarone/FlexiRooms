@@ -71,6 +71,24 @@ namespace Application.Services.Reserves
                 include: z => z.Include(x => x.CheckInTime).Include(x => x.User));
         }
 
+        public async Task<IEnumerable<Bookings>> GetAllForHotelsAsync(IReadOnlyCollection<int>? hotelIds)
+        {
+            if (hotelIds is null)
+            {
+                return await GetAllAsync();
+            }
+
+            if (hotelIds.Count == 0)
+            {
+                return [];
+            }
+
+            return await repositoryBookings.GetAllByIdAsync(
+                x => x.Room != null && x.Room.Hotels != null && hotelIds.Contains(x.Room.Hotels.Id),
+                query => query.OrderByDescending(x => x.DateReserved),
+                include: z => z.Include(x => x.CheckInTime).Include(x => x.User));
+        }
+
         public async Task<IEnumerable<Bookings>> GetAllById(int entity)
         {
             if (entity == 0)

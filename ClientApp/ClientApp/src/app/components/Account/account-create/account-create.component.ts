@@ -3,7 +3,7 @@ import { UserCreateDto } from '../Models/accountDto';
 import { NgForm } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { HttpResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-account-create',
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
     standalone: false
 })
 export class AccountCreateComponent implements OnInit {
-  constructor(private serviceAccount: AccountService, private router:Router) { }
+  constructor(private serviceAccount: AccountService, private router: Router, private route: ActivatedRoute) { }
 
 
   userCreateDto: UserCreateDto = { email: '', password: '', name: '', codeArea: '', phoneNumber: '', identityNumber: '', lastName: '' };
@@ -29,8 +29,11 @@ export class AccountCreateComponent implements OnInit {
     console.log(this.userCreateDto);
     this.serviceAccount.createAccount(this.userCreateDto).subscribe({
       next: (res: boolean) => {
-        if (res === true)
-          this.router.navigate(['/login']);
+        if (res === true) {
+          // Keep where the user was heading (e.g. "Sumá tu hotel") through the login step.
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          this.router.navigate(['/login'], { queryParams: returnUrl ? { returnUrl } : {} });
+        }
 
           // Handle successful account creation
           console.log('Account created successfully', res);

@@ -1,9 +1,14 @@
 import { Component, ElementRef, EventEmitter, Output, Renderer2, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UserDto, UserLoginDto } from './Models/userDto';
 import { AccountService } from './Service/account.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from '../../../ServicesShared/local-storage.service';
 import { finalize } from 'rxjs';
+
+/** Only same-app paths ("/x"), never another origin ("//evil.com", "https://..."). */
+export function safeReturnUrl(value: string | null): string {
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/';
+}
 
 @Component({
     selector: 'app-login',
@@ -17,6 +22,7 @@ export class LoginComponent {
 
   constructor(private serviceAuthenticat: AccountService,
               private router: Router,
+              private route: ActivatedRoute,
               private renderer: Renderer2,
               private localStorageService: LocalStorageService) {
   }
@@ -36,7 +42,7 @@ export class LoginComponent {
         this.localStorageService.saveLogin(res);
         
         this.changeFullName(res.fullName);
-        this.router.navigate(['/']);
+        this.router.navigateByUrl(safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl')));
         dispatchEvent(new Event('refrescar'));
       },
       error: (err) => {

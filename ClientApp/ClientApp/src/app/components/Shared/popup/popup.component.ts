@@ -1,5 +1,9 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 
+/**
+ * Simple message dialog. Opening, Escape, backdrop click, focus trap and the
+ * enter/exit motion are handled by the shared `appModal` directive.
+ */
 @Component({
     selector: 'app-popup',
     templateUrl: './popup.component.html',
@@ -7,59 +11,13 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class PopupComponent implements AfterViewInit, OnChanges {
-
+export class PopupComponent {
   @Input() title = '';
   @Input() description = '';
   @Input() visible = false;
   @Output() closed = new EventEmitter<void>();
-  @ViewChild('genericModal') genericModal?: ElementRef<HTMLDialogElement>;
-
-  ngAfterViewInit(): void {
-    this.updateVisibility();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['visible']) {
-      this.updateVisibility();
-    }
-  }
-
-  close(): void {
-    this.genericModal?.nativeElement.close();
-  }
 
   onClose(): void {
     this.closed.emit();
-  }
-
-  onBackdropClick(event: MouseEvent): void {
-    const dialog = this.genericModal?.nativeElement;
-    if (!dialog || event.target !== dialog) {
-      return;
-    }
-
-    const bounds = dialog.getBoundingClientRect();
-    const clickedInside = bounds.top <= event.clientY && event.clientY <= bounds.bottom
-      && bounds.left <= event.clientX && event.clientX <= bounds.right;
-
-    if (!clickedInside) {
-      dialog.close();
-    }
-  }
-
-  private updateVisibility(): void {
-    const dialog = this.genericModal?.nativeElement;
-    if (!dialog) {
-      return;
-    }
-
-    if (this.visible && !dialog.open) {
-      dialog.showModal();
-    }
-
-    if (!this.visible && dialog.open) {
-      dialog.close();
-    }
   }
 }

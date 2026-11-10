@@ -33,6 +33,11 @@ export class AdminBookingsComponent implements OnInit {
   }
 
   deleteBooking(id: number): void {
+    // Destructive and irreversible: confirm before deleting.
+    if (!confirm(`¿Eliminar la reserva #${id}? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
     this.adminBookingsService.deleteBooking(id).subscribe({
       next: () => {
         this.selectedBooking = undefined;

@@ -1,88 +1,98 @@
-<form #accountForm="ngForm" (ngSubmit)="createAccount(accountForm)" novalidate>
-  <div class="row">
-    <div class="col-md-6">
+<div class="account-create-container">
+  <form class="account-create-panel rounded-surface" #accountForm="ngForm" (ngSubmit)="createAccount(accountForm)" novalidate aria-labelledby="create-title">
+    <h1 id="create-title" class="h3 mb-1">Crear cuenta</h1>
+    <p class="text-muted mb-4">Completá tus datos para empezar a reservar.</p>
 
-
-      <div class="form-group">
-
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" [(ngModel)]="userCreateDto.email" name="email" id="email" #email required title="Email" placeholder="Ingrese su email"/>
+    <fieldset>
+      <legend class="form-section-title">Acceso</legend>
+      <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input type="email" class="form-control" [(ngModel)]="userCreateDto.email" name="email" id="email" #email required
+          placeholder="nombre@ejemplo.com" autocomplete="email" inputmode="email" />
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" [(ngModel)]="userCreateDto.password" name="password" title="Password" placeholder="Ingrese su password" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Verificar Password</label>
-        <input type="password" class="form-control" name="passwordConfirmation" title="Verificar Password" placeholder="Verifique su password" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Número de Documento</label>
-        <input type="text" class="form-control" [(ngModel)]="userCreateDto.identityNumber" name="identityNumber" #identityNumber="ngModel" minlength="8" required title="Número de Documento" placeholder="Ingrese su número de documento" [class.is-invalid]="identityNumber.dirty && identityNumber.invalid" />
-        @if (identityNumber.dirty && identityNumber.errors?.['required']) {
-          <div class="invalid-feedback">Ingrese su número de documento.</div>
-        }
-        @if (identityNumber.dirty && identityNumber.errors?.['minlength']) {
-          <div class="invalid-feedback">El número de documento debe tener al menos 8 caracteres.</div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input type="text" class="form-control" [(ngModel)]="userCreateDto.name" name="name" #name="ngModel" minlength="3" required title="Nombre" placeholder="Ingrese su nombre" [class.is-invalid]="name.dirty && name.invalid" />
-        @if (name.dirty && name.errors?.['required']) {
-          <div class="invalid-feedback">Ingrese su nombre.</div>
-        }
-        @if (name.dirty && name.errors?.['minlength']) {
-          <div class="invalid-feedback">El nombre debe tener al menos 3 caracteres.</div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Apellido</label>
-        <input type="text" class="form-control" [(ngModel)]="userCreateDto.lastName" name="lastName" #lastName="ngModel" minlength="3" required title="Apellido" placeholder="Ingrese su apellido" [class.is-invalid]="lastName.dirty && lastName.invalid" />
-        @if (lastName.dirty && lastName.errors?.['required']) {
-          <div class="invalid-feedback">Ingrese su apellido.</div>
-        }
-        @if (lastName.dirty && lastName.errors?.['minlength']) {
-          <div class="invalid-feedback">El apellido debe tener al menos 3 caracteres.</div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Codigo de Area</label>
-        <input type="text" class="form-control" [(ngModel)]="userCreateDto.codeArea" name="codeArea" #codeArea="ngModel" minlength="3" required title="Codigo de Area" placeholder="Ingrese su codigo de area" [class.is-invalid]="codeArea.dirty && codeArea.invalid" />
-        @if (codeArea.dirty && codeArea.errors?.['required']) {
-          <div class="invalid-feedback">Ingrese el código de área.</div>
-        }
-        @if (codeArea.dirty && codeArea.errors?.['minlength']) {
-          <div class="invalid-feedback">El código de área debe tener al menos 3 caracteres.</div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Telefono</label>
-        <input type="text" class="form-control" maxlength="10" [(ngModel)]="userCreateDto.phoneNumber" name="phoneNumber" #phoneNumber="ngModel" minlength="7" required title="Telefono" placeholder="Ingrese su telefono" [class.is-invalid]="phoneNumber.dirty && phoneNumber.invalid" />
-        @if (phoneNumber.dirty && phoneNumber.errors?.['required']) {
-          <div class="invalid-feedback">Ingrese su teléfono.</div>
-        }
-        @if (phoneNumber.dirty && phoneNumber.errors?.['minlength']) {
-          <div class="invalid-feedback">El teléfono debe tener al menos 7 caracteres.</div>
-        }
-      </div>
-
-      <div class="row marginButton">
+      <div class="row g-3 mb-3">
         <div class="col-md-6">
-          <button type="submit" class="btn btn-success">Crear Cuenta</button>
+          <label class="form-label" for="password">Contraseña</label>
+          <input type="password" class="form-control" [(ngModel)]="userCreateDto.password" name="password" id="password"
+            placeholder="Elegí una contraseña" autocomplete="new-password" />
         </div>
-
-        <div class="col-md-6 position-relative">
-          <button class="btn btn-outline-success position-absolute end-0" [routerLink]="['/home']">Volver</button>
+        <div class="col-md-6">
+          <label class="form-label" for="passwordConfirmation">Repetir contraseña</label>
+          <input type="password" class="form-control" name="passwordConfirmation" id="passwordConfirmation"
+            placeholder="Repetí la contraseña" autocomplete="new-password" />
         </div>
       </div>
+    </fieldset>
+
+    <fieldset>
+      <legend class="form-section-title">Datos personales</legend>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label" for="name">Nombre</label>
+          <input type="text" class="form-control" [(ngModel)]="userCreateDto.name" name="name" id="name" #name="ngModel" minlength="3" required
+            placeholder="Tu nombre" autocomplete="given-name" [class.is-invalid]="name.dirty && name.invalid" />
+          @if (name.dirty && name.errors?.['required']) {
+            <div class="invalid-feedback">Ingresá tu nombre.</div>
+          }
+          @if (name.dirty && name.errors?.['minlength']) {
+            <div class="invalid-feedback">El nombre debe tener al menos 3 caracteres.</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="lastName">Apellido</label>
+          <input type="text" class="form-control" [(ngModel)]="userCreateDto.lastName" name="lastName" id="lastName" #lastName="ngModel" minlength="3" required
+            placeholder="Tu apellido" autocomplete="family-name" [class.is-invalid]="lastName.dirty && lastName.invalid" />
+          @if (lastName.dirty && lastName.errors?.['required']) {
+            <div class="invalid-feedback">Ingresá tu apellido.</div>
+          }
+          @if (lastName.dirty && lastName.errors?.['minlength']) {
+            <div class="invalid-feedback">El apellido debe tener al menos 3 caracteres.</div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="identityNumber">Número de documento</label>
+          <input type="text" class="form-control" [(ngModel)]="userCreateDto.identityNumber" name="identityNumber" id="identityNumber" #identityNumber="ngModel" minlength="8" required
+            placeholder="Sin puntos" inputmode="numeric" [class.is-invalid]="identityNumber.dirty && identityNumber.invalid" />
+          @if (identityNumber.dirty && identityNumber.errors?.['required']) {
+            <div class="invalid-feedback">Ingresá tu número de documento.</div>
+          }
+          @if (identityNumber.dirty && identityNumber.errors?.['minlength']) {
+            <div class="invalid-feedback">El número de documento debe tener al menos 8 caracteres.</div>
+          }
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label" for="codeArea">Código de área</label>
+          <input type="text" class="form-control" [(ngModel)]="userCreateDto.codeArea" name="codeArea" id="codeArea" #codeArea="ngModel" minlength="3" required
+            placeholder="011" inputmode="numeric" autocomplete="tel-area-code" [class.is-invalid]="codeArea.dirty && codeArea.invalid" />
+          @if (codeArea.dirty && codeArea.errors?.['required']) {
+            <div class="invalid-feedback">Ingresá el código de área.</div>
+          }
+          @if (codeArea.dirty && codeArea.errors?.['minlength']) {
+            <div class="invalid-feedback">El código de área debe tener al menos 3 caracteres.</div>
+          }
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label" for="phoneNumber">Teléfono</label>
+          <input type="tel" class="form-control" maxlength="10" [(ngModel)]="userCreateDto.phoneNumber" name="phoneNumber" id="phoneNumber" #phoneNumber="ngModel" minlength="7" required
+            placeholder="Sin el 15" inputmode="tel" autocomplete="tel-local" [class.is-invalid]="phoneNumber.dirty && phoneNumber.invalid" />
+          @if (phoneNumber.dirty && phoneNumber.errors?.['required']) {
+            <div class="invalid-feedback">Ingresá tu teléfono.</div>
+          }
+          @if (phoneNumber.dirty && phoneNumber.errors?.['minlength']) {
+            <div class="invalid-feedback">El teléfono debe tener al menos 7 caracteres.</div>
+          }
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="account-create-actions">
+      <a class="btn btn-outline-success" [routerLink]="['/home']">Volver</a>
+      <button type="submit" class="btn btn-success">Crear cuenta</button>
     </div>
-  </div>
-</form>
+  </form>
+</div>

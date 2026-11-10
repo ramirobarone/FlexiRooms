@@ -1,34 +1,44 @@
 <div class="row g-4">
   <div class="col-lg-8">
     <div class="card shadow-sm">
-      <div class="card-header bg-dark text-white">Reservas</div>
+      <div class="card-header bg-dark text-white">
+        <h2 class="h6 mb-0">Reservas</h2>
+        <span class="badge bg-secondary">{{ bookings.length }}</span>
+      </div>
       <div class="card-body table-responsive">
-        <table class="table table-striped align-middle mb-0">
+        <table class="table table-hover align-middle mb-0">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Habitación</th>
-              <th>Fecha</th>
-              <th>Horario</th>
-              <th>Precio</th>
-              <th class="text-end">Acciones</th>
+              <th scope="col">Reserva</th>
+              <th scope="col">Habitación</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Horario</th>
+              <th scope="col" class="text-end">Precio</th>
+              <th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
             </tr>
           </thead>
           <tbody>
             @for (booking of bookings; track booking) {
-              <tr>
-                <td>#{{ booking.id }}</td>
+              <tr [class.table-active]="selectedBooking?.id === booking.id">
+                <td class="fw-semibold">#{{ booking.id }}</td>
                 <td>{{ booking.idRoom }}</td>
                 <td>{{ booking.dateReserved | date:'shortDate' }}</td>
                 <td>{{ booking.checkInTime?.time }}</td>
-                <td>{{ booking.price | currency:'ARS' }}</td>
-                <td class="text-end">
-                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Ver" (click)="showDetail(booking.id)">
-                    <i class="bi bi-eye"></i>
+                <td class="text-end">{{ booking.price | currency:'ARS' }}</td>
+                <td class="text-end text-nowrap">
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Ver detalle" [attr.aria-label]="'Ver detalle de la reserva ' + booking.id" [attr.aria-pressed]="selectedBooking?.id === booking.id" (click)="showDetail(booking.id)">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteBooking(booking.id)">
-                    <i class="bi bi-trash"></i>
+                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" [attr.aria-label]="'Eliminar la reserva ' + booking.id" (click)="deleteBooking(booking.id)">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
                   </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  <i class="bi bi-calendar2 d-block fs-3 mb-1" aria-hidden="true"></i>
+                  No hay reservas registradas.
                 </td>
               </tr>
             }
@@ -40,29 +50,40 @@
 
   <div class="col-lg-4">
     <div class="card shadow-sm h-100">
-      <div class="card-header bg-secondary text-white">Detalle</div>
-      @if (selectedBooking) {
-        <div class="card-body">
-          <dl class="row mb-0">
-            <dt class="col-5">Reserva</dt>
-            <dd class="col-7">#{{ selectedBooking?.id }}</dd>
-            <dt class="col-5">Habitación</dt>
-            <dd class="col-7">{{ selectedBooking?.idRoom }}</dd>
-            <dt class="col-5">Fecha</dt>
-            <dd class="col-7">{{ $safeNavigationMigration(selectedBooking?.dateReserved) | date:'fullDate' }}</dd>
-            <dt class="col-5">Horario</dt>
-            <dd class="col-7">{{ selectedBooking?.checkInTime?.time }}</dd>
-            <dt class="col-5">Cliente</dt>
-            <dd class="col-7">{{ selectedBooking?.user?.name }} {{ selectedBooking?.user?.lastName }}</dd>
-            <dt class="col-5">Email</dt>
-            <dd class="col-7">{{ selectedBooking?.user?.email }}</dd>
-            <dt class="col-5">Monto</dt>
-            <dd class="col-7">{{ $safeNavigationMigration(selectedBooking?.price) | currency:'ARS' }}</dd>
-          </dl>
-        </div>
-      } @else {
-        <div class="card-body text-muted">Selecciona una reserva para ver el detalle.</div>
-      }
+      <div class="card-header bg-secondary text-white">
+        <h2 class="h6 mb-0">Detalle</h2>
+        @if (selectedBooking) {
+          <span class="badge bg-secondary">#{{ selectedBooking.id }}</span>
+        }
+      </div>
+      <div aria-live="polite">
+        @if (selectedBooking) {
+          <div class="card-body booking-detail">
+            <p class="booking-detail-amount">{{ $safeNavigationMigration(selectedBooking.price) | currency:'ARS' }}</p>
+            <dl class="row mb-0">
+              <dt class="col-5">Habitación</dt>
+              <dd class="col-7">{{ selectedBooking.idRoom }}</dd>
+              <dt class="col-5">Fecha</dt>
+              <dd class="col-7">{{ $safeNavigationMigration(selectedBooking.dateReserved) | date:'fullDate' }}</dd>
+              <dt class="col-5">Horario</dt>
+              <dd class="col-7">{{ selectedBooking.checkInTime?.time }}</dd>
+              <dt class="col-5">Cliente</dt>
+              <dd class="col-7">{{ selectedBooking.user?.name }} {{ selectedBooking.user?.lastName }}</dd>
+              <dt class="col-5">Email</dt>
+              <dd class="col-7">
+                @if (selectedBooking.user?.email) {
+                  <a [href]="'mailto:' + selectedBooking.user?.email">{{ selectedBooking.user?.email }}</a>
+                }
+              </dd>
+            </dl>
+          </div>
+        } @else {
+          <div class="card-body booking-detail-empty text-muted">
+            <i class="bi bi-hand-index d-block fs-3 mb-2" aria-hidden="true"></i>
+            Elegí una reserva de la lista para ver el detalle.
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>

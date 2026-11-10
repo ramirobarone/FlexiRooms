@@ -1,3 +1,12 @@
+/* Shared admin panel styles live in src/styles.css (scoped to app-control-room) */
+:host {
+  display: block;
+}
+
 .form-select {
   min-width: 9rem;
+}
+
+.form-check {
+  padding-block: 0.15rem;
 }

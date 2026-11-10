@@ -1,112 +1,119 @@
-<div class="row">
-
-  <div class="col-md-6">
-    <!-- <label for="comboRooms" class="form-label">Seleccionar habitación</label> -->
-    <select title="RoomSelected" id="comboRooms" class="form-select select-styled" style="margin:20px 0px" (change)="onChange()"
-      [(ngModel)]="currenRoom">
-      <!-- <option selected value="Seleccionar">Seleccionar</option> -->
-      @for (item of _rooms; track item) {
-        <option value="{{item.id}}">{{item.name}} - {{item.description}}</option>
-      }
-    </select>
-  </div>
+<div class="room-picker mb-4">
+  <label for="comboRooms" class="form-label">Habitación</label>
+  <select id="comboRooms" class="form-select select-styled" (change)="onChange()" [(ngModel)]="currenRoom">
+    @for (item of _rooms; track item) {
+      <option value="{{item.id}}">{{item.name}} — {{item.description}}</option>
+    }
+  </select>
 </div>
 
-
-<div class="row">
-  <div class="col-md-4">
+<div class="row g-4">
+  <div class="col-md-5">
     @if (roompictures && roompictures.length) {
-      <div id="carouselRoom" class="carousel slide" data-bs-ride="carousel">
+      <div id="carouselRoom" class="carousel slide room-gallery" data-bs-ride="carousel">
         @if (roompictures.length > 1) {
           <div class="carousel-indicators">
             @for (img of roompictures; track img; let i = $index) {
               <button type="button"
                 data-bs-target="#carouselRoom" [attr.data-bs-slide-to]="i"
                 [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
-              [attr.aria-label]="'Slide ' + (i + 1)"></button>
+                [attr.aria-label]="'Foto ' + (i + 1) + ' de ' + roompictures.length"></button>
             }
           </div>
         }
         <div class="carousel-inner">
           @for (img of roompictures; track img; let i = $index) {
             <div class="carousel-item" [class.active]="i === 0">
-              <img [src]="getImageSource(img.path)" class="d-block w-100 img-thumbnail" alt="{{name}}">
+              <img [src]="getImageSource(img.path)" class="d-block w-100" [alt]="'Foto de ' + name"
+                [attr.loading]="i === 0 ? null : 'lazy'" decoding="async">
             </div>
           }
         </div>
         @if (roompictures.length > 1) {
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselRoom" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
+            <span class="visually-hidden">Foto anterior</span>
           </button>
           <button class="carousel-control-next" type="button" data-bs-target="#carouselRoom" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
+            <span class="visually-hidden">Foto siguiente</span>
           </button>
         }
       </div>
+    } @else if (path) {
+      <img [src]="getImageSource(path)" class="room-image" [alt]="'Foto de ' + name">
     } @else {
-      <img [src]="path ? getImageSource(path) : ''" class="img-thumbnail" alt="...">
+      <div class="room-image room-image--empty" aria-hidden="true"><i class="bi bi-image"></i></div>
     }
   </div>
-  <div class="col-md-3">
-    <h5 class="card-title">{{name}}</h5>
-    <p class="card-text">{{description}}</p>
-    @if (costs.length > 1) {
-      <div class="row">
-        <label class="form-label">Duración y precio</label>
-        <select title="selectCost" class="form-control select-styled" [(ngModel)]="selectedCostId" (change)="onCostChange()">
-          @for (c of costs; track c) {
-            <option value="{{c.id}}">{{c.hour}} horas - $ {{c.costPerHour}}</option>
+
+  <div class="col-md-7">
+    <div class="room-details">
+      <h3 class="room-name">{{name}}</h3>
+      <p class="room-description text-muted">{{description}}</p>
+
+      <p class="room-price">
+        <span class="room-price-amount">$ {{cost.costPerHour}}</span>
+        <span class="room-price-unit">· {{ cost.hour }} horas</span>
+      </p>
+
+      @if (costs.length > 1) {
+        <div class="mb-3">
+          <label class="form-label" for="selectCost">Duración y precio</label>
+          <select id="selectCost" class="form-select select-styled" [(ngModel)]="selectedCostId" (change)="onCostChange()">
+            @for (c of costs; track c) {
+              <option value="{{c.id}}">{{c.hour}} horas — $ {{c.costPerHour}}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6">
+          <label class="form-label" for="bookingDate">Fecha</label>
+          <input id="bookingDate" type="date" class="form-control select-styled" [(ngModel)]="selectedDate" [min]="minDate" (change)="changeDate()" />
+        </div>
+        <div class="col-sm-6">
+          <label class="form-label" for="selectTime">Hora de entrada</label>
+          <select id="selectTime" class="form-select select-styled" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()"
+            [attr.aria-describedby]="disabledTime ? 'time-help' : null">
+            @for (hour of times; track hour) {
+              <option value="{{hour.id}}">{{hour.inTime}}</option>
+            }
+          </select>
+          @if (disabledTime) {
+            <div id="time-help" class="form-text">Elegí una fecha para ver los horarios.</div>
           }
-        </select>
+        </div>
       </div>
-    }
-    <p class="card-text">Duración estadia: <strong>{{ cost.hour }} horas</strong></p>
-    <p class="card-text">
-      <label>
-        <b>$ {{cost.costPerHour}}</b>
-      </label>
-    </p>
-    <div class="row">
-      <label class="form-label">Fecha de reserva</label>
-      <input type="date" class="form-control" [(ngModel)]="selectedDate" [min]="minDate" (change)="changeDate()" placeholder="date" />
-    </div>
 
-    <div class="row">
-      <label class="form-label">Horario Disponible Entrada</label>
-
-      <select title="selectTime" class="form-control select-styled" placeholder="Hora Entrada" [disabled]="disabledTime" [(ngModel)]="timeSelected" (change)=" SelectTime()">
-        @for (hour of times; track hour) {
-          <option value="{{hour.id}}">{{hour.inTime}}</option>
+      <div aria-live="polite">
+        @if (checkoutTime) {
+          <div class="alert alert-info room-alert" role="status">
+            <i class="bi bi-clock me-2" aria-hidden="true"></i>Hora de salida: <strong>{{ checkoutTime }}</strong>
+          </div>
         }
-      </select>
 
-      @if (checkoutTime) {
-        <div class="alert alert-info marginTopBottom mb-0" role="status">
-          Hora de salida: <strong>{{ checkoutTime }}</strong>
-        </div>
-      }
+        @if (showRoomMessage) {
+          <div class="alert alert-warning room-alert" role="alert">
+            <i class="bi bi-calendar-x me-2" aria-hidden="true"></i>La habitación está ocupada todo el día.
+          </div>
+        }
 
-      @if (showRoomMessage) {
-        <br />
-        <div class="alert alert-warning marginTopBottom">
-          <label class="form-label">La habitación esta ocupada todo el día</label>
-        </div>
-      }
-      @if (CheckTemporalAvaiabilityRoomMessage) {
-        <br />
-        <div class="alert alert-warning marginTopBottom">
-          <label class="form-label">
-            Actualmente alguien habia comenzado el proceso de alquiler para esta habitacion,
-            en el dia de la fecha seleccionado y horario seleccionado.
-            El usuario tiene 5 minutos para terminar el proceso de pago, luego la habitacion queda liberada.
-          </label>
-        </div>
-      }
+        @if (CheckTemporalAvaiabilityRoomMessage) {
+          <div class="alert alert-warning room-alert" role="alert">
+            <i class="bi bi-hourglass-split me-2" aria-hidden="true"></i>
+            Alguien está reservando esta habitación para la fecha y el horario elegidos.
+            Tiene 5 minutos para completar el pago; si no lo hace, la habitación vuelve a quedar libre.
+          </div>
+        }
+      </div>
 
+      <div class="room-actions">
+        <button type="button" class="btn btn-success" (click)="CreateBooking()" [disabled]="btnBookingDisabled">
+          Continuar<i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
-    <br />
-    <button class="btn btn-success" (click)="CreateBooking()" [disabled]="btnBookingDisabled">Siguiente</button>
   </div>
 </div>

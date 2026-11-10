@@ -1,0 +1,26 @@
+.navbar {
+  background: var(--material-thick) !important;
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+  border-top: 1px solid var(--separator);
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  border-radius: var(--radius-pill);
+  padding-inline: 0.85rem !important;
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .navbar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

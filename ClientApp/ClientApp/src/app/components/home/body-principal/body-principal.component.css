@@ -1,5 +1,6 @@
 .rounded-image {
-	border-radius: 12px;
+	border-radius: var(--radius-xl);
+	box-shadow: var(--shadow-md);
 }
 
 .centered-carousel {

@@ -2,61 +2,67 @@
   <div class="col-lg-7">
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        <span>Personal de mantenimiento</span>
-        <button class="btn btn-sm btn-light" type="button" (click)="newMaintenance()">Nuevo Responsable</button>
+        <h2 class="h6 mb-0">Personal de mantenimiento</h2>
+        <button class="btn btn-sm btn-light" type="button" (click)="newMaintenance()"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nuevo responsable</button>
       </div>
       <div class="card-body">
         <div class="mb-3">
-          <label class="form-label font-weight-bold">Seleccionar Hotel</label>
-          <select class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
-            <option [ngValue]="0" disabled>-- Seleccione un Hotel --</option>
+          <label class="form-label" for="maintenance-hotel">Hotel</label>
+          <select id="maintenance-hotel" class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
+            <option [ngValue]="0" disabled>Seleccioná un hotel</option>
             @for (hotel of hotels; track hotel) {
               <option [ngValue]="hotel.id">{{ hotel.name }}</option>
             }
           </select>
         </div>
 
+        <div aria-live="polite">
         @if (isLoading) {
-          <div class="text-muted">Cargando responsables de mantenimiento...</div>
+          <div class="text-muted py-3" role="status"><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando responsables…</div>
         } @else if (hasError) {
-          <div class="alert alert-danger mb-0" role="alert">No se pudieron cargar los responsables de mantenimiento.</div>
+          <div class="alert alert-danger mb-0" role="alert"><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>No se pudieron cargar los responsables de mantenimiento.</div>
         } @else {
           <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
               <thead>
                 <tr>
-                  <th>Nombre</th>
-                  <th>Tipos de solicitud</th>
-                  <th>Teléfono</th>
-                  <th>Activo</th>
-                  <th class="text-end">Acciones</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Tipos de solicitud</th>
+                  <th scope="col">Teléfono</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
                 </tr>
               </thead>
               <tbody>
                 @for (maintenance of maintenances; track maintenance.id) {
-                  <tr>
-                    <td><strong>{{ maintenance.nameMaintenance }}</strong></td>
+                  <tr [class.table-active]="isEditing && selectedMaintenance.id === maintenance.id">
+                    <td class="fw-semibold">{{ maintenance.nameMaintenance }}</td>
                     <td>
                       @for (type of maintenance.maintenanceTypes; track type.id) {
                         <span class="badge bg-secondary me-1">{{ type.description }}</span>
                       }
                     </td>
-                    <td>{{ maintenance.telephoneNumber }}</td>
+                    <td class="text-nowrap">
+                      @if (maintenance.telephoneNumber) {
+                        <a [href]="'tel:' + maintenance.telephoneNumber">{{ maintenance.telephoneNumber }}</a>
+                      }
+                    </td>
                     <td>
                       <span class="badge" [ngClass]="maintenance.active ? 'bg-success' : 'bg-secondary'">
-                        {{ maintenance.active ? 'Sí' : 'No' }}
+                        {{ maintenance.active ? 'Activo' : 'Inactivo' }}
                       </span>
                     </td>
-                    <td class="text-end">
-                      <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editMaintenance(maintenance)"><i class="bi bi-pencil"></i></button>
-                      <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteMaintenance(maintenance.id)"><i class="bi bi-trash"></i></button>
+                    <td class="text-end text-nowrap">
+                      <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" [attr.aria-label]="'Editar ' + maintenance.nameMaintenance" (click)="editMaintenance(maintenance)"><i class="bi bi-pencil" aria-hidden="true"></i></button>
+                      <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" [attr.aria-label]="'Eliminar ' + maintenance.nameMaintenance" (click)="deleteMaintenance(maintenance.id)"><i class="bi bi-trash" aria-hidden="true"></i></button>
                     </td>
                   </tr>
                 }
                 @if (maintenances.length === 0) {
                   <tr>
-                    <td colspan="5" class="text-center text-muted py-3">
-                      No hay responsables de mantenimiento registrados para este hotel.
+                    <td colspan="5" class="text-center text-muted py-4">
+                      <i class="bi bi-person-gear d-block fs-3 mb-1" aria-hidden="true"></i>
+                      {{ selectedHotelId ? 'Este hotel todavía no tiene responsables.' : 'Seleccioná un hotel para ver su personal.' }}
                     </td>
                   </tr>
                 }
@@ -64,6 +70,7 @@
             </table>
           </div>
         }
+        </div>
       </div>
     </div>
   </div>
@@ -71,16 +78,19 @@
   <div class="col-lg-5">
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white">
-        {{ isEditing ? 'Editar Responsable' : 'Nuevo Responsable' }}
+        <h2 class="h6 mb-0">{{ isEditing ? 'Editar responsable' : 'Nuevo responsable' }}</h2>
+        @if (isEditing) {
+          <span class="badge bg-secondary">{{ selectedMaintenance.nameMaintenance }}</span>
+        }
       </div>
       <div class="card-body">
         <form (ngSubmit)="saveMaintenance()">
           <div class="mb-3">
-            <label class="form-label">Nombre</label>
-            <input type="text" class="form-control" name="nameMaintenance" required [(ngModel)]="selectedMaintenance.nameMaintenance">
+            <label class="form-label" for="maintenance-name">Nombre</label>
+            <input id="maintenance-name" type="text" class="form-control" name="nameMaintenance" required autocomplete="off" [(ngModel)]="selectedMaintenance.nameMaintenance">
           </div>
-          <div class="mb-3">
-            <label class="form-label">Tipos de solicitud de mantenimiento</label>
+          <fieldset class="mb-3" aria-describedby="maintenance-types-help">
+            <legend class="form-label">Tipos de solicitud</legend>
             <div class="border rounded p-2">
               @for (type of maintenanceTypes; track type.id) {
                 <div class="form-check">
@@ -97,21 +107,28 @@
                 <div class="text-muted small mb-0">No hay tipos de mantenimiento disponibles.</div>
               }
             </div>
-            @if (selectedMaintenance.maintenanceTypeIds.length === 0) {
-              <div class="form-text text-danger">Seleccione al menos un tipo de solicitud.</div>
-            }
-          </div>
+            <div id="maintenance-types-help" class="form-text" [class.text-danger]="selectedMaintenance.maintenanceTypeIds.length === 0">
+              {{ selectedMaintenance.maintenanceTypeIds.length === 0 ? 'Elegí al menos un tipo de solicitud.' : selectedMaintenance.maintenanceTypeIds.length + ' seleccionado(s).' }}
+            </div>
+          </fieldset>
           <div class="mb-3">
-            <label class="form-label">Teléfono de contacto</label>
-            <input type="text" class="form-control" name="telephoneNumber" required [(ngModel)]="selectedMaintenance.telephoneNumber">
+            <label class="form-label" for="maintenance-phone">Teléfono de contacto</label>
+            <input id="maintenance-phone" type="tel" class="form-control" name="telephoneNumber" required inputmode="tel" [(ngModel)]="selectedMaintenance.telephoneNumber">
           </div>
-          <div class="form-check mb-3">
-            <input type="checkbox" class="form-check-input" id="maintenanceActive" name="active" [(ngModel)]="selectedMaintenance.active">
-            <label class="form-check-label" for="maintenanceActive">Activo</label>
+          <div class="form-check form-switch mb-3">
+            <input type="checkbox" class="form-check-input" role="switch" id="maintenanceActive" name="active" [(ngModel)]="selectedMaintenance.active">
+            <label class="form-check-label" for="maintenanceActive">{{ selectedMaintenance.active ? 'Activo' : 'Inactivo' }}</label>
           </div>
+          @if (!selectedHotelId) {
+            <p class="form-text mb-2"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Seleccioná un hotel en la lista para poder guardar.</p>
+          }
           <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-outline-secondary" type="button" (click)="newMaintenance()">Cancelar</button>
-            <button class="btn btn-primary" type="submit" [disabled]="!selectedHotelId || selectedMaintenance.maintenanceTypeIds.length === 0">{{ isEditing ? 'Guardar cambios' : 'Crear' }}</button>
+            @if (isEditing) {
+              <button class="btn btn-outline-secondary" type="button" (click)="newMaintenance()">Cancelar</button>
+            }
+            <button class="btn btn-primary" type="submit" [disabled]="!selectedHotelId || selectedMaintenance.maintenanceTypeIds.length === 0">
+              <i class="bi bi-check2 me-1" aria-hidden="true"></i>{{ isEditing ? 'Guardar cambios' : 'Crear responsable' }}
+            </button>
           </div>
         </form>
       </div>

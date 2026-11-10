@@ -7,7 +7,7 @@
       <div class="form-group mb-3">
         <label class="form-label" for="name">Nombre</label>
         <input type="text" id="name" class="form-control" [(ngModel)]="name" name="name" #nameField="ngModel"
-          required minlength="3" title="Nombre" placeholder="Ingrese su nombre"
+          required minlength="3" placeholder="Tu nombre" autocomplete="name"
           [class.is-invalid]="nameField.dirty && nameField.invalid" />
           @if (nameField.dirty && nameField.errors?.['required']) {
             <div class="invalid-feedback">Ingrese su nombre.</div>
@@ -20,7 +20,7 @@
         <div class="form-group mb-3">
           <label class="form-label" for="query">Consulta</label>
           <textarea id="query" class="form-control" rows="5" [(ngModel)]="query" name="query" #queryField="ngModel"
-            required minlength="10" title="Consulta" placeholder="Escriba su consulta"
+            required minlength="10" placeholder="¿En qué te podemos ayudar?"
           [class.is-invalid]="queryField.dirty && queryField.invalid"></textarea>
           @if (queryField.dirty && queryField.errors?.['required']) {
             <div class="invalid-feedback">Ingrese su consulta.</div>
@@ -30,14 +30,20 @@
           }
         </div>
 
-        <button type="submit" class="btn btn-success">Enviar consulta</button>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-send me-1" aria-hidden="true"></i>Enviar consulta
+          </button>
+        </div>
 
-        @if (submitted) {
-          <div class="alert alert-success mt-3" role="alert">
-            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-            Le responderemos a la brevedad.
-          </div>
-        }
+        <div aria-live="polite">
+          @if (submitted) {
+            <div class="alert alert-success mt-3" role="status">
+              <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+              ¡Gracias! Te responderemos a la brevedad.
+            </div>
+          }
+        </div>
       </form>
     </div>
   </div>

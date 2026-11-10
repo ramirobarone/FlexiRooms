@@ -7,6 +7,8 @@
 .reviews-panel {
   width: min(100%, 540px);
   padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .reviews-actions {
@@ -19,4 +21,73 @@
 .reviews-alert {
   margin-top: 1rem;
   margin-bottom: 0;
+}
+
+@media (max-width: 575.98px) {
+  .reviews-panel {
+    padding: 1.25rem;
+  }
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin-inline: 0;
+}
+
+/* Direct manipulation: tap a star, see the result instantly */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rating-star {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 1.5rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+.rating-star.is-on {
+  color: #f5a524;
+}
+
+.rating-star:hover {
+  background-color: var(--surface-muted);
+}
+
+.rating-star:active {
+  transform: scale(0.85);
+  transition-duration: var(--dur-press);
+}
+
+.rating input:focus-visible + .rating-star {
+  box-shadow: var(--focus-ring);
+}
+
+fieldset:disabled .rating-star {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.rating-value {
+  margin-left: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rating-star:active {
+    transform: none;
+  }
 }

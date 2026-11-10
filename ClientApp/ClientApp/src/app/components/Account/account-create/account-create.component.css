@@ -1,3 +1,48 @@
-.marginButton{
-    margin-top:20px;
+.account-create-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.account-create-panel {
+    width: min(100%, 640px);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+fieldset {
+    margin-bottom: 0.5rem;
+}
+
+/* Group related fields under a small, quiet section title */
+.form-section-title {
+    float: none;
+    width: auto;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+/* Primary action on the trailing edge, secondary before it */
+.account-create-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--separator);
+}
+
+@media (max-width: 575.98px) {
+    .account-create-panel {
+        padding: 1.25rem;
+    }
+
+    .account-create-actions {
+        flex-direction: column-reverse;
+    }
 }

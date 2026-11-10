@@ -1,4 +1,13 @@
 .checkout-payment {
   max-width: 600px;
   margin: 1.5rem auto;
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.checkout-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
 }

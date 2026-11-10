@@ -1,4 +1,3 @@
-/* Center align content */
 .contentPrincipal {
     display: flex;
     justify-content: center;
@@ -6,6 +5,16 @@
     height: 100%;
     width: 100%;
 }
+
+/* Inline validation: a clear but calm error state */
 .errorCard {
-    border-color: red;
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.15);
+    transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.billing-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
 }

@@ -1,3 +1,29 @@
+/* Shared admin panel styles live in src/styles.css (scoped to app-control-room) */
+:host {
+  display: block;
+}
+
 .form-select {
   min-width: 9rem;
+}
+
+/* Long free-text descriptions shouldn't blow up row height */
+td:nth-child(4) {
+  max-width: 28rem;
+  color: var(--text-secondary);
+}
+
+.issues-state {
+  padding-block: 2.5rem;
+  text-align: center;
+}
+
+/* Refresh icon turns while loading: status feedback right on the control */
+.spin {
+  display: inline-block;
+  animation: issues-spin 0.8s linear infinite;
+}
+
+@keyframes issues-spin {
+  to { transform: rotate(360deg); }
 }

@@ -7,6 +7,8 @@
 .login-panel {
     width: min(100%, 540px);
     padding: 2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
 }
 
 .centered {
@@ -14,8 +16,8 @@
     margin-inline: auto;
 }
 
-.spacingButton{
-    margin-top: 20px;
+.spacingButton {
+    margin-top: 1.25rem;
 }
 
 .login-actions {
@@ -31,8 +33,21 @@
 }
 
 @media (max-width: 400px) {
+    .login-panel {
+        padding: 1.25rem;
+    }
+
     .login-actions {
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+.login-logo {
+    width: 96px;
+    height: auto;
+}
+
+.login-actions .btn {
+    flex: 1 1 0;
 }

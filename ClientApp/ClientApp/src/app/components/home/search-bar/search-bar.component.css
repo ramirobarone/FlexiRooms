@@ -1,0 +1,37 @@
+/* One continuous pill: the field and its action read as a single control */
+.input-group {
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.input-group:focus-within {
+  box-shadow: var(--focus-ring), var(--shadow-sm);
+}
+
+.input-group .form-control {
+  height: 3rem;
+  padding-inline: 1.5rem;
+  border-color: var(--separator-strong);
+  border-right: 0;
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.input-group .form-control:focus {
+  box-shadow: none !important;
+}
+
+.input-group .btn {
+  padding-inline: 1.5rem;
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: white;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
+.input-group .btn:hover {
+  background-color: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: white;
+}

@@ -1,3 +1,22 @@
+/* Shared admin panel styles live in src/styles.css (scoped to app-control-room) */
 :host {
   display: block;
+}
+
+/* The amount is the headline of a booking */
+.booking-detail-amount {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.booking-detail {
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.booking-detail-empty {
+  padding-block: 3rem;
+  text-align: center;
 }

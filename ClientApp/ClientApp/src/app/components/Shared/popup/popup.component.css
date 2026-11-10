@@ -1,0 +1,38 @@
+dialog {
+  width: min(440px, calc(100vw - 2rem));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-content {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.modal-header,
+.modal-footer {
+  border: 0;
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.modal-title {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.modal-body {
+  padding: 0.25rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+}
+
+.modal-footer {
+  padding: 0.75rem 1.5rem 1.25rem;
+}

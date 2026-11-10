@@ -2,30 +2,37 @@
   <div class="col-lg-7">
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        <span>Hoteles</span>
-        <button class="btn btn-sm btn-light" type="button" title="Nuevo" (click)="newHotel()"><i class="bi bi-plus-lg"></i></button>
+        <h2 class="h6 mb-0">Hoteles</h2>
+        <button class="btn btn-sm btn-light" type="button" (click)="newHotel()"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nuevo hotel</button>
       </div>
       <div class="card-body table-responsive">
         <table class="table table-hover align-middle mb-0">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th class="text-end">Acciones</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Email</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
             </tr>
           </thead>
           <tbody>
             @for (hotel of hotels; track hotel) {
-              <tr>
-                <td>{{ hotel.name }}</td>
+              <tr [class.table-active]="isEditing && selectedHotel.id === hotel.id">
+                <td class="fw-semibold">{{ hotel.name }}</td>
                 <td>{{ hotel.email }}</td>
                 <td>{{ hotel.phoneNumber }}</td>
-                <td class="text-end">
-                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editHotel(hotel)"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(hotel)"><i class="bi bi-upload"></i></button>
-                  <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(hotel)"><i class="bi bi-images"></i></button>
-                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteHotel(hotel.id)"><i class="bi bi-trash"></i></button>
+                <td class="text-end text-nowrap">
+                  <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" [attr.aria-label]="'Editar ' + hotel.name" (click)="editHotel(hotel)"><i class="bi bi-pencil" aria-hidden="true"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" [attr.aria-label]="'Subir imágenes de ' + hotel.name" (click)="openUploadPopup(hotel)"><i class="bi bi-upload" aria-hidden="true"></i></button>
+                  <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" [attr.aria-label]="'Ver imágenes de ' + hotel.name" (click)="openGalleryPopup(hotel)"><i class="bi bi-images" aria-hidden="true"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" [attr.aria-label]="'Eliminar ' + hotel.name" (click)="deleteHotel(hotel.id)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  <i class="bi bi-building d-block fs-3 mb-1" aria-hidden="true"></i>
+                  Todavía no hay hoteles. Creá el primero con "Nuevo hotel".
                 </td>
               </tr>
             }
@@ -38,152 +45,168 @@
   <div class="col-lg-5">
     <div class="card shadow-sm">
       <div class="card-header bg-secondary text-white">
-        {{ isEditing ? 'Editar hotel' : 'Nuevo hotel' }}
+        <h2 class="h6 mb-0">{{ isEditing ? 'Editar hotel' : 'Nuevo hotel' }}</h2>
+        @if (isEditing) {
+          <span class="badge bg-secondary">{{ selectedHotel.name }}</span>
+        }
       </div>
       <div class="card-body">
+        <p class="form-section-title">General</p>
         <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input class="form-control" [(ngModel)]="selectedHotel.name" />
+          <label class="form-label" for="hotel-name">Nombre</label>
+          <input id="hotel-name" class="form-control" [(ngModel)]="selectedHotel.name" />
         </div>
         <div class="mb-3">
-          <label class="form-label">Descripción</label>
-          <textarea class="form-control" rows="3" [(ngModel)]="selectedHotel.description"></textarea>
+          <label class="form-label" for="hotel-description">Descripción</label>
+          <textarea id="hotel-description" class="form-control" rows="3" [(ngModel)]="selectedHotel.description"></textarea>
         </div>
         <div class="mb-3">
-          <label class="form-label">Meta descripción</label>
-          <input class="form-control" [(ngModel)]="selectedHotel.metaDescription" />
+          <label class="form-label" for="hotel-meta">Meta descripción</label>
+          <input id="hotel-meta" class="form-control" [(ngModel)]="selectedHotel.metaDescription" aria-describedby="hotel-meta-help" />
+          <div id="hotel-meta-help" class="form-text">Texto corto que aparece en buscadores.</div>
         </div>
+
+        <p class="form-section-title">Contacto</p>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="hotel-email">Email</label>
+            <input id="hotel-email" type="email" class="form-control" [(ngModel)]="selectedHotel.email" />
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="hotel-area">Área</label>
+            <input id="hotel-area" class="form-control" type="number" [(ngModel)]="selectedHotel.codeArea" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="hotel-phone">Teléfono</label>
+            <input id="hotel-phone" class="form-control" type="number" [(ngModel)]="selectedHotel.phoneNumber" />
+          </div>
+        </div>
+
+        <p class="form-section-title">Dirección</p>
         <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Email</label>
-            <input class="form-control" [(ngModel)]="selectedHotel.email" />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Teléfono</label>
-            <input class="form-control" type="number" [(ngModel)]="selectedHotel.phoneNumber" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Código área</label>
-            <input class="form-control" type="number" [(ngModel)]="selectedHotel.codeArea" />
-          </div>
           <div class="col-md-8">
-            <label class="form-label">Calle</label>
-            <input class="form-control" [(ngModel)]="selectedHotel.addressHotel.street" />
+            <label class="form-label" for="hotel-street">Calle</label>
+            <input id="hotel-street" class="form-control" [(ngModel)]="selectedHotel.addressHotel.street" />
           </div>
           <div class="col-md-4">
-            <label class="form-label">Número</label>
-            <input class="form-control" [(ngModel)]="selectedHotel.addressHotel.number" />
+            <label class="form-label" for="hotel-number">Número</label>
+            <input id="hotel-number" class="form-control" [(ngModel)]="selectedHotel.addressHotel.number" />
           </div>
           <div class="col-md-4">
-            <label class="form-label">Código postal</label>
-            <input class="form-control" [(ngModel)]="selectedHotel.addressHotel.postalCode" />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Provincia</label>
-            <select class="form-select" [(ngModel)]="selectedHotel.addressHotel.idProvince" (ngModelChange)="onProvinceChange()">
-              <option [ngValue]="0">Seleccione una provincia</option>
+            <label class="form-label" for="hotel-province">Provincia</label>
+            <select id="hotel-province" class="form-select" [(ngModel)]="selectedHotel.addressHotel.idProvince" (ngModelChange)="onProvinceChange()">
+              <option [ngValue]="0">Seleccioná</option>
               @for (province of provinces; track province) {
                 <option [ngValue]="province.id">{{ province.name }}</option>
               }
             </select>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Ciudad</label>
-            <select class="form-select" [(ngModel)]="selectedHotel.addressHotel.idCity" [disabled]="!cities.length">
-              <option [ngValue]="0">Seleccione una ciudad</option>
+            <label class="form-label" for="hotel-city">Ciudad</label>
+            <select id="hotel-city" class="form-select" [(ngModel)]="selectedHotel.addressHotel.idCity" [disabled]="!cities.length">
+              <option [ngValue]="0">{{ cities.length ? 'Seleccioná' : 'Elegí provincia' }}</option>
               @for (city of cities; track city) {
                 <option [ngValue]="city.id">{{ city.name }}</option>
               }
             </select>
           </div>
+          <div class="col-md-4">
+            <label class="form-label" for="hotel-postal">Código postal</label>
+            <input id="hotel-postal" class="form-control" [(ngModel)]="selectedHotel.addressHotel.postalCode" />
+          </div>
         </div>
-        <div class="mt-3 d-grid">
-          <button class="btn btn-primary" type="button" title="Guardar hotel" (click)="saveHotel()"><i class="bi bi-save"></i></button>
+        <div class="mt-4 d-grid gap-2">
+          <button class="btn btn-primary" type="button" (click)="saveHotel()">
+            <i class="bi bi-check2 me-1" aria-hidden="true"></i>{{ isEditing ? 'Guardar cambios' : 'Crear hotel' }}
+          </button>
+          @if (isEditing) {
+            <button class="btn btn-outline-secondary" type="button" (click)="newHotel()">Cancelar</button>
+          }
         </div>
       </div>
     </div>
   </div>
 </div>
 
-@if (isUploadPopupVisible) {
-  <div class="dialog-backdrop"></div>
-}
-<dialog class="hotel-images-dialog" [open]="isUploadPopupVisible">
+<dialog class="hotel-images-dialog" [appModal]="isUploadPopupVisible" (dismiss)="closeUploadPopup()" #uploadModal="appModal" aria-labelledby="hotel-upload-title">
   <div class="modal-header">
-    <h5 class="modal-title">Subir imágenes - {{ selectedHotelForImages?.name }}</h5>
-    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeUploadPopup()"></button>
+    <h2 id="hotel-upload-title" class="modal-title h5">Subir imágenes · {{ selectedHotelForImages?.name }}</h2>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="uploadModal.requestClose()"></button>
   </div>
 
   <div class="modal-body">
     <div class="drag-drop-area"
       (dragover)="onDragOver($event)"
       (drop)="onDrop($event)">
+      <i class="bi bi-cloud-arrow-up d-block fs-2 mb-1" aria-hidden="true"></i>
       Arrastrá imágenes aquí o
-      <label class="btn btn-sm btn-outline-primary ms-2 mb-0" title="Seleccionar">
-        <i class="bi bi-folder2-open"></i>
+      <label class="btn btn-sm btn-outline-primary ms-1 mb-0">
+        <i class="bi bi-folder2-open me-1" aria-hidden="true"></i>Elegir archivos
         <input type="file" multiple accept="image/*" hidden (change)="onFilesSelected($event)" />
       </label>
     </div>
 
     @if (selectedFiles.length) {
-      <ul class="list-group mt-3">
+      <ul class="list-group mt-3" aria-label="Archivos seleccionados">
         @for (file of selectedFiles; track file; let i = $index) {
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="text-truncate me-2">{{ file.name }}</span>
-            <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)"><i class="bi bi-x-lg"></i></button>
+            <span class="text-truncate me-2"><i class="bi bi-image me-2 text-muted" aria-hidden="true"></i>{{ file.name }}</span>
+            <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" [attr.aria-label]="'Quitar ' + file.name" (click)="removeSelectedFile(i)"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
           </li>
         }
       </ul>
     }
 
     @if (imagesErrorMessage) {
-      <p class="text-danger mt-3 mb-0">{{ imagesErrorMessage }}</p>
+      <p class="text-danger mt-3 mb-0" role="alert">{{ imagesErrorMessage }}</p>
     }
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-secondary" type="button" title="Cancelar" (click)="closeUploadPopup()" [disabled]="isUploadingImages"><i class="bi bi-x-lg"></i></button>
-    <button class="btn btn-primary" type="button" [title]="isUploadingImages ? 'Subiendo...' : 'Subir imágenes'" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
-      <i class="bi" [ngClass]="isUploadingImages ? 'bi-hourglass-split' : 'bi-upload'"></i>
+    <button class="btn btn-outline-secondary" type="button" (click)="uploadModal.requestClose()" [disabled]="isUploadingImages">Cancelar</button>
+    <button class="btn btn-primary" type="button" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
+      @if (isUploadingImages) {
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Subiendo…
+      } @else {
+        <i class="bi bi-upload me-1" aria-hidden="true"></i>Subir {{ selectedFiles.length || '' }} {{ selectedFiles.length === 1 ? 'imagen' : 'imágenes' }}
+      }
     </button>
   </div>
 </dialog>
 
-@if (isGalleryPopupVisible) {
-  <div class="dialog-backdrop"></div>
-}
-<dialog class="hotel-images-dialog hotel-images-gallery" [open]="isGalleryPopupVisible">
+<dialog class="hotel-images-dialog hotel-images-gallery" [appModal]="isGalleryPopupVisible" (dismiss)="closeGalleryPopup()" #galleryModal="appModal" aria-labelledby="hotel-gallery-title">
   <div class="modal-header">
-    <h5 class="modal-title">Imágenes de {{ selectedHotelForImages?.name }}</h5>
-    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeGalleryPopup()"></button>
+    <h2 id="hotel-gallery-title" class="modal-title h5">Imágenes de {{ selectedHotelForImages?.name }}</h2>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="galleryModal.requestClose()"></button>
   </div>
 
   <div class="modal-body">
     @if (isLoadingImages) {
-      <p class="mb-2">Cargando imágenes...</p>
+      <p class="mb-2 text-muted" role="status"><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando imágenes…</p>
     }
 
     @if (imagesErrorMessage) {
-      <p class="text-danger">{{ imagesErrorMessage }}</p>
+      <p class="text-danger" role="alert">{{ imagesErrorMessage }}</p>
     }
 
     @if (!isLoadingImages && hotelImages.length) {
       <div class="gallery-grid">
-        @for (image of hotelImages; track image) {
+        @for (image of hotelImages; track image; let i = $index) {
           <img
             [src]="getImageSource(image.path)"
             class="img-thumbnail"
-            alt="Imagen del hotel" />
+            [alt]="'Imagen ' + (i + 1) + ' de ' + selectedHotelForImages?.name"
+            loading="lazy" />
         }
       </div>
     }
 
     @if (!isLoadingImages && !hotelImages.length && !imagesErrorMessage) {
-      <p class="mb-0">No hay imágenes cargadas para este hotel.</p>
+      <p class="mb-0 text-muted text-center py-3">No hay imágenes cargadas para este hotel.</p>
     }
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-secondary" type="button" title="Cerrar" (click)="closeGalleryPopup()"><i class="bi bi-x-lg"></i></button>
+    <button class="btn btn-outline-secondary" type="button" (click)="galleryModal.requestClose()">Cerrar</button>
   </div>
 </dialog>

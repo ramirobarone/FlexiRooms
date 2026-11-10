@@ -10,35 +10,44 @@
   </div>
 
   @if (submitSuccess) {
-    <div class="alert alert-success">
-      <p class="mb-3">Tu reclamo fue enviado correctamente.</p>
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-sm btn-outline-success" type="button" (click)="goToMyIssues()">
+    <div class="issue-success" role="status">
+      <i class="bi bi-check-circle-fill issue-success-icon" aria-hidden="true"></i>
+      <h2 class="h5 mb-1">Tu reclamo fue enviado</h2>
+      <p class="text-muted mb-4">Te avisaremos cuando cambie su estado.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button class="btn btn-success" type="button" (click)="goToMyIssues()">
           <i class="bi bi-clipboard2-check me-1" aria-hidden="true"></i>Ver mis reclamos
         </button>
-        <button class="btn btn-sm btn-success" type="button" (click)="goBack()">Volver a mis reservas</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="goBack()">Volver a mis reservas</button>
       </div>
     </div>
   } @else {
     <form class="issue-form" (ngSubmit)="submit()">
       <div class="mb-3">
-        <label class="form-label" for="issueText">Descripción</label>
-        <textarea class="form-control" id="issueText" name="issueText" rows="5" [(ngModel)]="texto" placeholder="Contanos qué sucedió..."></textarea>
+        <label class="form-label" for="issueText">¿Qué sucedió?</label>
+        <textarea class="form-control" id="issueText" name="issueText" rows="5" [(ngModel)]="texto"
+          placeholder="Describí el problema con el mayor detalle posible"></textarea>
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="issueImage">Imagen (opcional)</label>
-        <input class="form-control" type="file" id="issueImage" accept=".jpg,.jpeg,.png,.webp" (change)="onImageSelected($event)">
+      <div class="mb-4">
+        <label class="form-label" for="issueImage">Foto <span class="text-muted fw-normal">(opcional)</span></label>
+        <input class="form-control" type="file" id="issueImage" accept=".jpg,.jpeg,.png,.webp" (change)="onImageSelected($event)"
+          aria-describedby="issueImage-help">
+        <div id="issueImage-help" class="form-text">JPG, PNG o WEBP.</div>
       </div>
-      @if (submitError) {
-        <div class="alert alert-danger">{{ submitError }}</div>
-      }
-      <div class="d-flex gap-2">
+      <div aria-live="assertive">
+        @if (submitError) {
+          <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ submitError }}
+          </div>
+        }
+      </div>
+      <div class="issue-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="goBack()">Cancelar</button>
-        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+        <button type="submit" class="btn btn-success" [disabled]="isSubmitting">
           @if (isSubmitting) {
             <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
           }
-          Enviar reclamo
+          {{ isSubmitting ? 'Enviando…' : 'Enviar reclamo' }}
         </button>
       </div>
     </form>

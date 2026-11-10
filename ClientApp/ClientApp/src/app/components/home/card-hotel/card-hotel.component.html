@@ -1,4 +1,4 @@
-<div class="card hotel-card">
+<article class="card hotel-card" [attr.aria-label]="name">
   <div class="hotel-card-media">
     @if (images.length) {
       <div id="carousel-{{idHotel}}" class="carousel slide" data-bs-ride="carousel">
@@ -8,15 +8,16 @@
               <button type="button"
                 [attr.data-bs-target]="'#carousel-' + idHotel" [attr.data-bs-slide-to]="i"
                 [class.active]="i === 0" [attr.aria-current]="i === 0 ? 'true' : null"
-              [attr.aria-label]="'Slide ' + (i + 1)"></button>
+                [attr.aria-label]="'Foto ' + (i + 1) + ' de ' + images.length"></button>
             }
           </div>
         }
         <div class="carousel-inner">
           @for (img of images; track img; let i = $index) {
             <div class="carousel-item" [class.active]="i === 0">
-              <a [routerLink]="['/steps', idHotel]">
-                <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top" alt="{{name}}">
+              <a [routerLink]="['/steps', idHotel]" [attr.aria-label]="'Ver habitaciones de ' + name" [attr.tabindex]="i === 0 ? null : -1">
+                <img [src]="getImageSource(!img.path ? '' : img.path)" class="d-block w-100 card-img-top"
+                  [alt]="'Foto de ' + name" [attr.loading]="i === 0 ? null : 'lazy'" decoding="async">
               </a>
             </div>
           }
@@ -24,29 +25,31 @@
         @if (images.length > 1) {
           <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
+            <span class="visually-hidden">Foto anterior</span>
           </button>
           <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carousel-' + idHotel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
+            <span class="visually-hidden">Foto siguiente</span>
           </button>
         }
       </div>
     } @else {
-      <a [routerLink]="['/steps', idHotel]">
-        <img src="" class="hotel-card-image" alt="...">
+      <a class="hotel-card-placeholder" [routerLink]="['/steps', idHotel]" [attr.aria-label]="'Ver habitaciones de ' + name">
+        <i class="bi bi-building" aria-hidden="true"></i>
       </a>
     }
-    <button type="button" class="btn btn-light share-hotel-btn" title="Compartir" (click)="shareHotel($event)">
-      <i class="bi bi-share"></i>
+    <button type="button" class="btn btn-light share-hotel-btn" title="Compartir" [attr.aria-label]="'Compartir ' + name" (click)="shareHotel($event)">
+      <i class="bi bi-share" aria-hidden="true"></i>
     </button>
-    @if (showCopiedMessage) {
-      <div class="copied-toast">Enlace copiado</div>
-    }
+    <div class="copied-toast-region" role="status" aria-live="polite">
+      @if (showCopiedMessage) {
+        <div class="copied-toast"><i class="bi bi-check2 me-1" aria-hidden="true"></i>Enlace copiado</div>
+      }
+    </div>
   </div>
   <div class="card-body hotel-card-overlay">
-    <h5 class="card-title">{{name}}</h5>
-    <div class="hotel-review-score" aria-label="Valoración {{reviewScore}} de 5">
+    <h2 class="card-title h5">{{name}}</h2>
+    <div class="hotel-review-score" role="img" [attr.aria-label]="'Valoración ' + reviewScore + ' de 5'">
       @for (star of fullStars; track $index) {
         <i class="bi bi-star-fill" aria-hidden="true"></i>
       }
@@ -58,4 +61,4 @@
       }
     </div>
   </div>
-</div>
+</article>

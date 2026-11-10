@@ -95,8 +95,19 @@ export class AdminHotelsComponent implements OnInit {
   }
 
   deleteHotel(id: number): void {
+    // Destructive and irreversible: confirm, naming exactly what will be lost.
+    const name = this.hotels.find(hotel => hotel.id === id)?.name ?? 'este hotel';
+    if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
     this.hotelService.deleteHotel(id).subscribe({
-      next: () => this.loadHotels()
+      next: () => {
+        if (this.isEditing && this.selectedHotel.id === id) {
+          this.newHotel();
+        }
+        this.loadHotels();
+      }
     });
   }
 

@@ -1,28 +1,32 @@
-
-<app-search-bar (_hotelesEmitter)="loadHotels($event)" (noResults)="showNoResultsPopup()"></app-search-bar>
+<section class="home-search py-4" aria-labelledby="home-title">
+  <h1 id="home-title" class="home-title">Encontrá tu habitación</h1>
+  <p class="home-subtitle text-muted">Reservá por horas, cerca de donde estás.</p>
+  <app-search-bar (_hotelesEmitter)="loadHotels($event)" (noResults)="showNoResultsPopup()"></app-search-bar>
+</section>
 
 <app-popup
   [visible]="isNoResultsPopupVisible"
   title="Sin resultados"
-  description="No hay hoteles disponibles con esa busqueda."
+  description="No hay hoteles disponibles con esa búsqueda."
   (closed)="isNoResultsPopupVisible = false">
 </app-popup>
 
-<div class="row justify-content-center">
-  @for (item of _hoteles; track item) {
-    <span class="col-md-3 d-flex justify-content-center" style="margin: 20px">
-      <app-card-hotel name="{{ item.name }}"
-        description="{{ item.description}}"
-        idHotel="{{item.id}}"
-        [reviewScore]="item.reviewScore ?? 0"
-      [images]="item.pictures"></app-card-hotel>
-    </span>
-  }
-</div>
+@if (_hoteles.length) {
+  <section class="row g-4 justify-content-center pb-5" aria-label="Resultados de búsqueda">
+    @for (item of _hoteles; track item) {
+      <div class="col-auto d-flex justify-content-center">
+        <app-card-hotel name="{{ item.name }}"
+          description="{{ item.description}}"
+          idHotel="{{item.id}}"
+          [reviewScore]="item.reviewScore ?? 0"
+          [images]="item.pictures"></app-card-hotel>
+      </div>
+    }
+  </section>
+}
 
 @if (isBodyVisible) {
   <div class="row align-items-center justify-content-center text-center">
     <app-body-principal></app-body-principal>
   </div>
 }
-

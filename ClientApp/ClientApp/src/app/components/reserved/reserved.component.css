@@ -1,0 +1,50 @@
+.reserved-card {
+  width: min(100%, 20rem);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.card-title {
+  margin-bottom: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reserved-room {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+}
+
+.reserved-slots {
+  padding-left: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.reserved-slots p {
+  margin: 0.25rem 0;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.reserved-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--separator);
+}
+
+.reserved-cost {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}

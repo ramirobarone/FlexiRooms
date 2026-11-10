@@ -2,14 +2,14 @@
   <div class="col-lg-7">
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        <span>Habitaciones</span>
-        <button class="btn btn-sm btn-light" type="button" (click)="newRoom()">Nueva Habitación</button>
+        <h2 class="h6 mb-0">Habitaciones</h2>
+        <button class="btn btn-sm btn-light" type="button" (click)="newRoom()"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nueva habitación</button>
       </div>
       <div class="card-body">
         <div class="mb-3">
-          <label class="form-label font-weight-bold">Seleccionar Hotel</label>
-          <select class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
-            <option [ngValue]="0" disabled>-- Seleccione un Hotel --</option>
+          <label class="form-label" for="room-hotel-filter">Hotel</label>
+          <select id="room-hotel-filter" class="form-select" [(ngModel)]="selectedHotelId" (change)="onHotelChange()">
+            <option [ngValue]="0" disabled>Seleccioná un hotel</option>
             @for (hotel of hotels; track hotel) {
               <option [ngValue]="hotel.id">{{ hotel.name }}</option>
             }
@@ -20,43 +20,44 @@
           <table class="table table-hover align-middle mb-0">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Camas</th>
-                <th>Opciones (Precio / Horas)</th>
-                <th>Disponible</th>
-                <th class="text-end">Acciones</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Camas</th>
+                <th scope="col">Precio / duración</th>
+                <th scope="col">Estado</th>
+                <th scope="col" class="text-end"><span class="visually-hidden">Acciones</span></th>
               </tr>
             </thead>
             <tbody>
               @for (room of rooms; track room) {
-                <tr>
+                <tr [class.table-active]="isEditing && selectedRoom.id === room.id">
                   <td>
-                    <strong>{{ room.name }}</strong>
-                    <div class="text-muted small">{{ room.description }}</div>
+                    <span class="fw-semibold">{{ room.name }}</span>
+                    <div class="text-muted small text-truncate room-desc">{{ room.description }}</div>
                   </td>
-                  <td>{{ room.bedNumbers }}</td>
-                  <td>
+                  <td><i class="bi bi-person me-1 text-muted" aria-hidden="true"></i>{{ room.bedNumbers }}</td>
+                  <td class="text-nowrap">
                     @for (cost of room.costs; track cost) {
-                      <div>${{ cost.costPerHour || 0 }} / {{ cost.hour || 0 }} hs</div>
+                      <div>${{ cost.costPerHour || 0 }} <span class="text-muted">· {{ cost.hour || 0 }} h</span></div>
                     }
                   </td>
                   <td>
                     <span class="badge" [ngClass]="room.avialableNow ? 'bg-success' : 'bg-secondary'">
-                      {{ room.avialableNow ? 'Sí' : 'No' }}
+                      {{ room.avialableNow ? 'Disponible' : 'No disponible' }}
                     </span>
                   </td>
-                  <td class="text-end">
-                    <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" (click)="editRoom(room)"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" (click)="openUploadPopup(room)"><i class="bi bi-upload"></i></button>
-                    <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" (click)="openGalleryPopup(room)"><i class="bi bi-images"></i></button>
-                    <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" (click)="deleteRoom(room.id)"><i class="bi bi-trash"></i></button>
+                  <td class="text-end text-nowrap">
+                    <button class="btn btn-sm btn-outline-primary me-2" type="button" title="Editar" [attr.aria-label]="'Editar ' + room.name" (click)="editRoom(room)"><i class="bi bi-pencil" aria-hidden="true"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary me-2" type="button" title="Subir imágenes" [attr.aria-label]="'Subir imágenes de ' + room.name" (click)="openUploadPopup(room)"><i class="bi bi-upload" aria-hidden="true"></i></button>
+                    <button class="btn btn-sm btn-outline-info me-2" type="button" title="Ver imágenes" [attr.aria-label]="'Ver imágenes de ' + room.name" (click)="openGalleryPopup(room)"><i class="bi bi-images" aria-hidden="true"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" type="button" title="Eliminar" [attr.aria-label]="'Eliminar ' + room.name" (click)="deleteRoom(room.id)"><i class="bi bi-trash" aria-hidden="true"></i></button>
                   </td>
                 </tr>
               }
               @if (rooms.length === 0) {
                 <tr>
-                  <td colspan="6" class="text-center text-muted py-3">
-                    No hay habitaciones registradas para este hotel.
+                  <td colspan="5" class="text-center text-muted py-4">
+                    <i class="bi bi-door-closed d-block fs-3 mb-1" aria-hidden="true"></i>
+                    {{ selectedHotelId ? 'Este hotel todavía no tiene habitaciones.' : 'Seleccioná un hotel para ver sus habitaciones.' }}
                   </td>
                 </tr>
               }
@@ -70,28 +71,31 @@
   <div class="col-lg-5">
     <div class="card shadow-sm">
       <div class="card-header bg-secondary text-white">
-        {{ isEditing ? 'Editar habitación' : 'Nueva habitación' }}
+        <h2 class="h6 mb-0">{{ isEditing ? 'Editar habitación' : 'Nueva habitación' }}</h2>
+        @if (isEditing) {
+          <span class="badge bg-secondary">{{ selectedRoom.name }}</span>
+        }
       </div>
       <div class="card-body">
         <form (ngSubmit)="saveRoom()">
           <div class="mb-3">
-            <label class="form-label">Nombre de la habitación</label>
-            <input class="form-control" [(ngModel)]="selectedRoom.name" name="name" required />
+            <label class="form-label" for="room-name">Nombre de la habitación</label>
+            <input id="room-name" class="form-control" [(ngModel)]="selectedRoom.name" name="name" required />
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea class="form-control" rows="3" [(ngModel)]="selectedRoom.description" name="description"></textarea>
+            <label class="form-label" for="room-description">Descripción</label>
+            <textarea id="room-description" class="form-control" rows="3" [(ngModel)]="selectedRoom.description" name="description"></textarea>
           </div>
 
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Número de camas</label>
-              <input class="form-control" type="number" min="1" [(ngModel)]="selectedRoom.bedNumbers" name="bedNumbers" required />
+              <label class="form-label" for="room-beds">Número de camas</label>
+              <input id="room-beds" class="form-control" type="number" min="1" [(ngModel)]="selectedRoom.bedNumbers" name="bedNumbers" required />
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Disponible ahora</label>
+              <span class="form-label d-block">Disponibilidad</span>
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" type="checkbox" [(ngModel)]="selectedRoom.avialableNow" name="avialableNow" id="avialableSwitch">
                 <label class="form-check-label" for="avialableSwitch">
@@ -100,37 +104,43 @@
               </div>
             </div>
 
-            <div class="col-12">
-              <label class="form-label">Opciones de precio y duración</label>
+            <fieldset class="col-12">
+              <legend class="form-label">Opciones de precio y duración</legend>
               @for (cost of selectedRoom.costs; track cost; let i = $index) {
                 <div class="row g-2 align-items-center mb-2">
                   <div class="col-5">
-                    <input class="form-control" type="number" min="0" placeholder="Precio ($)" [(ngModel)]="cost.costPerHour" [name]="'costPerHour' + i" required />
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text">$</span>
+                      <input class="form-control" type="number" min="0" placeholder="Precio" [attr.aria-label]="'Precio opción ' + (i + 1)" [(ngModel)]="cost.costPerHour" [name]="'costPerHour' + i" required />
+                    </div>
                   </div>
-                  <div class="col-4">
-                    <input class="form-control" type="number" min="1" placeholder="Horas" [(ngModel)]="cost.hour" [name]="'hour' + i" required />
+                  <div class="col-5">
+                    <div class="input-group input-group-sm">
+                      <input class="form-control" type="number" min="1" placeholder="Horas" [attr.aria-label]="'Horas opción ' + (i + 1)" [(ngModel)]="cost.hour" [name]="'hour' + i" required />
+                      <span class="input-group-text">h</span>
+                    </div>
                   </div>
-                  <div class="col-3 text-end">
-                    <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar opción" (click)="removeCostOption(i)" [disabled]="selectedRoom.costs.length <= 1">
-                      <i class="bi bi-trash"></i>
+                  <div class="col-2 text-end">
+                    <button class="btn btn-sm btn-outline-danger cost-remove" type="button" title="Quitar opción" [attr.aria-label]="'Quitar opción ' + (i + 1)" (click)="removeCostOption(i)" [disabled]="selectedRoom.costs.length <= 1">
+                      <i class="bi bi-dash-circle" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
               }
               <button class="btn btn-sm btn-outline-primary" type="button" (click)="addCostOption()">
-                <i class="bi bi-plus-lg me-1"></i> Agregar opción
+                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Agregar opción
               </button>
-            </div>
+            </fieldset>
 
             @if (isEditing && selectedRoom.id) {
               <div class="col-12">
-                <label class="form-label">Gestión de imágenes</label>
-                <div class="d-flex gap-2">
+                <span class="form-label d-block">Imágenes</span>
+                <div class="d-flex flex-wrap gap-2">
                   <button class="btn btn-outline-secondary btn-sm" type="button" (click)="openUploadPopup(selectedRoom)">
-                    <i class="bi bi-upload me-1"></i> Subir imágenes (Drag & Drop)
+                    <i class="bi bi-upload me-1" aria-hidden="true"></i>Subir imágenes
                   </button>
-                  <button class="btn btn-outline-info btn-sm" type="button" (click)="openGalleryPopup(selectedRoom)">
-                    <i class="bi bi-images me-1"></i> Galería de imágenes
+                  <button class="btn btn-outline-secondary btn-sm" type="button" (click)="openGalleryPopup(selectedRoom)">
+                    <i class="bi bi-images me-1" aria-hidden="true"></i>Ver galería
                   </button>
                 </div>
               </div>
@@ -139,7 +149,7 @@
 
           <div class="mt-4 d-grid gap-2">
             <button class="btn btn-primary" type="submit">
-              {{ isEditing ? 'Actualizar habitación' : 'Guardar habitación' }}
+              <i class="bi bi-check2 me-1" aria-hidden="true"></i>{{ isEditing ? 'Guardar cambios' : 'Crear habitación' }}
             </button>
             @if (isEditing) {
               <button class="btn btn-outline-secondary" type="button" (click)="newRoom()">
@@ -153,13 +163,10 @@
   </div>
 </div>
 
-@if (isUploadPopupVisible) {
-  <div class="dialog-backdrop"></div>
-}
-<dialog class="room-images-dialog" [open]="isUploadPopupVisible">
+<dialog class="room-images-dialog" [appModal]="isUploadPopupVisible" (dismiss)="closeUploadPopup()" #uploadModal="appModal" aria-labelledby="room-upload-title">
   <div class="modal-header">
-    <h5 class="modal-title">Subir imágenes - {{ selectedRoomForImages?.name }}</h5>
-    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeUploadPopup()"></button>
+    <h2 id="room-upload-title" class="modal-title h5">Subir imágenes · {{ selectedRoomForImages?.name }}</h2>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="uploadModal.requestClose()"></button>
   </div>
 
   <div class="modal-body">
@@ -168,20 +175,23 @@
       (dragover)="onDragOver($event)"
       (dragleave)="onDragLeave($event)"
       (drop)="onDrop($event)">
-      Arrastrá imágenes aquí o
-      <label class="btn btn-sm btn-outline-primary ms-2 mb-0" title="Seleccionar">
-        <i class="bi bi-folder2-open"></i> Seleccionar
-        <input type="file" multiple accept="image/*" hidden (change)="onFilesSelected($event)" />
-      </label>
+      <i class="bi bi-cloud-arrow-up d-block fs-2 mb-1" aria-hidden="true"></i>
+      {{ isDragOver ? 'Soltá las imágenes para agregarlas' : 'Arrastrá imágenes aquí o' }}
+      @if (!isDragOver) {
+        <label class="btn btn-sm btn-outline-primary ms-1 mb-0">
+          <i class="bi bi-folder2-open me-1" aria-hidden="true"></i>Elegir archivos
+          <input type="file" multiple accept="image/*" hidden (change)="onFilesSelected($event)" />
+        </label>
+      }
     </div>
 
     @if (selectedFiles.length) {
-      <ul class="list-group mt-3">
+      <ul class="list-group mt-3" aria-label="Archivos seleccionados">
         @for (file of selectedFiles; track file; let i = $index) {
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="text-truncate me-2">{{ file.name }}</span>
-            <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" (click)="removeSelectedFile(i)">
-              <i class="bi bi-x-lg"></i>
+            <span class="text-truncate me-2"><i class="bi bi-image me-2 text-muted" aria-hidden="true"></i>{{ file.name }}</span>
+            <button class="btn btn-sm btn-outline-danger" type="button" title="Quitar" [attr.aria-label]="'Quitar ' + file.name" (click)="removeSelectedFile(i)">
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
           </li>
         }
@@ -189,44 +199,43 @@
     }
 
     @if (imagesErrorMessage) {
-      <p class="text-danger mt-3 mb-0">{{ imagesErrorMessage }}</p>
+      <p class="text-danger mt-3 mb-0" role="alert">{{ imagesErrorMessage }}</p>
     }
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-secondary me-2" type="button" title="Cancelar" (click)="closeUploadPopup()" [disabled]="isUploadingImages">
-      <i class="bi bi-x-lg"></i>
-    </button>
-    <button class="btn btn-primary" type="button" [title]="isUploadingImages ? 'Subiendo...' : 'Subir imágenes'" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
-      <i class="bi" [ngClass]="isUploadingImages ? 'bi-hourglass-split' : 'bi-upload'"></i>
+    <button class="btn btn-outline-secondary" type="button" (click)="uploadModal.requestClose()" [disabled]="isUploadingImages">Cancelar</button>
+    <button class="btn btn-primary" type="button" (click)="uploadSelectedImages()" [disabled]="isUploadingImages || !selectedFiles.length">
+      @if (isUploadingImages) {
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Subiendo…
+      } @else {
+        <i class="bi bi-upload me-1" aria-hidden="true"></i>Subir {{ selectedFiles.length || '' }} {{ selectedFiles.length === 1 ? 'imagen' : 'imágenes' }}
+      }
     </button>
   </div>
 </dialog>
 
-@if (isGalleryPopupVisible) {
-  <div class="dialog-backdrop"></div>
-}
-<dialog class="room-images-dialog room-images-gallery" [open]="isGalleryPopupVisible">
+<dialog class="room-images-dialog room-images-gallery" [appModal]="isGalleryPopupVisible" (dismiss)="closeGalleryPopup()" #galleryModal="appModal" aria-labelledby="room-gallery-title">
   <div class="modal-header">
-    <h5 class="modal-title">Imágenes de {{ selectedRoomForImages?.name }}</h5>
-    <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeGalleryPopup()"></button>
+    <h2 id="room-gallery-title" class="modal-title h5">Imágenes de {{ selectedRoomForImages?.name }}</h2>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="galleryModal.requestClose()"></button>
   </div>
 
   <div class="modal-body">
     @if (isLoadingImages) {
-      <p class="mb-2">Cargando imágenes...</p>
+      <p class="mb-2 text-muted" role="status"><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando imágenes…</p>
     }
     @if (imagesErrorMessage) {
-      <p class="text-danger">{{ imagesErrorMessage }}</p>
+      <p class="text-danger" role="alert">{{ imagesErrorMessage }}</p>
     }
 
     @if (!isLoadingImages && roomImages.length) {
       <div class="gallery-grid">
-        @for (image of roomImages; track image) {
+        @for (image of roomImages; track image; let i = $index) {
           <div class="gallery-item">
-            <img [src]="getImageSource(image.path)" class="img-thumbnail" alt="Imagen de la habitación" />
-            <button class="gallery-item-delete" type="button" title="Eliminar imagen" (click)="deleteRoomImage(image.id)">
-              <i class="bi bi-x-lg"></i>
+            <img [src]="getImageSource(image.path)" class="img-thumbnail" [alt]="'Imagen ' + (i + 1) + ' de ' + selectedRoomForImages?.name" loading="lazy" />
+            <button class="gallery-item-delete" type="button" title="Eliminar imagen" [attr.aria-label]="'Eliminar imagen ' + (i + 1)" (click)="deleteRoomImage(image.id)">
+              <i class="bi bi-trash" aria-hidden="true"></i>
             </button>
           </div>
         }
@@ -241,6 +250,6 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-secondary" type="button" (click)="closeGalleryPopup()">Cerrar</button>
+    <button class="btn btn-outline-secondary" type="button" (click)="galleryModal.requestClose()">Cerrar</button>
   </div>
 </dialog>

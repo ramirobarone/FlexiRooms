@@ -33,6 +33,7 @@ import { CreateIssueComponent } from './components/bookings/create-issue/create-
 import { MyIssuesComponent } from './components/bookings/my-issues/my-issues.component';
 import { AdminIssuesComponent } from './components/hotels/admin-issues/admin-issues.component';
 import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance/admin-maintenance.component';
+import { ModalDialogDirective } from './components/Shared/modal/modal-dialog.directive';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { AdminMaintenanceComponent } from './components/hotels/admin-maintenance
     CreateIssueComponent,
     MyIssuesComponent,
     AdminIssuesComponent,
-    AdminMaintenanceComponent
+    AdminMaintenanceComponent,
+    ModalDialogDirective
   ],
   imports: [
     BrowserModule,

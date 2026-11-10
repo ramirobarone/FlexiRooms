@@ -2,49 +2,42 @@
   display: block;
 }
 
+/* Positioning, ::backdrop, focus trap and motion come from the appModal directive */
 .hotel-images-dialog {
   width: min(700px, 92vw);
-  border: 0;
-  border-radius: 0.5rem;
-  padding: 0;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin: 0;
-  transform: translate(-50%, -50%);
 }
 
-.hotel-images-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.45);
-}
-
-.dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 1040;
-}
-
-.hotel-images-dialog {
-  z-index: 1050;
+.hotel-images-gallery {
+  width: min(900px, 95vw);
 }
 
 .hotel-images-dialog .modal-header,
 .hotel-images-dialog .modal-footer,
 .hotel-images-dialog .modal-body {
-  padding: 1rem;
+  padding: 1rem 1.25rem;
 }
 
 .drag-drop-area {
-  border: 2px dashed #6c757d;
-  border-radius: 0.5rem;
-  padding: 1.25rem;
+  border: 2px dashed var(--separator-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
   text-align: center;
-  background-color: #f8f9fa;
+  color: var(--text-secondary);
+  background-color: var(--surface-muted);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
 }
 
-.hotel-images-gallery {
-  width: min(900px, 95vw);
+.drag-drop-area:hover {
+  border-color: var(--accent);
+}
+
+.drag-drop-area.dragover {
+  background-color: var(--accent-soft);
+  border-color: var(--accent);
+  transform: scale(1.01);
 }
 
 .gallery-grid {
@@ -57,4 +50,12 @@
   width: 100%;
   height: 120px;
   object-fit: cover;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--separator);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drag-drop-area.dragover {
+    transform: none;
+  }
 }

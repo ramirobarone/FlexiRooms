@@ -1,14 +1,15 @@
-<dialog class="rounded-surface" #genericModal closedby="any" aria-labelledby="popup-title" (click)="onBackdropClick($event)" (close)="onClose()">
+<dialog class="rounded-surface" [appModal]="visible" (dismiss)="onClose()" #modal="appModal"
+  aria-labelledby="popup-title" aria-describedby="popup-description">
   <div class="modal-content">
     <div class="modal-header">
-      <h5 id="popup-title" class="modal-title">{{ title }}</h5>
-      <button type="button" class="btn-close" aria-label="Cerrar" (click)="close()"></button>
+      <h2 id="popup-title" class="modal-title h5">{{ title }}</h2>
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="modal.requestClose()"></button>
     </div>
     <div class="modal-body">
-      <p>{{ description }}</p>
+      <p id="popup-description">{{ description }}</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="close()">Cerrar</button>
+      <button type="button" class="btn btn-success" autofocus (click)="modal.requestClose()">Entendido</button>
     </div>
   </div>
 </dialog>

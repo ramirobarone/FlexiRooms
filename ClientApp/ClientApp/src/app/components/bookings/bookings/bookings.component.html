@@ -24,17 +24,18 @@
     </div>
   }
 
-  @if (hasError) {
+  @if (!isLoading && hasError) {
     <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
-      <span>No pudimos cargar tus reservas.</span>
+      <span><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>No pudimos cargar tus reservas.</span>
       <button class="btn btn-sm btn-outline-danger" type="button" (click)="loadBookings()">Reintentar</button>
     </div>
   }
 
   @if (!isLoading && !hasError && bookings.length === 0) {
-    <div class="state-panel">
-      <i class="bi bi-calendar2-x fs-3" aria-hidden="true"></i>
-      <span>Todavía no tienes reservas realizadas.</span>
+    <div class="state-panel state-panel--empty">
+      <i class="bi bi-calendar2-x fs-2" aria-hidden="true"></i>
+      <span>Todavía no tenés reservas.</span>
+      <a class="btn btn-success btn-sm" routerLink="/">Buscar un hotel</a>
     </div>
   }
 
@@ -69,27 +70,29 @@
                 <td><span class="time-range">{{ booking.startTime }}</span></td>
                 <td><span class="time-range">{{ booking.endTime }}</span></td>
                 <td class="text-end">
-                  <div class="d-flex flex-nowrap justify-content-end gap-1 access-actions">
-                    <button class="btn btn-sm btn-outline-primary" type="button" title="Ver código" aria-label="Ver código" (click)="showDoorCode(booking)">
-                      <i class="bi bi-key" aria-hidden="true"></i>
+                  <div class="d-flex flex-nowrap justify-content-end align-items-center gap-1 access-actions" role="group" [attr.aria-label]="'Acciones de la reserva ' + booking.id">
+                    <!-- Primary action: the door code, labeled and tinted -->
+                    <button class="btn btn-sm access-primary" type="button" (click)="showDoorCode(booking)">
+                      <i class="bi bi-key me-1" aria-hidden="true"></i>Código
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" title="Instrucciones de uso" aria-label="Instrucciones de uso" (click)="showInstructions(booking)">
+                    <!-- Secondary actions: quiet icons, color only on hover -->
+                    <button class="icon-action" type="button" title="Instrucciones de uso" aria-label="Instrucciones de uso" (click)="showInstructions(booking)">
                       <i class="bi bi-info-circle" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" type="button" title="Términos y condiciones" aria-label="Términos y condiciones" (click)="showTerms(booking)">
+                    <button class="icon-action" type="button" title="Términos y condiciones" aria-label="Términos y condiciones" (click)="showTerms(booking)">
                       <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                     </button>
-                    <a class="btn btn-sm btn-outline-warning" title="Crear reclamo" aria-label="Crear reclamo" [routerLink]="['/reclamos/nuevo', booking.id]">
-                      <i class="bi bi-tools" aria-hidden="true"></i>
-                    </a>
-                    <a class="btn btn-sm btn-outline-secondary" title="Dejar una reseña" aria-label="Dejar una reseña" [routerLink]="['/resenas', booking.id]">
+                    <a class="icon-action" title="Dejar una reseña" aria-label="Dejar una reseña" [routerLink]="['/resenas', booking.id]">
                       <i class="bi bi-star" aria-hidden="true"></i>
                     </a>
                     @if (booking.hotelWhatsAppNumber) {
-                      <a class="btn btn-sm btn-outline-success" title="Contactar por WhatsApp" aria-label="Contactar por WhatsApp" [href]="whatsAppLink(booking.hotelWhatsAppNumber)" target="_blank" rel="noopener noreferrer">
+                      <a class="icon-action icon-action--whatsapp" title="Contactar por WhatsApp" aria-label="Contactar por WhatsApp" [href]="whatsAppLink(booking.hotelWhatsAppNumber)" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-whatsapp" aria-hidden="true"></i>
                       </a>
                     }
+                    <a class="icon-action icon-action--warning" title="Crear reclamo" aria-label="Crear reclamo" [routerLink]="['/reclamos/nuevo', booking.id]">
+                      <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -123,86 +126,73 @@
   }
 </main>
 
-@if (selectedBooking) {
-  <div class="modal-backdrop fade show"></div>
-}
-@if (selectedBooking) {
-  <div class="modal fade show door-code-modal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="doorCodeTitle" (click)="closeDoorCode()">
-    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>
-            <p class="section-label mb-1">Reserva #{{ selectedBooking.id }}</p>
-            <h2 class="modal-title fs-5" id="doorCodeTitle">Código de la puerta</h2>
-          </div>
-          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeDoorCode()"></button>
+<!-- Dialogs: open/close, Escape, backdrop, focus trap and motion via the appModal directive.
+     On phones they become bottom sheets you can drag down to dismiss. -->
+<dialog class="booking-dialog" [appModal]="!!selectedBooking" (dismiss)="closeDoorCode()" #doorModal="appModal" aria-labelledby="doorCodeTitle">
+  @if (selectedBooking) {
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <p class="section-label mb-1">Reserva #{{ selectedBooking.id }}</p>
+          <h2 class="modal-title fs-5" id="doorCodeTitle">Código de la puerta</h2>
         </div>
-        <div class="modal-body text-center py-4">
-          <p class="text-muted mb-2">Habitación {{ selectedBooking.roomId }}</p>
-          <output class="door-code" aria-label="Código de acceso">{{ doorCode }}</output>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="closeDoorCode()">Cerrar</button>
-        </div>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="doorModal.requestClose()"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <p class="text-muted mb-2">Habitación {{ selectedBooking.roomId }}</p>
+        <output class="door-code" aria-label="Código de acceso">{{ doorCode }}</output>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" autofocus (click)="doorModal.requestClose()">Listo</button>
       </div>
     </div>
-  </div>
-}
+  }
+</dialog>
 
-@if (instructionsBooking) {
-  <div class="modal-backdrop fade show"></div>
-}
-@if (instructionsBooking) {
-  <div class="modal fade show" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="instructionsTitle" (click)="closeInstructions()">
-    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>
-            <p class="section-label mb-1">Reserva #{{ instructionsBooking.id }}</p>
-            <h2 class="modal-title fs-5" id="instructionsTitle">Instrucciones de uso</h2>
-          </div>
-          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeInstructions()"></button>
+<dialog class="booking-dialog" [appModal]="!!instructionsBooking" (dismiss)="closeInstructions()" #instructionsModal="appModal" aria-labelledby="instructionsTitle">
+  @if (instructionsBooking) {
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <p class="section-label mb-1">Reserva #{{ instructionsBooking.id }}</p>
+          <h2 class="modal-title fs-5" id="instructionsTitle">Instrucciones de uso</h2>
         </div>
-        <div class="modal-body py-4">
-          @if (instructionsBooking.instruccionesDeUso) {
-            <p class="mb-0">{{ instructionsBooking.instruccionesDeUso }}</p>
-          } @else {
-            <p class="text-muted mb-0">No hay instrucciones de uso disponibles para este hotel.</p>
-          }
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="closeInstructions()">Cerrar</button>
-        </div>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="instructionsModal.requestClose()"></button>
+      </div>
+      <div class="modal-body py-4">
+        @if (instructionsBooking.instruccionesDeUso) {
+          <p class="mb-0">{{ instructionsBooking.instruccionesDeUso }}</p>
+        } @else {
+          <p class="text-muted mb-0">No hay instrucciones de uso disponibles para este hotel.</p>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" autofocus (click)="instructionsModal.requestClose()">Listo</button>
       </div>
     </div>
-  </div>
-}
+  }
+</dialog>
 
-@if (termsBooking) {
-  <div class="modal-backdrop fade show"></div>
-}
-@if (termsBooking) {
-  <div class="modal fade show" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="termsTitle" (click)="closeTerms()">
-    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>
-            <p class="section-label mb-1">Reserva #{{ termsBooking.id }}</p>
-            <h2 class="modal-title fs-5" id="termsTitle">Términos y condiciones</h2>
-          </div>
-          <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeTerms()"></button>
+<dialog class="booking-dialog" [appModal]="!!termsBooking" (dismiss)="closeTerms()" #termsModal="appModal" aria-labelledby="termsTitle">
+  @if (termsBooking) {
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <p class="section-label mb-1">Reserva #{{ termsBooking.id }}</p>
+          <h2 class="modal-title fs-5" id="termsTitle">Términos y condiciones</h2>
         </div>
-        <div class="modal-body py-4">
-          @if (termsBooking.terminosYCondiciones) {
-            <p class="mb-0">{{ termsBooking.terminosYCondiciones }}</p>
-          } @else {
-            <p class="text-muted mb-0">No hay términos y condiciones disponibles para este hotel.</p>
-          }
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="closeTerms()">Cerrar</button>
-        </div>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="termsModal.requestClose()"></button>
+      </div>
+      <div class="modal-body py-4">
+        @if (termsBooking.terminosYCondiciones) {
+          <p class="mb-0">{{ termsBooking.terminosYCondiciones }}</p>
+        } @else {
+          <p class="text-muted mb-0">No hay términos y condiciones disponibles para este hotel.</p>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" autofocus (click)="termsModal.requestClose()">Listo</button>
       </div>
     </div>
-  </div>
-}
+  }
+</dialog>

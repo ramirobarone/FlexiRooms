@@ -1,45 +1,49 @@
 <header>
-  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-3" aria-label="Navegación principal">
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']" aria-label="Flexi Rooms">
-        <img src="assets/logo.png" alt="Flexi Rooms" class="application-logo" />
+      <a class="navbar-brand" [routerLink]="['/']" aria-label="Flexi Rooms, inicio">
+        <img src="assets/logo.png" alt="" class="application-logo" width="48" height="48" />
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
-        aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
+      <button class="navbar-toggler" type="button" aria-controls="main-nav"
+        [attr.aria-label]="isExpanded ? 'Cerrar menú' : 'Abrir menú'" [attr.aria-expanded]="isExpanded" (click)="toggle()">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
+      <div id="main-nav" class="navbar-collapse collapse d-sm-inline-flex justify-content-end" [ngClass]="{ show: isExpanded }">
         <ul class="navbar-nav flex-grow align-items-sm-center">
           @if (isLoged) {
-            <li class="nav-item" [routerLinkActive]="['link-active']">
-              <a class="nav-link text-dark" [routerLink]="['/MisReservas']">Mis Reservas</a>
+            <li class="nav-item" routerLinkActive="link-active">
+              <a class="nav-link" [routerLink]="['/MisReservas']" ariaCurrentWhenActive="page">
+                <i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Mis reservas
+              </a>
             </li>
-          }
-          @if (isLoged) {
-            <li class="nav-item" [routerLinkActive]="['link-active']">
-              <a class="nav-link text-dark" [routerLink]="['/miCuenta']">Mi Cuenta</a>
+            <li class="nav-item" routerLinkActive="link-active">
+              <a class="nav-link" [routerLink]="['/miCuenta']" ariaCurrentWhenActive="page">
+                <i class="bi bi-person me-1" aria-hidden="true"></i>Mi cuenta
+              </a>
             </li>
           }
           @if (canAccessControlPanel) {
-            <li class="nav-item" [routerLinkActive]="['link-active']">
-              <a class="nav-link text-dark fw-semibold" [routerLink]="['/admin']">Panel de Control</a>
+            <li class="nav-item" routerLinkActive="link-active">
+              <a class="nav-link" [routerLink]="['/admin']" ariaCurrentWhenActive="page">
+                <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>Panel de control
+              </a>
             </li>
           }
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            @if (!isLoged) {
-              <a class="nav-link text-dark" [routerLink]="['/login']">Ingresar</a>
-            }
-            @if (isLoged) {
-              <button class="logout-button" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="logout()">
-                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-              </button>
-            }
-          </li>
+          @if (!isLoged) {
+            <li class="nav-item" routerLinkActive="link-active">
+              <a class="nav-link" [routerLink]="['/login']" ariaCurrentWhenActive="page">
+                <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>Ingresar
+              </a>
+            </li>
+          }
         </ul>
         @if (isLoged) {
           <div class="user-profile">
             <span id="userName" class="user-name">{{ userName }}</span>
-            <img class="user-avatar" [src]="profileImageUrl" alt="Fotografía de usuario" />
+            <img class="user-avatar" [src]="profileImageUrl" alt="" width="36" height="36" />
+            <button class="logout-button" type="button" title="Cerrar sesión" aria-label="Cerrar sesión" (click)="logout()">
+              <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            </button>
           </div>
         }
       </div>

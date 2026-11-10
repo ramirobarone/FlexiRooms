@@ -1,8 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Provide sufficient contrast against white background */
+/* ==========================================================================
+   Flexi Rooms — global design foundation
+   Principles (Apple HIG / Designing Fluid Interfaces, translated to the web):
+   - Feedback on press, instantly; never only at the end.
+   - Motion approximates critically damped springs (no overshoot) and only
+     animates compositor-friendly properties (transform / opacity).
+   - Translucent materials for floating chrome; depth encodes hierarchy.
+   - Size-specific typography: tighter tracking/leading as text grows.
+   - Reduced motion / transparency / contrast are first-class.
+   ========================================================================== */
 
 :root {
+  /* Brand */
   --primary-color: #073B73;
   --primary-color-light: #079BE5;
   --primary-color-violeta: #962188;
@@ -10,114 +18,121 @@
   --primary-naranja-oscuro: #ff755a;
   --primary-naranja-claro: #ffb750;
   --primary-amarillo: #f9f871;
+
+  /* Semantic colors */
+  --accent: var(--primary-color-light);
+  --accent-strong: #0682c1;
+  --accent-soft: rgba(7, 155, 229, 0.12);
+  --focus-ring: 0 0 0 4px rgba(7, 155, 229, 0.28);
+  --success: #1f9d55;
+  --danger: #e5484d;
+  --warning: #f5a524;
+
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #8e8e93;
+  --surface: #ffffff;
+  --surface-muted: #f5f5f7;
+  --surface-sunken: #ececf0;
+  --separator: rgba(0, 0, 0, 0.08);
+  --separator-strong: rgba(0, 0, 0, 0.14);
+
+  /* Materials (translucent layers) */
+  --material-regular: rgba(255, 255, 255, 0.72);
+  --material-thick: rgba(255, 255, 255, 0.86);
+  --material-dark: rgba(20, 20, 24, 0.72);
+  --material-blur: blur(20px) saturate(180%);
+  --material-edge: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --scrim: rgba(10, 12, 16, 0.32);
+
+  /* Shape */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --component-radius: var(--radius-md);
+
+  /* Depth — bigger surfaces read as thicker */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.08), 0 24px 64px rgba(0, 0, 0, 0.16);
+
+  /* Motion — curves approximating a critically damped spring (damping 1.0) */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ease-in: cubic-bezier(0.55, 0, 0.75, 0.2);
+  --dur-press: 100ms;
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 450ms;
+  --press-scale: 0.97;
 }
 
-a {
-  color: #0366d6;
-}
-
-code {
-  color: #e01a76;
-}
-.btn-outline-success{
-  color: var(--primary-color-light) !important;
-  border-color: var(--primary-color-light) !important;
-}
-.btn-outline-success:hover {
-  background-color: var(--primary-color-light) !important;
-  color: white !important;
-  border-color: var(--primary-color-light) !important;
-}
-.btn-success{
-  background-color: var(--primary-color-light) !important;
-  color: white !important;
-  /* border-color: var(--primary-color) !important; */
-}
-.btn-success:hover {
-  border-radius: 20px !important;
-  color: var(--primary-color-light) !important;
-  background-color: white !important;
-  /* border-color: var(--primary-color) !important; */
-}
-
-.btn-primary {
-  color: var(--primary-color-light);
-  background-color: white;
-  border-color: var(--primary-color-light);
-}
-.btn-primary:hover {
-  background-color: var(--primary-color-light) !important;
-  color: white !important;
-  border-color: var(--primary-color-light) !important;
-  border-radius: 20px !important;
-}
-html, body {
+/* --------------------------------------------------------------------------
+   Typography — brand face with system fallback, size-specific tracking
+   -------------------------------------------------------------------------- */
+html,
+body {
   height: 100%;
   margin: 0;
-  font-family: 'Google Sans', sans-serif;
-}
-
-:root {
-  --component-radius: 12px;
-}
-
-.rounded-surface {
-  border: 1px solid #dee2e6;
-  border-radius: var(--component-radius);
-}
-
-/* Smooth cross-fade + slide transition between routes (Angular Router view transitions) */
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root) {
-    animation: route-fade-out 0.25s ease-in both;
-  }
-
-  ::view-transition-new(root) {
-    animation: route-fade-in 0.25s ease-out both;
-  }
-}
-
-@keyframes route-fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes route-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  font-family: 'Google Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
   display: flex;
   flex-direction: column;
+  color: var(--text);
+  background-color: var(--surface);
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.btn, .btn-success{
-  border-radius: 20px;
-  /* padding: 0.3rem 2rem; */
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  color: var(--text);
+  font-weight: 650;
+  text-wrap: balance;
 }
 
-.form-control{
-  border-radius: 20px;
-  padding: 0.3rem 2rem;
+h1, .h1 { line-height: 1.08; letter-spacing: -0.025em; font-weight: 700; }
+h2, .h2 { line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; }
+h3, .h3 { line-height: 1.18; letter-spacing: -0.015em; }
+h4, .h4 { line-height: 1.22; letter-spacing: -0.01em; }
+h5, .h5 { line-height: 1.3;  letter-spacing: -0.005em; }
+h6, .h6 { line-height: 1.35; letter-spacing: 0; }
+
+small, .small, .form-text {
+  letter-spacing: 0.01em;
 }
-.card {
-  border-radius: 20px;
+
+p {
+  text-wrap: pretty;
 }
-.alert {
-  border-radius: 20px;
+
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+a {
+  color: var(--accent-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+code {
+  color: #e01a76;
 }
 
 button,
@@ -127,6 +142,316 @@ textarea {
   font-family: inherit;
 }
 
+::selection {
+  background: var(--accent-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Focus — visible for keyboards only, consistent everywhere
+   -------------------------------------------------------------------------- */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn:focus-visible,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  box-shadow: var(--focus-ring) !important;
+  border-color: var(--accent) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons — instant feedback on press (pointer-down), smooth release
+   -------------------------------------------------------------------------- */
+.btn {
+  border-radius: var(--radius-pill);
+  font-weight: 550;
+  letter-spacing: 0.005em;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.btn:active:not(:disabled),
+.btn.active:active {
+  transform: scale(var(--press-scale));
+  transition-duration: var(--dur-press);
+}
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.45;
+}
+
+.btn-success {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: white !important;
+  box-shadow: 0 1px 2px rgba(7, 155, 229, 0.25);
+}
+
+.btn-success:hover {
+  background-color: var(--accent-strong) !important;
+  border-color: var(--accent-strong) !important;
+  color: white !important;
+}
+
+.btn-outline-success {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+.btn-primary {
+  color: var(--accent);
+  background-color: white;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+.btn-close {
+  border-radius: var(--radius-pill);
+  transition: transform var(--dur-fast) var(--ease-spring), opacity var(--dur-fast) var(--ease-out);
+}
+
+.btn-close:active {
+  transform: scale(0.9);
+  transition-duration: var(--dur-press);
+}
+
+/* --------------------------------------------------------------------------
+   Form controls
+   -------------------------------------------------------------------------- */
+.form-control {
+  border-radius: var(--radius-lg);
+  padding: 0.3rem 2rem;
+}
+
+.form-control,
+.form-select {
+  border-color: var(--separator-strong);
+  background-color: var(--surface);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.form-select {
+  border-radius: var(--radius-sm);
+}
+
+.form-control:hover:not(:disabled):not(:focus),
+.form-select:hover:not(:disabled):not(:focus) {
+  border-color: rgba(0, 0, 0, 0.24);
+}
+
+.form-control::placeholder {
+  color: var(--text-tertiary);
+}
+
+.form-label {
+  font-weight: 550;
+  font-size: 0.9rem;
+  letter-spacing: 0.005em;
+  color: var(--text);
+}
+
+.form-check-input:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.form-check-input {
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.input-group > .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group > .btn:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Surfaces
+   -------------------------------------------------------------------------- */
+.card {
+  border-radius: var(--radius-lg);
+  border-color: var(--separator);
+  box-shadow: var(--shadow-sm);
+}
+
+.card > .card-img-top {
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+
+.rounded-surface {
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: var(--component-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.alert {
+  border-radius: var(--radius-md);
+  border-width: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.badge {
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.35em 0.7em;
+}
+
+.table {
+  --bs-table-hover-bg: var(--surface-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--separator);
+}
+
+.table-hover > tbody > tr {
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.pagination .page-link {
+  border-radius: var(--radius-sm) !important;
+  margin: 0 2px;
+  border-color: transparent;
+  color: var(--text);
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+
+.pagination .page-link:active {
+  transform: scale(0.94);
+  transition-duration: var(--dur-press);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.nav-link {
+  transition: color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   Modals — dim to focus, materialize (scale + blur together) on enter
+   -------------------------------------------------------------------------- */
+.modal-backdrop.show {
+  opacity: 1;
+  background-color: var(--scrim);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: scrim-in var(--dur-base) var(--ease-out) both;
+}
+
+.modal-content {
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--separator);
+}
+
+.modal.show .modal-dialog {
+  animation: materialize-in var(--dur-base) var(--ease-spring) both;
+}
+
+dialog {
+  color: var(--text);
+}
+
+dialog::backdrop {
+  background: var(--scrim);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+dialog[open] {
+  animation: materialize-in var(--dur-base) var(--ease-spring) both;
+}
+
+dialog[open]::backdrop {
+  animation: scrim-in var(--dur-base) var(--ease-out) both;
+}
+
+/* --------------------------------------------------------------------------
+   Carousels — controls as small translucent buttons
+   -------------------------------------------------------------------------- */
+.carousel-control-prev,
+.carousel-control-next {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+  background-color: rgba(0, 0, 0, 0.32);
+  background-size: 45%;
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.carousel-control-prev:active .carousel-control-prev-icon,
+.carousel-control-next:active .carousel-control-next-icon {
+  transform: scale(0.9);
+  transition-duration: var(--dur-press);
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  margin-inline: 3px;
+  transition: width var(--dur-base) var(--ease-spring), opacity var(--dur-base) var(--ease-out);
+}
+
+.carousel-indicators .active {
+  width: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   App shell
+   -------------------------------------------------------------------------- */
 app-root {
   flex: 1;
 }
@@ -138,6 +463,9 @@ app-root {
   place-items: center;
   font-size: 1.25rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+  animation: loading-breathe 1.6s var(--ease-out) infinite alternate;
 }
 
 .footer {
@@ -147,7 +475,531 @@ app-root {
   background-color: #f8f9fa;
 }
 
+/* Footer as a translucent floating layer instead of an opaque strip */
+footer .navbar {
+  background: var(--material-thick) !important;
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+  border-top: 1px solid var(--separator);
+}
+
 footer .navbar-nav {
   justify-content: center;
   width: 100%;
+}
+
+footer .nav-link {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+footer .nav-link:hover {
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------------------
+   Home (app-home has no stylesheet of its own)
+   -------------------------------------------------------------------------- */
+app-home .home-search {
+  max-width: 40rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+app-home .home-title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  margin-bottom: 0.35rem;
+}
+
+app-home .home-subtitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+app-body-principal .carousel-copy {
+  max-width: 44rem;
+  margin: 1.5rem auto 3rem;
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+app-body-principal .carousel-eyebrow {
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+app-body-principal .carousel-heading {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------------------
+   Admin panel (/admin → app-control-room and its app-admin-* children)
+   Shared here because all five sub-panels use the same Bootstrap markup.
+   Goals: light headers instead of heavy bars, quiet icon actions with
+   color only on intent, soft status badges, compact form fields, and a
+   form column that stays in view while the list scrolls.
+   -------------------------------------------------------------------------- */
+
+/* Switching tabs re-creates the sub-panel: let it arrive, don't pop in */
+app-control-room app-admin-hotels,
+app-control-room app-admin-room,
+app-control-room app-admin-bookings,
+app-control-room app-admin-issues,
+app-control-room app-admin-maintenance {
+  display: block;
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+/* Sub-panel cards */
+app-control-room .card .card {
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden;
+}
+
+/* Headers: hierarchy from type, not from a black bar */
+app-control-room .card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--separator);
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+/* Header action: a tinted pill, clearly the add/refresh control for this list */
+app-control-room .card-header .btn-light,
+app-control-room .card-header .btn-outline-light {
+  border: 0;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+app-control-room .card-header .btn-light:hover,
+app-control-room .card-header .btn-outline-light:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+app-control-room .card-header .btn-outline-light {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+/* Tables: no stripes, quiet headers, hover to show the row you're on */
+app-control-room .table {
+  --bs-table-striped-bg: transparent;
+  --bs-table-accent-bg: transparent;
+  --bs-table-hover-bg: var(--surface-muted);
+  margin-bottom: 0;
+  font-size: 0.925rem;
+}
+
+app-control-room .table thead th {
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--separator);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.7rem 0.85rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+app-control-room .table tbody td {
+  padding: 0.8rem 0.85rem;
+  vertical-align: middle;
+  border-bottom-color: var(--separator);
+}
+
+app-control-room .table tbody tr {
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+app-control-room .table tbody tr:hover > td {
+  background-color: var(--surface-muted);
+}
+
+app-control-room .table tbody tr:last-child > td {
+  border-bottom: 0;
+}
+
+app-control-room .card-body.table-responsive:not(.p-0) {
+  padding: 0;
+}
+
+/* Row actions: quiet circular icon buttons; color appears only on intent */
+app-control-room td .btn-sm[class*="btn-outline-"] {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  margin-right: 0.15rem !important;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+app-control-room td .btn-sm[class*="btn-outline-"]:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+app-control-room td .btn-sm.btn-outline-primary:hover,
+app-control-room td .btn-sm.btn-outline-info:hover {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+app-control-room td .btn-sm.btn-outline-danger:hover {
+  background: rgba(229, 72, 77, 0.12);
+  color: var(--danger);
+}
+
+app-control-room td .btn-sm[class*="btn-outline-"]:disabled {
+  background: transparent;
+}
+
+/* Status badges: tinted, not saturated blocks */
+app-control-room .badge {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  padding: 0.35em 0.75em;
+}
+
+app-control-room .badge.bg-success,
+app-control-room .badge.text-bg-success {
+  background-color: rgba(31, 157, 85, 0.14) !important;
+  color: #17763f !important;
+}
+
+app-control-room .badge.bg-secondary,
+app-control-room .badge.text-bg-secondary {
+  background-color: var(--surface-sunken) !important;
+  color: var(--text-secondary) !important;
+}
+
+app-control-room .badge.text-bg-warning {
+  background-color: rgba(245, 165, 36, 0.18) !important;
+  color: #8a5a00 !important;
+}
+
+app-control-room .badge.text-bg-info {
+  background-color: var(--accent-soft) !important;
+  color: var(--accent-strong) !important;
+}
+
+/* Dense forms: compact fields instead of the public site's pill inputs */
+app-control-room .form-control,
+app-control-room .form-select {
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.95rem;
+}
+
+app-control-room .form-select {
+  padding-right: 2.25rem;
+}
+
+app-control-room .form-select-sm {
+  padding: 0.3rem 2rem 0.3rem 0.65rem;
+  font-size: 0.85rem;
+}
+
+app-control-room textarea.form-control {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+
+app-control-room .form-label {
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+app-control-room .form-switch .form-check-input {
+  cursor: pointer;
+}
+
+/* Checkbox group container (maintenance types) */
+app-control-room .border.rounded.p-2 {
+  border-color: var(--separator) !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--surface-muted);
+  padding: 0.6rem 0.85rem !important;
+}
+
+/* Primary action is the most prominent thing in the form */
+app-control-room .btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+app-control-room .btn-primary:hover {
+  background-color: var(--accent-strong) !important;
+  border-color: var(--accent-strong) !important;
+}
+
+app-control-room form .btn-sm.btn-outline-primary,
+app-control-room .card-body .col-12 .btn-sm {
+  border-style: dashed;
+}
+
+/* Detail list (bookings) */
+app-control-room dl dt {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 550;
+  padding-block: 0.4rem;
+}
+
+app-control-room dl dd {
+  font-variant-numeric: tabular-nums;
+  font-weight: 550;
+  padding-block: 0.4rem;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Image dialogs */
+app-control-room dialog .modal-header,
+app-control-room dialog .modal-footer {
+  border-color: var(--separator);
+}
+
+app-control-room dialog .modal-title {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+app-control-room .list-group {
+  border-radius: var(--radius-md);
+}
+
+app-control-room .list-group-item {
+  border-color: var(--separator);
+  font-size: 0.9rem;
+}
+
+app-control-room .img-thumbnail {
+  padding: 0;
+  border: 0;
+  background: var(--surface-muted);
+}
+
+/* Row currently being edited/viewed: wayfinding between list and form */
+app-control-room .table > tbody > tr.table-active > td {
+  background-color: var(--accent-soft) !important;
+  --bs-table-bg-state: transparent;
+}
+
+app-control-room .table > tbody > tr.table-active > td:first-child {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Small grouped-section titles inside long forms */
+app-control-room .form-section-title {
+  margin: 1.25rem 0 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+app-control-room .form-section-title:first-child {
+  margin-top: 0;
+}
+
+app-control-room fieldset {
+  border: 0;
+  padding: 0;
+  margin-inline: 0;
+  min-width: 0;
+}
+
+app-control-room legend.form-label {
+  float: none;
+  width: auto;
+}
+
+app-control-room .card-header .badge {
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+app-control-room .input-group-text {
+  background: var(--surface-muted);
+  border-color: var(--separator-strong);
+  color: var(--text-secondary);
+}
+
+app-control-room .input-group-sm > .form-control {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+}
+
+app-control-room .input-group > .form-control:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+app-control-room .input-group > .form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Desktop: the edit form stays in view while the list scrolls */
+@media (min-width: 992px) {
+  app-control-room .col-lg-5 > .card,
+  app-control-room .col-lg-4 > .card {
+    position: sticky;
+    top: 5.5rem;
+  }
+}
+
+/* Mobile: the segmented control scrolls instead of stacking into rows */
+@media (max-width: 767.98px) {
+  app-control-room .btn-group[role="group"] {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  app-control-room .btn-group[role="group"] > .btn {
+    flex: 0 0 auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Route transitions (Angular Router view transitions)
+   Exit is quicker than enter; both move along the same vertical axis.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: route-fade-out 160ms var(--ease-in) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: route-fade-in 320ms var(--ease-spring) both;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes (entrances only — nothing gesture-driven uses keyframes)
+   -------------------------------------------------------------------------- */
+@keyframes route-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes route-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Uses the independent `scale` property so it composes with any existing transform */
+@keyframes materialize-in {
+  from { opacity: 0; scale: 0.96; filter: blur(6px); }
+  to   { opacity: 1; scale: 1;    filter: blur(0); }
+}
+
+@keyframes surface-in {
+  from { opacity: 0; translate: 0 4px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes scrim-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes loading-breathe {
+  from { opacity: 0.55; }
+  to   { opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility preferences
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .btn:active:not(:disabled),
+  .btn-close:active,
+  .pagination .page-link:active {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --material-regular: #ffffff;
+    --material-thick: #ffffff;
+    --material-dark: #1c1c1f;
+  }
+
+  footer .navbar,
+  .modal-backdrop.show,
+  dialog::backdrop,
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .modal-backdrop.show,
+  dialog::backdrop {
+    background-color: rgba(10, 12, 16, 0.55);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-secondary: #3a3a3c;
+    --text-tertiary: #48484a;
+    --separator: rgba(0, 0, 0, 0.35);
+    --separator-strong: rgba(0, 0, 0, 0.55);
+    --material-regular: #ffffff;
+    --material-thick: #ffffff;
+  }
+
+  .card,
+  .rounded-surface,
+  .modal-content {
+    border: 1px solid var(--separator-strong);
+  }
 }

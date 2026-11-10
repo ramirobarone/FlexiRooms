@@ -1,34 +1,39 @@
 <div class="login-container">
-  <div class="login-panel rounded-surface">
+  <form class="login-panel rounded-surface" (ngSubmit)="login()" aria-labelledby="login-title">
 
-    <img src="assets/logo.png" alt="Logo" class="img-fluid mb-4 w-50 centered" />
+    <img src="assets/logo.png" alt="Flexi Rooms" class="img-fluid mb-3 login-logo centered" />
+    <h1 id="login-title" class="h4 text-center mb-1">Ingresá a tu cuenta</h1>
+    <p class="text-muted text-center mb-4">Gestioná tus reservas y reclamos.</p>
 
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-control" [(ngModel)]="userDto.email" title="Enter your email"
-        placeholder="Email" />
-
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" [(ngModel)]="userDto.password" title="Enter your password"
-          placeholder="Password" />
-
-        </div>
-        <div class="login-actions spacingButton">
-          <button class="btn btn-outline-success" type="button" (click)="login()" [disabled]="isLoading">
-            @if (isLoading) {
-              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            }
-            {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
-          </button>
-          <button class="btn btn-success" type="button" [routerLink]="['/accountCreate']" [disabled]="isLoading">Crear Cuenta</button>
-        </div>
-
-        @if (errorMessage) {
-          <div class="alert alert-danger login-alert" role="alert">
-            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-            {{ errorMessage }}
-          </div>
-        }
-
-      </div>
+    <div class="mb-3">
+      <label class="form-label" for="login-email">Email</label>
+      <input id="login-email" name="email" type="email" class="form-control" [(ngModel)]="userDto.email"
+        placeholder="nombre@ejemplo.com" autocomplete="email" inputmode="email" required />
     </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="login-password">Contraseña</label>
+      <input id="login-password" name="password" type="password" class="form-control" [(ngModel)]="userDto.password"
+        placeholder="Tu contraseña" autocomplete="current-password" required />
+    </div>
+
+    <div class="login-actions spacingButton">
+      <button class="btn btn-success" type="submit" [disabled]="isLoading">
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        }
+        {{ isLoading ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+      <a class="btn btn-outline-success" [routerLink]="['/accountCreate']" [class.disabled]="isLoading">Crear cuenta</a>
+    </div>
+
+    <div aria-live="assertive">
+      @if (errorMessage) {
+        <div class="alert alert-danger login-alert" role="alert">
+          <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+          {{ errorMessage }}
+        </div>
+      }
+    </div>
+  </form>
+</div>

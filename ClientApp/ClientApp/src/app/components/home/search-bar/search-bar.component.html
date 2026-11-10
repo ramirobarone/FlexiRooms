@@ -1,11 +1,22 @@
-<div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Buscar por Hotel, dirección, ciudad" [(ngModel)]="currentString"/>
+<form class="input-group mb-3" role="search" (ngSubmit)="BuscarHotel()">
+  <label class="visually-hidden" for="hotel-search">Buscar hoteles</label>
+  <input
+    id="hotel-search"
+    type="search"
+    name="hotelSearch"
+    class="form-control"
+    placeholder="Buscar por hotel, dirección o ciudad"
+    autocomplete="off"
+    enterkeyhint="search"
+    [(ngModel)]="currentString" />
 
-  <button class="btn btn-outline-secondary" type="button" id="button-addon2"  (click)="BuscarHotel()">Buscar</button>
-</div>
+  <button class="btn" type="submit" id="button-addon2">
+    <i class="bi bi-search me-1" aria-hidden="true"></i>Buscar
+  </button>
+</form>
 <app-popup
   [visible]="isNoResultsPopupVisible"
   title="Sin resultados"
-  description="No hay hoteles disponibles con esa busqueda."
+  description="No hay hoteles disponibles con esa búsqueda."
   (closed)="isNoResultsPopupVisible = false">
 </app-popup>

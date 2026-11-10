@@ -7,6 +7,8 @@
 .account-panel {
   width: min(100%, 760px);
   padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .account-header {
@@ -31,21 +33,40 @@
   height: 96px;
   border-radius: 50%;
   object-fit: cover;
+  box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--separator), var(--shadow-md);
 }
 
+/* Control sits right on the thing it changes */
 .photo-button {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: -2px;
+  bottom: -2px;
   display: grid;
   width: 34px;
   height: 34px;
   place-items: center;
-  border: 2px solid #fff;
+  border: 2px solid var(--surface);
   border-radius: 50%;
-  background: #198754;
+  background: var(--accent);
   color: #fff;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(7, 155, 229, 0.35);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.photo-button:hover {
+  background: var(--accent-strong);
+}
+
+.photo-button:active {
+  transform: scale(0.9);
+  transition-duration: var(--dur-press);
+}
+
+.photo-button:focus-within {
+  box-shadow: var(--focus-ring);
 }
 
 .photo-button input {
@@ -61,6 +82,8 @@
   gap: 1rem;
   flex-wrap: wrap;
   margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--separator);
 }
 
 @media (max-width: 575.98px) {
@@ -71,4 +94,30 @@
   .account-header {
     align-items: flex-start;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-button:active {
+    transform: none;
+  }
+}
+
+.photo-button.is-busy {
+  cursor: progress;
+}
+
+.account-feedback {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 550;
+  animation: surface-in var(--dur-base) var(--ease-spring) both;
+}
+
+.account-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 40vh;
+  color: var(--text-secondary);
 }
